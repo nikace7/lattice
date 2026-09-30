@@ -1,0 +1,113 @@
+name: lattice
+
+x-backend: &backend
+  build:
+    context: .
+    dockerfile: infra/backend.Dockerfile
+  env_file: .env
+  environment: &backend-env
+    DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db-pgvector:5432/${POSTGRES_DB}
+    REDIS_URL: redis://redis:6379/0
+    STORAGE_ROOT: /data/storage
+    MODEL_CACHE_ROOT: /data/models
+    SMTP_HOST: mailpit
+    SMTP_PORT: 1025
+    OLLAMA_BASE_URL: http://ollama:11434
+  volumes:
+    - storage:/data/storage
+    - models:/data/models
+  init: true
+
+services:
+  db-pgvector:
+    image: pgvector/pgvector:0.8.2-pg17-bookworm
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Run pnpm run setup first}
+      POSTGRES_USER: ${POSTGRES_USER:?Run pnpm run setup first}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run pnpm run setup first}
+    ports: ["127.0.0.1:5440:5432"]
+    volumes: ["postgres:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  redis:
+    image: redis:7.4.7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports: ["127.0.0.1:6380:6379"]
+    volumes: ["redis:/data"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  mailpit:
+    image: axllent/mailpit:v1.29.2
+    ports: ["127.0.0.1:8026:8025", "127.0.0.1:1026:1025"]
+  migrate:
+    <<: *backend
+    command: ["python", "backend/manage.py", "migrate", "--noinput"]
+    depends_on:
+      db-pgvector: { condition: service_healthy }
+  api:
+    <<: *backend
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    command: ["uvicorn", "config.asgi:application", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "backend"]
+    volumes:
+      - ./backend/config:/app/backend/config:ro
+      - ./backend/modules:/app/backend/modules:ro
+      - storage:/data/storage
+      - models:/data/models
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/ready', timeout=10)"]
+      interval: 15s
+      timeout: 12s
+      retries: 5
+      start_period: 15s
+  ingestion-worker:
+    <<: *backend
+    command: ["celery", "-A", "config", "worker", "--loglevel=info", "--queues=ingestion", "--concurrency=2"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+  answer-worker:
+    <<: *backend
+    command: ["celery", "-A", "config", "worker", "--loglevel=info", "--queues=answers", "--concurrency=1"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+  beat:
+    <<: *backend
+    command: ["celery", "-A", "config", "beat", "--loglevel=info", "--schedule=/data/beat/celerybeat-schedule"]
+    volumes: ["beat:/data/beat"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+  web:
+    build:
+      context: .
+      dockerfile: infra/web.Dockerfile
+    volumes: ["./apps/web/src:/app/apps/web/src:ro"]
+    init: true
+  proxy:
+    image: caddy:2.10.2-alpine
+    ports: ["127.0.0.1:4400:80"]
+    volumes: ["./infra/Caddyfile:/etc/caddy/Caddyfile:ro"]
+    depends_on:
+      api: { condition: service_healthy }
+      web: { condition: service_started }
+  ollama:
+    image: ollama/ollama:0.11.10
+    profiles: ["local-models"]
+    volumes: ["ollama:/root/.ollama"]
+
+volumes:
+  postgres:
+  redis:
+  storage:
+  models:
+  beat:
+  ollama:

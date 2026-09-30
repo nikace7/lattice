@@ -1,0 +1,71 @@
+openapi: 3.0.3
+info:
+  title: Lattice API
+  version: 0.1.0
+  description: Foundation health endpoints. Product endpoints are not implemented
+    yet.
+paths:
+  /health/live:
+    get:
+      operationId: live_retrieve
+      tags:
+      - live
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveStatus'
+          description: ''
+  /health/ready:
+    get:
+      operationId: ready_retrieve
+      tags:
+      - ready
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadyStatus'
+          description: ''
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadyStatus'
+          description: ''
+components:
+  schemas:
+    LiveStatus:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/LiveStatusStatusEnum'
+      required:
+      - status
+    LiveStatusStatusEnum:
+      enum:
+      - ok
+      type: string
+      description: '* `ok` - ok'
+    ReadyStatus:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ReadyStatusStatusEnum'
+        checks:
+          type: object
+          additionalProperties:
+            type: boolean
+      required:
+      - checks
+      - status
+    ReadyStatusStatusEnum:
+      enum:
+      - ok
+      - unavailable
+      type: string
+      description: |-
+        * `ok` - ok
+        * `unavailable` - unavailable

@@ -1,0 +1,29 @@
+{
+  "name": "lattice",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.33.4",
+  "engines": {
+    "node": ">=22.12.0 <25",
+    "pnpm": ">=10 <11"
+  },
+  "scripts": {
+    "setup": "node scripts/project.mjs setup",
+    "dev": "node scripts/project.mjs dev",
+    "dev:web": "pnpm --filter @lattice/web dev",
+    "dev:api": "uv run --project backend --env-file .env uvicorn config.asgi:application --app-dir backend --host 127.0.0.1 --port 8000 --reload",
+    "infra:up": "docker compose up -d --wait db-pgvector redis mailpit",
+    "infra:down": "docker compose down",
+    "migrate": "uv run --project backend python backend/manage.py migrate",
+    "lint": "pnpm --filter @lattice/web lint && uv run --project backend ruff check backend",
+    "typecheck": "pnpm --filter @lattice/web typecheck",
+    "test": "node --test scripts/project.test.mjs && pnpm --filter @lattice/web test && uv run --project backend pytest backend",
+    "test:e2e": "pnpm --filter @lattice/web test:e2e",
+    "verify": "node scripts/project.mjs verify",
+    "build": "pnpm --filter @lattice/web build",
+    "contracts:generate": "node scripts/project.mjs contracts"
+  },
+  "devDependencies": {
+    "openapi-typescript": "7.13.0"
+  }
+}
