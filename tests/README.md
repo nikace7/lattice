@@ -3,11 +3,14 @@
 - `scripts/project.test.mjs`: setup credential consistency and non-overwrite behavior.
 - `backend/tests`: real PostgreSQL/pgvector, health, session rotation, CSRF/origin,
   tenant isolation, role ceilings, revocation, revisions, concurrent owner changes
-  and scoped pagination. A per-test memory cache isolates throttling from Redis's
+  scoped pagination, hashed/expired/replayed recovery links, concurrent resets,
+  session invalidation, invitation revocation and mail-failure rollback.
+  A per-test memory cache isolates throttling from Redis's
   Celery broker; health tests still exercise real Redis.
 - `apps/web/src/**/*.test.tsx`: failed login keeps input and sends CSRF with Vitest.
 - `apps/web/tests`: production-page Playwright/axe at 360, 768 and 1440 pixels;
-  real registration, workspace/collection creation, grant/revoke and logout.
+  real registration, workspace/collection creation, grant/revoke and logout;
+  Mailpit invitation acceptance and password recovery across separate browser sessions.
 
 `pnpm verify` runs host checks and builds; `pnpm test:e2e` runs the browser suite.
 Browser tests recreate the reserved `test_lattice_browser` database and use an

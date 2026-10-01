@@ -190,7 +190,11 @@ def test_curator_can_create_shared_collection_but_not_change_access(users):
 def test_login_registration_csrf_origin_and_session_rotation():
     cache.clear()
     client = APIClient(enforce_csrf_checks=True)
-    credentials = {"username": "newreader", "password": "coffee-library-739!"}
+    credentials = {
+        "username": "newreader",
+        "email": "newreader@example.test",
+        "password": "coffee-library-739!",
+    }
     assert client.post("/api/v1/auth/register", credentials, format="json").status_code == 403
     csrf = client.get("/api/v1/auth/session").data["csrfToken"]
     assert (
@@ -236,7 +240,9 @@ def test_auth_errors_are_generic_and_password_rules_apply(users):
     assert "requestId" in first.data["error"]
     assert (
         client.post(
-            "/api/v1/auth/register", {"username": "badpass", "password": "123"}, format="json"
+            "/api/v1/auth/register",
+            {"username": "badpass", "email": "badpass@example.test", "password": "123"},
+            format="json",
         ).status_code
         == 400
     )

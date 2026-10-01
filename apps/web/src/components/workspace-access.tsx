@@ -61,6 +61,7 @@ export function Members({
     <section className="members-section">
       <p className="eyebrow">A SHARED SPACE, CLEAR BOUNDARIES</p>
       <h1>People & access</h1>
+      <Invitations workspace={workspace} />
       <p className="muted">
         Add someone by their existing Lattice username. Their role sets the most
         they can do.
@@ -136,6 +137,49 @@ export function Members({
       </dl>
     </section>
   );
+}
+
+function Invitations({ workspace }: { workspace: Workspace }) {
+  const [path, setPath] = useState(`/workspaces/${workspace.id}/invitations`);
+  const invitations = useResource<Page<{ id: string; email: string; role: string; expiresAt: string }>>(path);
+  const action = useAction();
+  const [sent, setSent] = useState(false);
+  return <section aria-labelledby="invite-heading">
+    <h2 id="invite-heading">Invite by email</h2>
+    <p className="muted">An invitation lasts 2 days. Sending again replaces the previous link.</p>
+    <form className="member-add" onSubmit={(event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const values = new FormData(form);
+      setSent(false);
+      void action.run(async () => {
+        await api(`/workspaces/${workspace.id}/invitations`, "POST", { email: values.get("email"), role: values.get("role") });
+        form.reset();
+        setSent(true);
+        invitations.reload();
+      });
+    }}>
+      <div><label htmlFor="invite-email">Invitation email</label><input id="invite-email" name="email" type="email" maxLength={254} required disabled={action.busy} /></div>
+      <div><label htmlFor="invite-role">Invitation role</label><select id="invite-role" name="role" defaultValue="MEMBER" disabled={action.busy}><RoleOptions /></select></div>
+      <button className="primary-button" disabled={action.busy}>Send invitation</button>
+    </form>
+    {sent && <p role="status">Invitation sent. Your teammate can open the link in their email.</p>}
+    <ErrorNotice error={action.error} />
+    <ErrorNotice error={invitations.error} retry={invitations.reload} />
+    {!invitations.data && !invitations.error && <Loading>Loading invitations…</Loading>}
+    {invitations.data && <>
+      <ul className="invitation-list">
+        {invitations.data.results.map((invitation) => <li key={invitation.id}>
+          <span><strong>{invitation.email}</strong><small>{invitation.role.toLowerCase()} · expires {new Date(invitation.expiresAt).toLocaleDateString()}</small></span>
+          <button disabled={action.busy} aria-label={`Revoke invitation for ${invitation.email}`} onClick={() => void action.run(async () => {
+            await api(`/invitations/${invitation.id}`, "DELETE");
+            invitations.reload();
+          })}>Revoke</button>
+        </li>)}
+      </ul>
+      <Pagination page={invitations.data} onPage={setPath} />
+    </>}
+  </section>;
 }
 
 function MemberRow({

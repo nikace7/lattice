@@ -17,9 +17,9 @@ Implemented:
   beat, a migration job, and an optional Ollama service.
 - Foundation tests, formatting/lint/type/build commands and GitHub Actions verification.
 
-R1 is **in progress**, not complete. Accounts, workspace membership, collections
-and authorization are now implemented; account recovery and invitations remain.
-R2–R8 have not started. Celery queues and beat currently have no product tasks.
+R1 is implemented: accounts, workspace membership, collection authorization,
+account recovery and invitations. R2–R8 have not started. The ingestion worker
+also delivers recovery email; ingestion/generation jobs and scheduled tasks remain future work.
 
 ## Verification
 
@@ -46,7 +46,8 @@ uv 0.11.11, Python 3.12.13, and Docker Desktop Linux containers:
 - Local secrets, virtualenvs, node_modules and data are ignored by Git. The original
   blueprint was preserved and its copy has an identical SHA-256 hash.
 
-GitHub Actions is configured but has not run on a remote repository. The optional
+GitHub Actions is configured; local checks are the validation gate for this work.
+The repository has since been pushed to the private `nikace7/lattice` remote. The optional
 Ollama profile and any model download/inference remain untested and uninstalled.
 No RAG quality, performance or live generation result is claimed.
 
@@ -73,7 +74,37 @@ coverage exercises actual Django requests and grant revocation in a second accou
 axe and overflow checks run at 360/768/1440px. Compose rebuild and health checks
 also passed. Automated accessibility checks do not establish full WCAG compliance.
 
-Git work stays local: foundation commit, feature branch, reviewed implementation
-commit and a merge into `main`. No remote push or remote CI run is part of this
-phase. Recovery/invitation email, document upload, search and generation remain
-future work; the complete R1 gate is still open.
+The foundation and workspace feature were committed and merged into `main` at
+`36e6729`, then pushed at the user's request. Remote CI was not a gate.
+
+## Account recovery and invitations — 1 October 2026
+
+- Registration now requires a normalized, case-insensitively unique email address.
+  Existing accounts with blank email still sign in; recovery needs an operator to
+  associate a verified address with those legacy accounts.
+- Password recovery queues every syntactically valid email without a request-time
+  account lookup. Celery delivers through Mailpit with bounded retries and a
+  per-account cooldown. Reset links expire after 30 minutes, are stored only as
+  SHA-256 digests, and are consumed under a user lock. Changing the password
+  invalidates other reset links and all prior authenticated sessions.
+- Owners send, replace, list and revoke invitations. Links expire in two days;
+  acceptance requires a matching signed-in email and an inviter who is still an
+  active owner. Workspace locking prevents replay or implicit reactivation of a
+  deactivated membership. Access epochs and audit records update on acceptance.
+- Recovery/reset/invitation screens use the existing reading-room design. Secrets
+  travel in email URL fragments, are removed from the visible URL after capture,
+  and are submitted only in CSRF-protected POST bodies. API validation messages
+  now preserve non-field errors such as expired links.
+
+Next: R2 PDF/TXT upload, bounded extraction and source inspection. No document
+upload, retrieval, generation or production email delivery is claimed yet.
+
+Validation: `pnpm verify` passed lint, formatting, types, migration checks,
+24 PostgreSQL backend tests, the setup/unit tests and production build. All five
+Playwright tests passed, including invitation signup/replay, recovery, old-session
+invalidation and mobile recovery accessibility. Contract generation completed
+without warnings. Compose rebuilt and applied the migration successfully; a
+synthetic account completed recovery through the real API, Redis, Celery worker
+and Mailpit, then signed in with the changed password. Final review additionally
+verified that revoking an already consumed invitation returns a conflict rather
+than implying that the resulting membership was removed.

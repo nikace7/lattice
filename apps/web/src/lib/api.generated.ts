@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+    "/api/v1/auth/invitations/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_auth_invitations_accept_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/login": {
         parameters: {
             query?: never;
@@ -36,6 +52,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/recovery": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_auth_recovery_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/register": {
         parameters: {
             query?: never;
@@ -46,6 +78,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["api_v1_auth_register_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_auth_reset_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -95,6 +143,22 @@ export interface paths {
         put: operations["api_v1_collections_grants_update"];
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/invitations/{invitation_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["api_v1_invitations_destroy"];
         options?: never;
         head?: never;
         patch?: never;
@@ -158,6 +222,22 @@ export interface paths {
         get: operations["api_v1_workspaces_collections_list"];
         put?: never;
         post: operations["api_v1_workspaces_collections_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspace_id}/invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_workspaces_invitations_list"];
+        put?: never;
+        post: operations["api_v1_workspaces_invitations_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -239,6 +319,10 @@ export interface components {
             username: string;
             password: string;
         };
+        EmailInput: {
+            /** Format: email */
+            email: string;
+        };
         GrantData: {
             /** Format: uuid */
             membershipId: string;
@@ -254,6 +338,21 @@ export interface components {
         GrantsEdit: {
             expectedRevision: number;
             grants: components["schemas"]["GrantInput"][];
+        };
+        InvitationData: {
+            /** Format: uuid */
+            readonly id: string;
+            /** Format: email */
+            readonly email: string;
+            readonly role: string;
+            /** Format: date-time */
+            expiresAt: string;
+        };
+        InviteInput: {
+            /** Format: email */
+            email: string;
+            /** @default MEMBER */
+            role: components["schemas"]["RoleEnum"];
         };
         LiveStatus: {
             status: components["schemas"]["LiveStatusStatusEnum"];
@@ -275,6 +374,9 @@ export interface components {
             readonly active: boolean;
             readonly revision: number;
         };
+        MessageData: {
+            message: string;
+        };
         PaginatedCollectionDataList: {
             /**
              * Format: uri
@@ -287,6 +389,19 @@ export interface components {
              */
             previous?: string | null;
             results: components["schemas"]["CollectionData"][];
+        };
+        PaginatedInvitationDataList: {
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+             */
+            previous?: string | null;
+            results: components["schemas"]["InvitationData"][];
         };
         PaginatedMembershipDataList: {
             /**
@@ -340,6 +455,16 @@ export interface components {
          * @enum {string}
          */
         ReadyStatusStatusEnum: "ok" | "unavailable";
+        Registration: {
+            username: string;
+            password: string;
+            /** Format: email */
+            email: string;
+        };
+        ResetInput: {
+            token: string;
+            password: string;
+        };
         /**
          * @description * `OWNER` - Owner
          *     * `CURATOR` - Curator
@@ -351,6 +476,9 @@ export interface components {
         SessionData: {
             user: components["schemas"]["UserData"] | null;
             csrfToken: string;
+        };
+        TokenInput: {
+            token: string;
         };
         UserData: {
             /** Format: uuid */
@@ -377,6 +505,31 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    api_v1_auth_invitations_accept_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TokenInput"];
+                "application/x-www-form-urlencoded": components["schemas"]["TokenInput"];
+                "multipart/form-data": components["schemas"]["TokenInput"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkspaceData"];
+                };
+            };
+        };
+    };
     api_v1_auth_login_create: {
         parameters: {
             query?: never;
@@ -421,6 +574,31 @@ export interface operations {
             };
         };
     };
+    api_v1_auth_recovery_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmailInput"];
+                "application/x-www-form-urlencoded": components["schemas"]["EmailInput"];
+                "multipart/form-data": components["schemas"]["EmailInput"];
+            };
+        };
+        responses: {
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageData"];
+                };
+            };
+        };
+    };
     api_v1_auth_register_create: {
         parameters: {
             query?: never;
@@ -430,9 +608,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Credentials"];
-                "application/x-www-form-urlencoded": components["schemas"]["Credentials"];
-                "multipart/form-data": components["schemas"]["Credentials"];
+                "application/json": components["schemas"]["Registration"];
+                "application/x-www-form-urlencoded": components["schemas"]["Registration"];
+                "multipart/form-data": components["schemas"]["Registration"];
             };
         };
         responses: {
@@ -442,6 +620,31 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SessionData"];
+                };
+            };
+        };
+    };
+    api_v1_auth_reset_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResetInput"];
+                "application/x-www-form-urlencoded": components["schemas"]["ResetInput"];
+                "multipart/form-data": components["schemas"]["ResetInput"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageData"];
                 };
             };
         };
@@ -558,6 +761,26 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["CollectionData"];
                 };
+            };
+        };
+    };
+    api_v1_invitations_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invitation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -734,6 +957,59 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CollectionData"];
+                };
+            };
+        };
+    };
+    api_v1_workspaces_invitations_list: {
+        parameters: {
+            query?: {
+                /** @description The pagination cursor value. */
+                cursor?: string;
+                /** @description Number of results to return per page. */
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedInvitationDataList"];
+                };
+            };
+        };
+    };
+    api_v1_workspaces_invitations_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InviteInput"];
+                "application/x-www-form-urlencoded": components["schemas"]["InviteInput"];
+                "multipart/form-data": components["schemas"]["InviteInput"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvitationData"];
                 };
             };
         };

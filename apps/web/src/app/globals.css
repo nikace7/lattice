@@ -716,3 +716,8 @@ small {
     transition: none;
   }
 }
+/* Account invitations share the existing people-and-access form layout. */
+.invitation-list { list-style: none; padding: 0; margin: 16px 0 32px; }
+.invitation-list li { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; }
+.invitation-list span { min-width: 0; overflow-wrap: anywhere; }
+.invitation-list small { display: block; }

@@ -5,15 +5,33 @@ The first build pulls pinned runtime images; it does not download embedding or
 generation weights. Ports 4400, 5440, 6380, 8026 and 1026 must be free.
 
 Create an account at the root page and create a workspace to become its owner.
-People join when an owner adds their existing username under People & access.
-This phase has no invitation or password-recovery email. Collection data persists
-in PostgreSQL; uploads and answers are not available yet.
+Owners can add an existing username or send an email invitation under People &
+access. Open local email at `http://localhost:8026`; Mailpit captures messages and
+does not deliver to real inboxes. Invitees sign in or register with the invited
+address before accepting. Forgot password is available on the sign-in screen.
+Collection data persists in PostgreSQL; uploads and answers are not available yet.
+
+Recovery email requires the ingestion worker; invitations send during the owner
+request and report delivery failure. For host-only development run
+`uv run --project backend celery --workdir backend -A config worker --pool=solo --queues=ingestion --loglevel=info`
+alongside the API, or use the complete Compose stack. Set `APP_ORIGIN` to the URL
+recipients use; link origins never come from request headers. Recovery retries
+SMTP failures three times; inspect ingestion-worker logs for exhausted failures.
+Do not enable Celery eager mode outside tests. Browser tests use eager delivery
+against Mailpit and their isolated database.
+
+Legacy accounts created before email registration retain blank email and cannot
+self-recover until an operator verifies and sets their address. New accounts
+require email. Do not assign addresses without verifying mailbox ownership.
+Email-change and standalone verification screens are not implemented. Expired
+token metadata is retained; configure a retention policy before production use.
 
 Host development uses ports 3000 (web) and 4412 (API), with same-origin API
 forwarding through Next. Set `APP_ORIGIN=http://localhost:3000` for that profile.
 Use explicit `127.0.0.1` database/Redis addresses on Windows. Browser tests reserve
 4411/4412 and recreate `test_lattice_browser`; stop the host API before running
-them. They do not reset the development database or Redis broker.
+them. They do not reset the development database or Redis broker. Mailpit must
+also be running; browser tests only inspect their unique synthetic recipients.
 
 `docker compose ps` shows service status. `docker compose logs api` diagnoses API
 startup, and `docker compose logs migrate` diagnoses migrations. Health endpoints

@@ -76,7 +76,7 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
     "DEFAULT_PAGINATION_CLASS": "config.api.Pages",
     "EXCEPTION_HANDLER": "config.api.api_exception_handler",
-    "DEFAULT_THROTTLE_RATES": {"auth": "20/minute"},
+    "DEFAULT_THROTTLE_RATES": {"auth": "20/minute", "recovery": "5/hour", "invitations": "30/hour"},
     "NUM_PROXIES": 0,
 }
 SPECTACULAR_SETTINGS = {
@@ -98,6 +98,7 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_TASK_IGNORE_RESULT = True
 CELERY_TASK_ROUTES = {
+    "modules.identity.tasks.*": {"queue": "ingestion"},
     "modules.ingestion.*": {"queue": "ingestion"},
     "modules.conversations.*": {"queue": "answers"},
 }
@@ -115,4 +116,5 @@ MAX_DAILY_ANSWER_TOKENS = env.int("MAX_DAILY_ANSWER_TOKENS", default=100000)
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env("SMTP_HOST", default="localhost")
 EMAIL_PORT = env.int("SMTP_PORT", default=1026)
+EMAIL_TIMEOUT = 5
 DEFAULT_FROM_EMAIL = "Lattice <noreply@lattice.invalid>"

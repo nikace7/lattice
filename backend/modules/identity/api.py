@@ -28,6 +28,13 @@ class Credentials(serializers.Serializer):
     password = serializers.CharField(max_length=128, trim_whitespace=False, write_only=True)
 
 
+class Registration(Credentials):
+    email = serializers.EmailField(max_length=254)
+
+    def validate_email(self, value):
+        return value.lower()
+
+
 def session_data(request):
     return {
         "user": {"id": str(request.user.pk), "username": request.user.username}
@@ -62,12 +69,12 @@ class LoginView(APIView):
 
 
 class RegisterView(LoginView):
-    @extend_schema(request=Credentials, responses={201: SessionData})
+    @extend_schema(request=Registration, responses={201: SessionData})
     def post(self, request):
-        data = Credentials(data=request.data)
+        data = Registration(data=request.data)
         data.is_valid(raise_exception=True)
         values = data.validated_data
-        user = get_user_model()(username=values["username"])
+        user = get_user_model()(username=values["username"], email=values.get("email", ""))
         try:
             validate_password(values["password"], user)
         except DjangoValidationError as error:
@@ -76,7 +83,9 @@ class RegisterView(LoginView):
             with transaction.atomic():
                 user = get_user_model().objects.create_user(**values)
         except IntegrityError as error:
-            raise ValidationError({"username": "Choose another username."}) from error
+            raise ValidationError(
+                "Unable to register with these details. Sign in or use account recovery."
+            ) from error
         login(request, user)
         return Response(session_data(request), status=201)
 

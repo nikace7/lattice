@@ -103,8 +103,8 @@ docs/           Blueprint, progress, design and operating notes
   login/registration, and authentication-required DRF defaults. Collection queries
   enforce membership and grants before pagination; workspace roles cap permissions.
 - Access mutations are atomic, audited and revision-checked. Concurrent owner
-  changes cannot remove the last active owner. R1 remains partial until account
-  recovery and invitations are implemented.
+  changes cannot remove the last active owner. R1 includes email invitations and
+  password recovery through local Mailpit, with expiring, one-use links.
 - `RAG_MODE=RETRIEVAL_ONLY` is the initial configuration. This does not claim retrieval
   exists. Other mode names are validated, but provider behavior is not implemented.
 - The optional `local-models` Compose profile starts Ollama only. It does not pull a
