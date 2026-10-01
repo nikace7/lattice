@@ -1,9 +1,17 @@
 # Test locations
 
 - `scripts/project.test.mjs`: setup credential consistency and non-overwrite behavior.
-- `backend/tests`: real PostgreSQL/pgvector migration, UUID/session baseline and health errors.
-- `apps/web/src/**/*.test.tsx`: starter content contract with Vitest.
-- `apps/web/tests`: production-page Playwright/axe smoke at 360, 768 and 1440 pixels.
+- `backend/tests`: real PostgreSQL/pgvector, health, session rotation, CSRF/origin,
+  tenant isolation, role ceilings, revocation, revisions, concurrent owner changes
+  and scoped pagination. A per-test memory cache isolates throttling from Redis's
+  Celery broker; health tests still exercise real Redis.
+- `apps/web/src/**/*.test.tsx`: failed login keeps input and sends CSRF with Vitest.
+- `apps/web/tests`: production-page Playwright/axe at 360, 768 and 1440 pixels;
+  real registration, workspace/collection creation, grant/revoke and logout.
 
 `pnpm verify` runs host checks and builds; `pnpm test:e2e` runs the browser suite.
-Isolation, ingestion, citation and lifecycle gates remain in `docs/BLUEPRINT.md`.
+Browser tests recreate the reserved `test_lattice_browser` database and use an
+isolated Redis cache key prefix. The test database is retained on server shutdown
+and reset on the next run. Both ports 4411 and 4412 must be free. Screenshots and
+failure traces are gitignored under `apps/web/test-results`.
+Document ingestion, citation and lifecycle gates remain in `docs/BLUEPRINT.md`.

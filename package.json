@@ -11,7 +11,7 @@
     "setup": "node scripts/project.mjs setup",
     "dev": "node scripts/project.mjs dev",
     "dev:web": "pnpm --filter @lattice/web dev",
-    "dev:api": "uv run --project backend --env-file .env uvicorn config.asgi:application --app-dir backend --host 127.0.0.1 --port 8000 --reload",
+    "dev:api": "uv run --project backend --env-file .env uvicorn config.asgi:application --app-dir backend --host 127.0.0.1 --port 4412 --reload",
     "infra:up": "docker compose up -d --wait db-pgvector redis mailpit",
     "infra:down": "docker compose down",
     "migrate": "uv run --project backend python backend/manage.py migrate",

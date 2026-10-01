@@ -7,14 +7,19 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Lattice — Cited knowledge workspace",
-  description: "A workspace for knowledge and the sources behind it. Project foundation.",
+  description:
+    "A shared library for your team's knowledge and the sources behind it.",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body>
-        <a className="skip-link" href="#main">Skip to content</a>
+        <a className="skip-link" href="#main">
+          Skip to content
+        </a>
         {children}
       </body>
     </html>

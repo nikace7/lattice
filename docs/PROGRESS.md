@@ -17,8 +17,8 @@ Implemented:
   beat, a migration job, and an optional Ollama service.
 - Foundation tests, formatting/lint/type/build commands and GitHub Actions verification.
 
-R1 is **in progress**, not complete. Workspace/membership/collection models,
-login/recovery/invitations and the shared authorization scope resolver remain next.
+R1 is **in progress**, not complete. Accounts, workspace membership, collections
+and authorization are now implemented; account recovery and invitations remain.
 R2–R8 have not started. Celery queues and beat currently have no product tasks.
 
 ## Verification
@@ -48,4 +48,32 @@ uv 0.11.11, Python 3.12.13, and Docker Desktop Linux containers:
 
 GitHub Actions is configured but has not run on a remote repository. The optional
 Ollama profile and any model download/inference remain untested and uninstalled.
-No RAG quality, performance, tenant isolation, or live generation result is claimed.
+No RAG quality, performance or live generation result is claimed.
+
+## Workspace foundation — 30 September 2026
+
+- Registration, login/logout, session bootstrap and session rotation, anonymous
+  CSRF protection, password validation and Redis-backed authentication throttling.
+- UUID workspaces, memberships, collections, grants and mutation audit metadata.
+  Owner/curator/member/viewer role ceilings, active membership checks, restricted
+  collection scope before pagination, atomic revocation and access epoch updates.
+- Revision conflicts return 409. Workspace row locks serialize access changes;
+  concurrent attempts to remove the final owners leave one owner active.
+- Responsive library UI with account entry, workspace chooser, collection creation
+  and details, owner membership management and collection grants. Empty/loading/
+  error states use real API data; there are no simulated documents or answers.
+- Typed OpenAPI contracts cover implemented endpoints. Host Next.js forwards API
+  calls to port 4412. Explicit loopback database/Redis URLs avoid Windows IPv6
+  fallback delays observed during browser testing.
+
+Validation: `pnpm verify`, contract generation and the four Playwright tests cover
+the foundation plus this slice. Backend coverage now has 14 tests, including tenant
+isolation, real CSRF/session behavior and simultaneous owner demotions. Browser
+coverage exercises actual Django requests and grant revocation in a second account;
+axe and overflow checks run at 360/768/1440px. Compose rebuild and health checks
+also passed. Automated accessibility checks do not establish full WCAG compliance.
+
+Git work stays local: foundation commit, feature branch, reviewed implementation
+commit and a merge into `main`. No remote push or remote CI run is part of this
+phase. Recovery/invitation email, document upload, search and generation remain
+future work; the complete R1 gate is still open.

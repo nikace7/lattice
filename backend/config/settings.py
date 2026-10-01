@@ -27,6 +27,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "modules.identity",
+    "modules.workspaces",
+    "modules.collections.apps.CollectionsConfig",
+    "modules.audit",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -35,6 +38,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "config.api.PrivateApiMiddleware",
 ]
 ROOT_URLCONF = "config.urls"
 ASGI_APPLICATION = "config.asgi.application"
@@ -51,6 +55,8 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7
+CSRF_FAILURE_VIEW = "config.api.csrf_failure"
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SECURE = origin.scheme == "https" or not DEBUG
@@ -64,18 +70,29 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.SessionAuthentication"],
+    "DEFAULT_AUTHENTICATION_CLASSES": ["config.api.BrowserSessionAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+    "DEFAULT_PAGINATION_CLASS": "config.api.Pages",
+    "EXCEPTION_HANDLER": "config.api.api_exception_handler",
+    "DEFAULT_THROTTLE_RATES": {"auth": "20/minute"},
+    "NUM_PROXIES": 0,
 }
 SPECTACULAR_SETTINGS = {
     "TITLE": "Lattice API",
-    "DESCRIPTION": "Foundation health endpoints. Product endpoints are not implemented yet.",
+    "DESCRIPTION": "Lattice sessions, workspace membership and collection access.",
     "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
 REDIS_URL = env("REDIS_URL")
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": REDIS_URL,
+        "KEY_PREFIX": "lattice",
+    }
+}
 CELERY_BROKER_URL = REDIS_URL
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
