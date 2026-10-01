@@ -12,6 +12,7 @@ test("create an account and workspace, grant and revoke collection access, then 
   await page.goto("/");
   await page.getByRole("button", { name: "Create an account" }).click();
   await page.getByLabel("Username", { exact: true }).fill(owner);
+  await page.getByLabel("Email address", { exact: true }).fill(`${owner}@example.test`);
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page
     .getByRole("button", { name: "Create account", exact: true })
@@ -49,7 +50,7 @@ test("create an account and workspace, grant and revoke collection access, then 
     const registration = await readerContext.request.post(
       "/api/v1/auth/register",
       {
-        data: { username: reader, password },
+        data: { username: reader, email: `${reader}@example.test`, password },
         headers: { "X-CSRFToken": csrf },
       },
     );

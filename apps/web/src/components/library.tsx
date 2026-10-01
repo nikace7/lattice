@@ -33,7 +33,7 @@ function Brand() {
   );
 }
 
-function Authentication({ onSuccess }: { onSuccess: () => void }) {
+export function Authentication({ onSuccess, invitation = false }: { onSuccess: () => void; invitation?: boolean }) {
   const [register, setRegister] = useState(false);
   const action = useAction();
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -43,6 +43,7 @@ function Authentication({ onSuccess }: { onSuccess: () => void }) {
       await api<Session>(`/auth/${register ? "register" : "login"}`, "POST", {
         username: values.get("username"),
         password: values.get("password"),
+        ...(register ? { email: values.get("email") } : {}),
       });
       onSuccess();
     });
@@ -71,11 +72,15 @@ function Authentication({ onSuccess }: { onSuccess: () => void }) {
           <p className="eyebrow">MAKE ROOM FOR WHAT YOU KNOW</p>
           <h1>{register ? "Create your account" : "Welcome back"}</h1>
           <p className="muted">
-            {register
+            {invitation ? "Use the email address that received your invitation. You can accept it after signing in." : register
               ? "Start a library of your own, or join your team."
               : "Sign in to return to your workspace."}
           </p>
           <form onSubmit={submit}>
+            {register && <>
+              <label htmlFor="email">Email address</label>
+              <input id="email" name="email" type="email" autoComplete="email" required maxLength={254} disabled={action.busy} />
+            </>}
             <label htmlFor="username">Username</label>
             <input
               id="username"
@@ -113,6 +118,7 @@ function Authentication({ onSuccess }: { onSuccess: () => void }) {
                   : "Sign in"}
             </button>
           </form>
+          {!register && <p><Link href="/account/recovery">Forgot your password?</Link></p>}
           <p className="switch-auth">
             {register ? "Already have an account?" : "New to Lattice?"}{" "}
             <button

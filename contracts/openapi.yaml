@@ -4,6 +4,32 @@ info:
   version: 0.1.0
   description: Lattice sessions, workspace membership and collection access.
 paths:
+  /api/v1/auth/invitations/accept:
+    post:
+      operationId: api_v1_auth_invitations_accept_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenInput'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenInput'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceData'
+          description: ''
   /api/v1/auth/login:
     post:
       operationId: api_v1_auth_login_create
@@ -45,6 +71,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/SessionData'
           description: ''
+  /api/v1/auth/recovery:
+    post:
+      operationId: api_v1_auth_recovery_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailInput'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EmailInput'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EmailInput'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageData'
+          description: ''
   /api/v1/auth/register:
     post:
       operationId: api_v1_auth_register_create
@@ -54,13 +107,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Credentials'
+              $ref: '#/components/schemas/Registration'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Credentials'
+              $ref: '#/components/schemas/Registration'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Credentials'
+              $ref: '#/components/schemas/Registration'
         required: true
       security:
       - cookieAuth: []
@@ -71,6 +124,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SessionData'
+          description: ''
+  /api/v1/auth/reset:
+    post:
+      operationId: api_v1_auth_reset_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetInput'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetInput'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetInput'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageData'
           description: ''
   /api/v1/auth/session:
     get:
@@ -194,6 +274,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/CollectionData'
           description: ''
+  /api/v1/invitations/{invitation_id}:
+    delete:
+      operationId: api_v1_invitations_destroy
+      parameters:
+      - in: path
+        name: invitation_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/memberships/{membership_id}:
     patch:
       operationId: api_v1_memberships_partial_update
@@ -395,6 +492,71 @@ paths:
               schema:
                 $ref: '#/components/schemas/CollectionData'
           description: ''
+  /api/v1/workspaces/{workspace_id}/invitations:
+    get:
+      operationId: api_v1_workspaces_invitations_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - name: pageSize
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInvitationDataList'
+          description: ''
+    post:
+      operationId: api_v1_workspaces_invitations_create
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteInput'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InviteInput'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InviteInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationData'
+          description: ''
   /api/v1/workspaces/{workspace_id}/memberships:
     get:
       operationId: api_v1_workspaces_memberships_list
@@ -552,6 +714,15 @@ components:
       required:
       - password
       - username
+    EmailInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+      required:
+      - email
     GrantData:
       type: object
       properties:
@@ -593,6 +764,41 @@ components:
       required:
       - expectedRevision
       - grants
+    InvitationData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        role:
+          type: string
+          readOnly: true
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+      - email
+      - expiresAt
+      - id
+      - role
+    InviteInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          default: MEMBER
+      required:
+      - email
     LiveStatus:
       type: object
       properties:
@@ -642,6 +848,13 @@ components:
       - revision
       - role
       - username
+    MessageData:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+      - message
     PaginatedCollectionDataList:
       type: object
       required:
@@ -661,6 +874,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CollectionData'
+    PaginatedInvitationDataList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvitationData'
     PaginatedMembershipDataList:
       type: object
       required:
@@ -749,6 +981,39 @@ components:
       description: |-
         * `ok` - ok
         * `unavailable` - unavailable
+    Registration:
+      type: object
+      properties:
+        username:
+          type: string
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        email:
+          type: string
+          format: email
+          maxLength: 254
+      required:
+      - email
+      - password
+      - username
+    ResetInput:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+      required:
+      - password
+      - token
     RoleEnum:
       enum:
       - OWNER
@@ -773,6 +1038,15 @@ components:
       required:
       - csrfToken
       - user
+    TokenInput:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+          maxLength: 128
+      required:
+      - token
     UserData:
       type: object
       properties:

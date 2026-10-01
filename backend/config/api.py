@@ -49,6 +49,8 @@ def api_exception_handler(exc, context):
                 "code": getattr(exc, "default_code", "request_error"),
                 "message": str(detail.get("detail", "Check the submitted fields."))
                 if isinstance(detail, dict)
+                else " ".join(str(message) for message in detail)
+                if isinstance(detail, list)
                 else "Check the submitted fields.",
                 "requestId": str(uuid.uuid4()),
             }
