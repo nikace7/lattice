@@ -2,14 +2,469 @@ openapi: 3.0.3
 info:
   title: Lattice API
   version: 0.1.0
-  description: Foundation health endpoints. Product endpoints are not implemented
-    yet.
+  description: Lattice sessions, workspace membership and collection access.
 paths:
+  /api/v1/auth/login:
+    post:
+      operationId: api_v1_auth_login_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionData'
+          description: ''
+  /api/v1/auth/logout:
+    post:
+      operationId: api_v1_auth_logout_create
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionData'
+          description: ''
+  /api/v1/auth/register:
+    post:
+      operationId: api_v1_auth_register_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionData'
+          description: ''
+  /api/v1/auth/session:
+    get:
+      operationId: api_v1_auth_session_retrieve
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionData'
+          description: ''
+  /api/v1/collections/{collection_id}:
+    get:
+      operationId: api_v1_collections_retrieve
+      parameters:
+      - in: path
+        name: collection_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionData'
+          description: ''
+    patch:
+      operationId: api_v1_collections_partial_update
+      parameters:
+      - in: path
+        name: collection_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCollectionEdit'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCollectionEdit'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCollectionEdit'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionData'
+          description: ''
+  /api/v1/collections/{collection_id}/grants:
+    get:
+      operationId: api_v1_collections_grants_list
+      parameters:
+      - in: path
+        name: collection_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GrantData'
+          description: ''
+    put:
+      operationId: api_v1_collections_grants_update
+      parameters:
+      - in: path
+        name: collection_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantsEdit'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GrantsEdit'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GrantsEdit'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionData'
+          description: ''
+  /api/v1/memberships/{membership_id}:
+    patch:
+      operationId: api_v1_memberships_partial_update
+      parameters:
+      - in: path
+        name: membership_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMembershipEdit'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMembershipEdit'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMembershipEdit'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipData'
+          description: ''
+  /api/v1/workspaces:
+    get:
+      operationId: api_v1_workspaces_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - name: pageSize
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWorkspaceDataList'
+          description: ''
+    post:
+      operationId: api_v1_workspaces_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/WorkspaceCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/WorkspaceCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceData'
+          description: ''
+  /api/v1/workspaces/{workspace_id}:
+    get:
+      operationId: api_v1_workspaces_retrieve
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceData'
+          description: ''
+    patch:
+      operationId: api_v1_workspaces_partial_update
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedWorkspaceEdit'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedWorkspaceEdit'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedWorkspaceEdit'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceData'
+          description: ''
+  /api/v1/workspaces/{workspace_id}/collections:
+    get:
+      operationId: api_v1_workspaces_collections_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - name: pageSize
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCollectionDataList'
+          description: ''
+    post:
+      operationId: api_v1_workspaces_collections_create
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CollectionCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CollectionCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionData'
+          description: ''
+  /api/v1/workspaces/{workspace_id}/memberships:
+    get:
+      operationId: api_v1_workspaces_memberships_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - name: pageSize
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMembershipDataList'
+          description: ''
+    post:
+      operationId: api_v1_workspaces_memberships_create
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MembershipCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MembershipCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipData'
+          description: ''
   /health/live:
     get:
-      operationId: live_retrieve
+      operationId: health_live_retrieve
       tags:
-      - live
+      - health
       responses:
         '200':
           content:
@@ -19,9 +474,9 @@ paths:
           description: ''
   /health/ready:
     get:
-      operationId: ready_retrieve
+      operationId: health_ready_retrieve
       tags:
-      - ready
+      - health
       responses:
         '200':
           content:
@@ -37,6 +492,107 @@ paths:
           description: ''
 components:
   schemas:
+    AccessEnum:
+      enum:
+      - WORKSPACE
+      - RESTRICTED
+      type: string
+      description: |-
+        * `WORKSPACE` - Everyone in this workspace
+        * `RESTRICTED` - Selected people
+    CollectionCreate:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 160
+        access:
+          allOf:
+          - $ref: '#/components/schemas/AccessEnum'
+          default: WORKSPACE
+      required:
+      - title
+    CollectionData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        access:
+          allOf:
+          - $ref: '#/components/schemas/AccessEnum'
+          readOnly: true
+        revision:
+          type: integer
+          readOnly: true
+        canWrite:
+          type: boolean
+          readOnly: true
+      required:
+      - access
+      - canWrite
+      - id
+      - revision
+      - title
+    Credentials:
+      type: object
+      properties:
+        username:
+          type: string
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+      required:
+      - password
+      - username
+    GrantData:
+      type: object
+      properties:
+        membershipId:
+          type: string
+          format: uuid
+        canRead:
+          type: boolean
+        canWrite:
+          type: boolean
+      required:
+      - canRead
+      - canWrite
+      - membershipId
+    GrantInput:
+      type: object
+      properties:
+        membershipId:
+          type: string
+          format: uuid
+        canRead:
+          type: boolean
+        canWrite:
+          type: boolean
+      required:
+      - canRead
+      - canWrite
+      - membershipId
+    GrantsEdit:
+      type: object
+      properties:
+        expectedRevision:
+          type: integer
+          minimum: 1
+        grants:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantInput'
+      required:
+      - expectedRevision
+      - grants
     LiveStatus:
       type: object
       properties:
@@ -49,6 +605,130 @@ components:
       - ok
       type: string
       description: '* `ok` - ok'
+    MembershipCreate:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 150
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+      required:
+      - role
+      - username
+    MembershipData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          readOnly: true
+        active:
+          type: boolean
+          readOnly: true
+        revision:
+          type: integer
+          readOnly: true
+      required:
+      - active
+      - id
+      - revision
+      - role
+      - username
+    PaginatedCollectionDataList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionData'
+    PaginatedMembershipDataList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MembershipData'
+    PaginatedWorkspaceDataList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceData'
+    PatchedCollectionEdit:
+      type: object
+      properties:
+        expectedRevision:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          maxLength: 160
+        access:
+          $ref: '#/components/schemas/AccessEnum'
+    PatchedMembershipEdit:
+      type: object
+      properties:
+        expectedRevision:
+          type: integer
+          minimum: 1
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        active:
+          type: boolean
+    PatchedWorkspaceEdit:
+      type: object
+      properties:
+        expectedRevision:
+          type: integer
+          minimum: 1
+        name:
+          type: string
+          maxLength: 120
     ReadyStatus:
       type: object
       properties:
@@ -69,3 +749,76 @@ components:
       description: |-
         * `ok` - ok
         * `unavailable` - unavailable
+    RoleEnum:
+      enum:
+      - OWNER
+      - CURATOR
+      - MEMBER
+      - VIEWER
+      type: string
+      description: |-
+        * `OWNER` - Owner
+        * `CURATOR` - Curator
+        * `MEMBER` - Member
+        * `VIEWER` - Viewer
+    SessionData:
+      type: object
+      properties:
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserData'
+          nullable: true
+        csrfToken:
+          type: string
+      required:
+      - csrfToken
+      - user
+    UserData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+      required:
+      - id
+      - username
+    WorkspaceCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 120
+      required:
+      - name
+    WorkspaceData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        revision:
+          type: integer
+          readOnly: true
+        accessEpoch:
+          type: integer
+          readOnly: true
+        role:
+          type: string
+          readOnly: true
+      required:
+      - accessEpoch
+      - id
+      - name
+      - revision
+      - role
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

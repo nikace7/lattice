@@ -4,6 +4,17 @@ Use `pnpm run setup` followed by `pnpm dev`. Docker Desktop must use Linux conta
 The first build pulls pinned runtime images; it does not download embedding or
 generation weights. Ports 4400, 5440, 6380, 8026 and 1026 must be free.
 
+Create an account at the root page and create a workspace to become its owner.
+People join when an owner adds their existing username under People & access.
+This phase has no invitation or password-recovery email. Collection data persists
+in PostgreSQL; uploads and answers are not available yet.
+
+Host development uses ports 3000 (web) and 4412 (API), with same-origin API
+forwarding through Next. Set `APP_ORIGIN=http://localhost:3000` for that profile.
+Use explicit `127.0.0.1` database/Redis addresses on Windows. Browser tests reserve
+4411/4412 and recreate `test_lattice_browser`; stop the host API before running
+them. They do not reset the development database or Redis broker.
+
 `docker compose ps` shows service status. `docker compose logs api` diagnoses API
 startup, and `docker compose logs migrate` diagnoses migrations. Health endpoints
 are `/health/live` and `/health/ready` through port 4400. Readiness requires the

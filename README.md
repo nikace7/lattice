@@ -1,8 +1,8 @@
 # Lattice
 
 A cited knowledge workspace built with Next.js, Django, PostgreSQL/pgvector,
-and Celery. This repository currently contains the **project foundation**.
-Uploads, tenant authorization, search, and answer generation are not implemented yet.
+and Celery. Accounts, workspaces, collection organization and access management
+are implemented. Uploads, search, and answer generation are not implemented yet.
 The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
 observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).
 
@@ -28,6 +28,11 @@ Restart with `pnpm dev` after dependency, migration, or infrastructure changes.
 Stop with Ctrl+C; `pnpm infra:down` removes containers while retaining data volumes.
 Mailpit captures local mail at http://localhost:8026; nothing is sent externally.
 
+Create an account, then a workspace. Its creator becomes the owner. Owners can add
+existing accounts by username under **People & access**, choose their workspace
+role, and grant access to restricted collections. Email invitations and password
+recovery are still pending; this build does not send account mail.
+
 Use `pnpm run setup` exactly: bare `pnpm setup` invokes pnpm's own global setup
 command instead of this repository's script.
 
@@ -40,10 +45,10 @@ command instead of this repository's script.
 | `pnpm infra:up` | Start PostgreSQL, Redis and Mailpit for host development/tests |
 | `pnpm migrate` | Apply backend migrations using host `.env` |
 | `pnpm dev:web` | Host Next.js on port 3000 |
-| `pnpm dev:api` | Host Django ASGI on port 8000 with reload |
+| `pnpm dev:api` | Host Django ASGI on port 4412 with reload |
 | `pnpm verify` | Lint, formatting, types, Django checks, migration drift, tests, production web build |
 | `pnpm build` | Production frontend build |
-| `pnpm test:e2e` | Playwright/axe against the production frontend build |
+| `pnpm test:e2e` | Playwright/axe against production web and a disposable API database |
 | `pnpm contracts:generate` | Validate OpenAPI and regenerate TypeScript API types |
 | `pnpm infra:down` | Stop this Compose project; keep persistent volumes |
 
@@ -58,22 +63,28 @@ pnpm test:e2e
 ```
 
 On Linux CI, use `playwright install --with-deps chromium` to install system libraries.
-The E2E runner starts its own production web server on port 4411, so run `pnpm build`
-first if you did not run `pnpm verify`. It currently tests the foundation screen only.
+The E2E runner starts its own production web server on port 4411 and API on 4412,
+so run `pnpm build` first if you did not run `pnpm verify`. It recreates only the
+reserved `test_lattice_browser` database on the configured PostgreSQL server;
+never store real data there. It tests registration, workspaces, grant/revoke,
+logout, responsive layouts and automated accessibility rules.
 Backend commands also work from `backend`, e.g. `uv run python manage.py migrate`.
 
 Host tools use PostgreSQL port **5440**, Redis **6380**, and SMTP **1026**, all bound
 to loopback. Compose overrides these with internal service addresses. Host storage
 under `.data` is separate from Compose named storage volumes. Use the full Compose
-origin for future session/CSRF flows; host ports 3000/8000 are individual development
-servers, not a configured cross-origin authentication flow.
+origin for the simplest setup. For host development, set `APP_ORIGIN` to
+`http://localhost:3000` before starting `pnpm dev:api` and `pnpm dev:web` in separate
+terminals. Next forwards `/api` to loopback port 4412, keeping cookies and requests
+on the same browser origin. Restore the origin to port 4400 for Compose.
+Use `127.0.0.1` in host database/Redis URLs to avoid IPv6 fallback delays on Windows.
 
 ## Layout
 
 ```text
 apps/web/        Next.js App Router, design tokens, Vitest and Playwright
 backend/config/ Django settings, ASGI, Celery, health endpoints
-backend/modules/ UUID identity model; future domain modules live here
+backend/modules/ Identity, workspaces, collections, authorization and audit
 backend/pipeline/ Future bounded ingestion/retrieval services
 contracts/      Generated OpenAPI
 fixtures/       Corpus and evaluation conventions (no measured corpus yet)
@@ -88,9 +99,12 @@ docs/           Blueprint, progress, design and operating notes
 - `GET /health/live` checks the API process. `GET /health/ready` checks PostgreSQL's
   vector extension, Redis, and private storage writability. Readiness is infrastructure
   readiness, not proof that product features or a model are available.
-- Django uses a UUID user model from the first migration, database sessions, CSRF
-  middleware, and authentication-required DRF defaults. There are no login or tenant
-  endpoints yet; R1's authorization acceptance gate remains open.
+- Django uses UUID identities, database sessions, CSRF checks including anonymous
+  login/registration, and authentication-required DRF defaults. Collection queries
+  enforce membership and grants before pagination; workspace roles cap permissions.
+- Access mutations are atomic, audited and revision-checked. Concurrent owner
+  changes cannot remove the last active owner. R1 remains partial until account
+  recovery and invitations are implemented.
 - `RAG_MODE=RETRIEVAL_ONLY` is the initial configuration. This does not claim retrieval
   exists. Other mode names are validated, but provider behavior is not implemented.
 - The optional `local-models` Compose profile starts Ollama only. It does not pull a
