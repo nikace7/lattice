@@ -721,3 +721,33 @@ small {
 .invitation-list li { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; }
 .invitation-list span { min-width: 0; overflow-wrap: anywhere; }
 .invitation-list small { display: block; }
+.document-main { grid-column: 2 / -1; min-width: 0; }
+.upload-form { margin: 24px 0; padding: 24px; background: white; border: 1px solid var(--color-border); border-radius: 8px; display: grid; gap: 12px; max-width: 680px; }
+.upload-form input, .upload-form select { width: 100%; min-width: 0; }
+.document-list { margin-top: 24px; }
+.document-list .workspace-row { grid-template-columns: auto minmax(0, 1fr) auto; }
+.document-list strong, .source-title { overflow-wrap: anywhere; }
+.source-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 20px 0; }
+.source-actions select { width: auto; }
+.source-warnings { padding: 16px; background: var(--color-evidence); color: var(--color-evidence-ink); border-radius: 8px; margin: 16px 0; }
+.source-reader { margin-top: 24px; }
+.pdf-reader { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+.source-reader section { min-width: 0; }
+.source-passages { display: grid; gap: 8px; }
+.source-passage { display: block; width: 100%; text-align: left; padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.source-passage span { display: block; font-family: var(--font-reading); font-size: 18px; line-height: 1.7; }
+.source-passage small { display: block; color: var(--color-muted); }
+.source-passage[aria-pressed="true"] { background: var(--color-evidence); outline: 2px solid var(--color-primary); }
+.pdf-page { position: relative; background: white; border: 1px solid var(--color-border); }
+.pdf-page img { display: block; width: 100%; height: auto; }
+.source-highlight { position: absolute; background: #f4e3a460; outline: 2px solid var(--color-primary); pointer-events: none; }
+.source-tab { display: none; }
+@media (max-width: 1099px) {
+  .pdf-reader { display: block; }
+  .source-tab { display: inline-block; }
+  .source-reader .mobile-hidden { display: none; }
+}
+@media (max-width: 767px) {
+  .document-main { grid-column: 1 / -1; }
+  .upload-form { padding: 16px; }
+}

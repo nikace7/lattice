@@ -18,5 +18,8 @@ Small screens use a collapsible navigation rail and stack collection details.
 Forms have visible labels, native controls, error announcements and preserved input
 on failure. Loading and empty states distinguish missing data from errors. Controls
 have visible keyboard focus and 44px targets. Playwright checks overflow and axe
-rules at 360/768/1440px. The future source reader, citation focus return and
-IME-aware composer remain outside this phase.
+rules at 360/768/1440px. The R2 source reader pairs extracted passages with physical
+PDF page images and evidence-colored location highlights. Below 1100px, native
+buttons switch between text and source; returning restores the selected passage's
+focus. TXT passages preserve Unicode and original line numbers. Citation navigation
+from answers and an IME-aware composer remain future work.

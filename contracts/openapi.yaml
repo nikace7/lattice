@@ -13,13 +13,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenInput'
+              $ref: '#/components/schemas/TokenInputRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenInput'
+              $ref: '#/components/schemas/TokenInputRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenInput'
+              $ref: '#/components/schemas/TokenInputRequest'
         required: true
       security:
       - cookieAuth: []
@@ -39,13 +39,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Credentials'
+              $ref: '#/components/schemas/CredentialsRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Credentials'
+              $ref: '#/components/schemas/CredentialsRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Credentials'
+              $ref: '#/components/schemas/CredentialsRequest'
         required: true
       security:
       - cookieAuth: []
@@ -80,13 +80,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EmailInput'
+              $ref: '#/components/schemas/EmailInputRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/EmailInput'
+              $ref: '#/components/schemas/EmailInputRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/EmailInput'
+              $ref: '#/components/schemas/EmailInputRequest'
         required: true
       security:
       - cookieAuth: []
@@ -107,13 +107,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Registration'
+              $ref: '#/components/schemas/RegistrationRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Registration'
+              $ref: '#/components/schemas/RegistrationRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Registration'
+              $ref: '#/components/schemas/RegistrationRequest'
         required: true
       security:
       - cookieAuth: []
@@ -134,13 +134,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ResetInput'
+              $ref: '#/components/schemas/ResetInputRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/ResetInput'
+              $ref: '#/components/schemas/ResetInputRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ResetInput'
+              $ref: '#/components/schemas/ResetInputRequest'
         required: true
       security:
       - cookieAuth: []
@@ -203,13 +203,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedCollectionEdit'
+              $ref: '#/components/schemas/PatchedCollectionEditRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedCollectionEdit'
+              $ref: '#/components/schemas/PatchedCollectionEditRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedCollectionEdit'
+              $ref: '#/components/schemas/PatchedCollectionEditRequest'
       security:
       - cookieAuth: []
       responses:
@@ -218,6 +218,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CollectionData'
+          description: ''
+  /api/v1/collections/{collection_id}/documents:
+    post:
+      operationId: api_v1_collections_documents_create
+      parameters:
+      - in: path
+        name: collection_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentData'
+          description: ''
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentData'
           description: ''
   /api/v1/collections/{collection_id}/grants:
     get:
@@ -257,13 +290,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GrantsEdit'
+              $ref: '#/components/schemas/GrantsEditRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/GrantsEdit'
+              $ref: '#/components/schemas/GrantsEditRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/GrantsEdit'
+              $ref: '#/components/schemas/GrantsEditRequest'
         required: true
       security:
       - cookieAuth: []
@@ -273,6 +306,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CollectionData'
+          description: ''
+  /api/v1/documents/{document_id}:
+    get:
+      operationId: api_v1_documents_retrieve
+      parameters:
+      - in: path
+        name: document_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentData'
+          description: ''
+  /api/v1/documents/{document_id}/retry:
+    post:
+      operationId: api_v1_documents_retry_create
+      parameters:
+      - in: path
+        name: document_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevisionInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RevisionInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RevisionInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentData'
           description: ''
   /api/v1/invitations/{invitation_id}:
     delete:
@@ -307,13 +394,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedMembershipEdit'
+              $ref: '#/components/schemas/PatchedMembershipEditRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedMembershipEdit'
+              $ref: '#/components/schemas/PatchedMembershipEditRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedMembershipEdit'
+              $ref: '#/components/schemas/PatchedMembershipEditRequest'
       security:
       - cookieAuth: []
       responses:
@@ -322,6 +409,88 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MembershipData'
+          description: ''
+  /api/v1/sources/{source_id}/blocks:
+    get:
+      operationId: api_v1_sources_blocks_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - name: pageSize
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: path
+        name: source_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBlockDataList'
+          description: ''
+  /api/v1/sources/{source_id}/original:
+    get:
+      operationId: api_v1_sources_original_retrieve
+      parameters:
+      - in: path
+        name: source_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: ''
+  /api/v1/sources/{source_id}/pages/{page}:
+    get:
+      operationId: api_v1_sources_pages_retrieve
+      parameters:
+      - in: path
+        name: page
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: source_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
           description: ''
   /api/v1/workspaces:
     get:
@@ -358,13 +527,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WorkspaceCreate'
+              $ref: '#/components/schemas/WorkspaceCreateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/WorkspaceCreate'
+              $ref: '#/components/schemas/WorkspaceCreateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/WorkspaceCreate'
+              $ref: '#/components/schemas/WorkspaceCreateRequest'
         required: true
       security:
       - cookieAuth: []
@@ -411,13 +580,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedWorkspaceEdit'
+              $ref: '#/components/schemas/PatchedWorkspaceEditRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedWorkspaceEdit'
+              $ref: '#/components/schemas/PatchedWorkspaceEditRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedWorkspaceEdit'
+              $ref: '#/components/schemas/PatchedWorkspaceEditRequest'
       security:
       - cookieAuth: []
       responses:
@@ -475,13 +644,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CollectionCreate'
+              $ref: '#/components/schemas/CollectionCreateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/CollectionCreate'
+              $ref: '#/components/schemas/CollectionCreateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CollectionCreate'
+              $ref: '#/components/schemas/CollectionCreateRequest'
         required: true
       security:
       - cookieAuth: []
@@ -491,6 +660,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CollectionData'
+          description: ''
+  /api/v1/workspaces/{workspace_id}/documents:
+    get:
+      operationId: api_v1_workspaces_documents_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - name: pageSize
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDocumentDataList'
           description: ''
   /api/v1/workspaces/{workspace_id}/invitations:
     get:
@@ -540,13 +742,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InviteInput'
+              $ref: '#/components/schemas/InviteInputRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/InviteInput'
+              $ref: '#/components/schemas/InviteInputRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/InviteInput'
+              $ref: '#/components/schemas/InviteInputRequest'
         required: true
       security:
       - cookieAuth: []
@@ -605,13 +807,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MembershipCreate'
+              $ref: '#/components/schemas/MembershipCreateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/MembershipCreate'
+              $ref: '#/components/schemas/MembershipCreateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/MembershipCreate'
+              $ref: '#/components/schemas/MembershipCreateRequest'
         required: true
       security:
       - cookieAuth: []
@@ -662,11 +864,37 @@ components:
       description: |-
         * `WORKSPACE` - Everyone in this workspace
         * `RESTRICTED` - Selected people
-    CollectionCreate:
+    BlockData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        position:
+          type: integer
+          readOnly: true
+        text:
+          type: string
+          readOnly: true
+        originalText:
+          type: string
+        locator:
+          readOnly: true
+        spanMap: {}
+      required:
+      - id
+      - locator
+      - originalText
+      - position
+      - spanMap
+      - text
+    CollectionCreateRequest:
       type: object
       properties:
         title:
           type: string
+          minLength: 1
           maxLength: 160
         access:
           allOf:
@@ -700,26 +928,90 @@ components:
       - id
       - revision
       - title
-    Credentials:
+    CredentialsRequest:
       type: object
       properties:
         username:
           type: string
+          minLength: 1
           pattern: ^[\w.@+-]+$
           maxLength: 150
         password:
           type: string
           writeOnly: true
+          minLength: 1
           maxLength: 128
       required:
       - password
       - username
-    EmailInput:
+    DocumentData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        collectionId:
+          type: string
+          format: uuid
+        sourceId:
+          type: string
+          format: uuid
+        revision:
+          type: integer
+          readOnly: true
+        kind:
+          type: string
+        byteSize:
+          type: integer
+        sha256:
+          type: string
+        state:
+          type: string
+        error:
+          type: string
+        retryable:
+          type: boolean
+        pageCount:
+          type: integer
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        canWrite:
+          type: boolean
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - byteSize
+      - canWrite
+      - collectionId
+      - createdAt
+      - error
+      - id
+      - kind
+      - pageCount
+      - retryable
+      - revision
+      - sha256
+      - sourceId
+      - state
+      - title
+      - warnings
+    EmailInputRequest:
       type: object
       properties:
         email:
           type: string
           format: email
+          minLength: 1
           maxLength: 254
       required:
       - email
@@ -737,7 +1029,7 @@ components:
       - canRead
       - canWrite
       - membershipId
-    GrantInput:
+    GrantInputRequest:
       type: object
       properties:
         membershipId:
@@ -751,7 +1043,7 @@ components:
       - canRead
       - canWrite
       - membershipId
-    GrantsEdit:
+    GrantsEditRequest:
       type: object
       properties:
         expectedRevision:
@@ -760,7 +1052,7 @@ components:
         grants:
           type: array
           items:
-            $ref: '#/components/schemas/GrantInput'
+            $ref: '#/components/schemas/GrantInputRequest'
       required:
       - expectedRevision
       - grants
@@ -786,12 +1078,13 @@ components:
       - expiresAt
       - id
       - role
-    InviteInput:
+    InviteInputRequest:
       type: object
       properties:
         email:
           type: string
           format: email
+          minLength: 1
           maxLength: 254
         role:
           allOf:
@@ -811,11 +1104,12 @@ components:
       - ok
       type: string
       description: '* `ok` - ok'
-    MembershipCreate:
+    MembershipCreateRequest:
       type: object
       properties:
         username:
           type: string
+          minLength: 1
           maxLength: 150
         role:
           $ref: '#/components/schemas/RoleEnum'
@@ -855,6 +1149,25 @@ components:
           type: string
       required:
       - message
+    PaginatedBlockDataList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlockData'
     PaginatedCollectionDataList:
       type: object
       required:
@@ -874,6 +1187,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CollectionData'
+    PaginatedDocumentDataList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentData'
     PaginatedInvitationDataList:
       type: object
       required:
@@ -931,7 +1263,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WorkspaceData'
-    PatchedCollectionEdit:
+    PatchedCollectionEditRequest:
       type: object
       properties:
         expectedRevision:
@@ -939,10 +1271,11 @@ components:
           minimum: 1
         title:
           type: string
+          minLength: 1
           maxLength: 160
         access:
           $ref: '#/components/schemas/AccessEnum'
-    PatchedMembershipEdit:
+    PatchedMembershipEditRequest:
       type: object
       properties:
         expectedRevision:
@@ -952,7 +1285,7 @@ components:
           $ref: '#/components/schemas/RoleEnum'
         active:
           type: boolean
-    PatchedWorkspaceEdit:
+    PatchedWorkspaceEditRequest:
       type: object
       properties:
         expectedRevision:
@@ -960,6 +1293,7 @@ components:
           minimum: 1
         name:
           type: string
+          minLength: 1
           maxLength: 120
     ReadyStatus:
       type: object
@@ -981,39 +1315,52 @@ components:
       description: |-
         * `ok` - ok
         * `unavailable` - unavailable
-    Registration:
+    RegistrationRequest:
       type: object
       properties:
         username:
           type: string
+          minLength: 1
           pattern: ^[\w.@+-]+$
           maxLength: 150
         password:
           type: string
           writeOnly: true
+          minLength: 1
           maxLength: 128
         email:
           type: string
           format: email
+          minLength: 1
           maxLength: 254
       required:
       - email
       - password
       - username
-    ResetInput:
+    ResetInputRequest:
       type: object
       properties:
         token:
           type: string
           writeOnly: true
+          minLength: 1
           maxLength: 128
         password:
           type: string
           writeOnly: true
+          minLength: 1
           maxLength: 128
       required:
       - password
       - token
+    RevisionInputRequest:
+      type: object
+      properties:
+        expectedRevision:
+          type: integer
+          minimum: 1
+      required:
+      - expectedRevision
     RoleEnum:
       enum:
       - OWNER
@@ -1038,15 +1385,28 @@ components:
       required:
       - csrfToken
       - user
-    TokenInput:
+    TokenInputRequest:
       type: object
       properties:
         token:
           type: string
           writeOnly: true
+          minLength: 1
           maxLength: 128
       required:
       - token
+    UploadInputRequest:
+      type: object
+      properties:
+        uploadId:
+          type: string
+          format: uuid
+        file:
+          type: string
+          format: binary
+      required:
+      - file
+      - uploadId
     UserData:
       type: object
       properties:
@@ -1058,11 +1418,12 @@ components:
       required:
       - id
       - username
-    WorkspaceCreate:
+    WorkspaceCreateRequest:
       type: object
       properties:
         name:
           type: string
+          minLength: 1
           maxLength: 120
       required:
       - name

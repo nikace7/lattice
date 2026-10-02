@@ -132,6 +132,22 @@ export interface paths {
         patch: operations["api_v1_collections_partial_update"];
         trace?: never;
     };
+    "/api/v1/collections/{collection_id}/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_collections_documents_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/collections/{collection_id}/grants": {
         parameters: {
             query?: never;
@@ -142,6 +158,38 @@ export interface paths {
         get: operations["api_v1_collections_grants_list"];
         put: operations["api_v1_collections_grants_update"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_documents_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_documents_retry_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -178,6 +226,54 @@ export interface paths {
         options?: never;
         head?: never;
         patch: operations["api_v1_memberships_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/sources/{source_id}/blocks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_sources_blocks_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sources/{source_id}/original": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_sources_original_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sources/{source_id}/pages/{page}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_sources_pages_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/workspaces": {
@@ -222,6 +318,22 @@ export interface paths {
         get: operations["api_v1_workspaces_collections_list"];
         put?: never;
         post: operations["api_v1_workspaces_collections_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspace_id}/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_workspaces_documents_list"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -302,7 +414,16 @@ export interface components {
          * @enum {string}
          */
         AccessEnum: "WORKSPACE" | "RESTRICTED";
-        CollectionCreate: {
+        BlockData: {
+            /** Format: uuid */
+            readonly id: string;
+            readonly position: number;
+            readonly text: string;
+            originalText: string;
+            readonly locator: unknown;
+            spanMap: unknown;
+        };
+        CollectionCreateRequest: {
             title: string;
             /** @default WORKSPACE */
             access: components["schemas"]["AccessEnum"];
@@ -315,11 +436,32 @@ export interface components {
             readonly revision: number;
             readonly canWrite: boolean;
         };
-        Credentials: {
+        CredentialsRequest: {
             username: string;
             password: string;
         };
-        EmailInput: {
+        DocumentData: {
+            /** Format: uuid */
+            readonly id: string;
+            readonly title: string;
+            /** Format: uuid */
+            collectionId: string;
+            /** Format: uuid */
+            sourceId: string;
+            readonly revision: number;
+            kind: string;
+            byteSize: number;
+            sha256: string;
+            state: string;
+            error: string;
+            retryable: boolean;
+            readonly pageCount: number;
+            readonly warnings: string[];
+            readonly canWrite: boolean;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        EmailInputRequest: {
             /** Format: email */
             email: string;
         };
@@ -329,15 +471,15 @@ export interface components {
             canRead: boolean;
             canWrite: boolean;
         };
-        GrantInput: {
+        GrantInputRequest: {
             /** Format: uuid */
             membershipId: string;
             canRead: boolean;
             canWrite: boolean;
         };
-        GrantsEdit: {
+        GrantsEditRequest: {
             expectedRevision: number;
-            grants: components["schemas"]["GrantInput"][];
+            grants: components["schemas"]["GrantInputRequest"][];
         };
         InvitationData: {
             /** Format: uuid */
@@ -348,7 +490,7 @@ export interface components {
             /** Format: date-time */
             expiresAt: string;
         };
-        InviteInput: {
+        InviteInputRequest: {
             /** Format: email */
             email: string;
             /** @default MEMBER */
@@ -362,7 +504,7 @@ export interface components {
          * @enum {string}
          */
         LiveStatusStatusEnum: "ok";
-        MembershipCreate: {
+        MembershipCreateRequest: {
             username: string;
             role: components["schemas"]["RoleEnum"];
         };
@@ -377,6 +519,19 @@ export interface components {
         MessageData: {
             message: string;
         };
+        PaginatedBlockDataList: {
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+             */
+            previous?: string | null;
+            results: components["schemas"]["BlockData"][];
+        };
         PaginatedCollectionDataList: {
             /**
              * Format: uri
@@ -389,6 +544,19 @@ export interface components {
              */
             previous?: string | null;
             results: components["schemas"]["CollectionData"][];
+        };
+        PaginatedDocumentDataList: {
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+             */
+            previous?: string | null;
+            results: components["schemas"]["DocumentData"][];
         };
         PaginatedInvitationDataList: {
             /**
@@ -429,17 +597,17 @@ export interface components {
             previous?: string | null;
             results: components["schemas"]["WorkspaceData"][];
         };
-        PatchedCollectionEdit: {
+        PatchedCollectionEditRequest: {
             expectedRevision?: number;
             title?: string;
             access?: components["schemas"]["AccessEnum"];
         };
-        PatchedMembershipEdit: {
+        PatchedMembershipEditRequest: {
             expectedRevision?: number;
             role?: components["schemas"]["RoleEnum"];
             active?: boolean;
         };
-        PatchedWorkspaceEdit: {
+        PatchedWorkspaceEditRequest: {
             expectedRevision?: number;
             name?: string;
         };
@@ -455,15 +623,18 @@ export interface components {
          * @enum {string}
          */
         ReadyStatusStatusEnum: "ok" | "unavailable";
-        Registration: {
+        RegistrationRequest: {
             username: string;
             password: string;
             /** Format: email */
             email: string;
         };
-        ResetInput: {
+        ResetInputRequest: {
             token: string;
             password: string;
+        };
+        RevisionInputRequest: {
+            expectedRevision: number;
         };
         /**
          * @description * `OWNER` - Owner
@@ -477,15 +648,21 @@ export interface components {
             user: components["schemas"]["UserData"] | null;
             csrfToken: string;
         };
-        TokenInput: {
+        TokenInputRequest: {
             token: string;
+        };
+        UploadInputRequest: {
+            /** Format: uuid */
+            uploadId: string;
+            /** Format: binary */
+            file: string;
         };
         UserData: {
             /** Format: uuid */
             id: string;
             username: string;
         };
-        WorkspaceCreate: {
+        WorkspaceCreateRequest: {
             name: string;
         };
         WorkspaceData: {
@@ -514,9 +691,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["TokenInput"];
-                "application/x-www-form-urlencoded": components["schemas"]["TokenInput"];
-                "multipart/form-data": components["schemas"]["TokenInput"];
+                "application/json": components["schemas"]["TokenInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["TokenInputRequest"];
+                "multipart/form-data": components["schemas"]["TokenInputRequest"];
             };
         };
         responses: {
@@ -539,9 +716,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Credentials"];
-                "application/x-www-form-urlencoded": components["schemas"]["Credentials"];
-                "multipart/form-data": components["schemas"]["Credentials"];
+                "application/json": components["schemas"]["CredentialsRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["CredentialsRequest"];
+                "multipart/form-data": components["schemas"]["CredentialsRequest"];
             };
         };
         responses: {
@@ -583,9 +760,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["EmailInput"];
-                "application/x-www-form-urlencoded": components["schemas"]["EmailInput"];
-                "multipart/form-data": components["schemas"]["EmailInput"];
+                "application/json": components["schemas"]["EmailInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["EmailInputRequest"];
+                "multipart/form-data": components["schemas"]["EmailInputRequest"];
             };
         };
         responses: {
@@ -608,9 +785,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Registration"];
-                "application/x-www-form-urlencoded": components["schemas"]["Registration"];
-                "multipart/form-data": components["schemas"]["Registration"];
+                "application/json": components["schemas"]["RegistrationRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["RegistrationRequest"];
+                "multipart/form-data": components["schemas"]["RegistrationRequest"];
             };
         };
         responses: {
@@ -633,9 +810,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ResetInput"];
-                "application/x-www-form-urlencoded": components["schemas"]["ResetInput"];
-                "multipart/form-data": components["schemas"]["ResetInput"];
+                "application/json": components["schemas"]["ResetInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["ResetInputRequest"];
+                "multipart/form-data": components["schemas"]["ResetInputRequest"];
             };
         };
         responses: {
@@ -700,9 +877,9 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["PatchedCollectionEdit"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedCollectionEdit"];
-                "multipart/form-data": components["schemas"]["PatchedCollectionEdit"];
+                "application/json": components["schemas"]["PatchedCollectionEditRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedCollectionEditRequest"];
+                "multipart/form-data": components["schemas"]["PatchedCollectionEditRequest"];
             };
         };
         responses: {
@@ -712,6 +889,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CollectionData"];
+                };
+            };
+        };
+    };
+    api_v1_collections_documents_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                collection_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UploadInputRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentData"];
+                };
+            };
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentData"];
                 };
             };
         };
@@ -748,9 +958,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GrantsEdit"];
-                "application/x-www-form-urlencoded": components["schemas"]["GrantsEdit"];
-                "multipart/form-data": components["schemas"]["GrantsEdit"];
+                "application/json": components["schemas"]["GrantsEditRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["GrantsEditRequest"];
+                "multipart/form-data": components["schemas"]["GrantsEditRequest"];
             };
         };
         responses: {
@@ -760,6 +970,54 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CollectionData"];
+                };
+            };
+        };
+    };
+    api_v1_documents_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentData"];
+                };
+            };
+        };
+    };
+    api_v1_documents_retry_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevisionInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["RevisionInputRequest"];
+                "multipart/form-data": components["schemas"]["RevisionInputRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentData"];
                 };
             };
         };
@@ -795,9 +1053,9 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["PatchedMembershipEdit"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedMembershipEdit"];
-                "multipart/form-data": components["schemas"]["PatchedMembershipEdit"];
+                "application/json": components["schemas"]["PatchedMembershipEditRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedMembershipEditRequest"];
+                "multipart/form-data": components["schemas"]["PatchedMembershipEditRequest"];
             };
         };
         responses: {
@@ -807,6 +1065,75 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MembershipData"];
+                };
+            };
+        };
+    };
+    api_v1_sources_blocks_list: {
+        parameters: {
+            query?: {
+                /** @description The pagination cursor value. */
+                cursor?: string;
+                /** @description Number of results to return per page. */
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                source_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedBlockDataList"];
+                };
+            };
+        };
+    };
+    api_v1_sources_original_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                source_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": string;
+                };
+            };
+        };
+    };
+    api_v1_sources_pages_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                page: number;
+                source_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/png": string;
                 };
             };
         };
@@ -844,9 +1171,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["WorkspaceCreate"];
-                "application/x-www-form-urlencoded": components["schemas"]["WorkspaceCreate"];
-                "multipart/form-data": components["schemas"]["WorkspaceCreate"];
+                "application/json": components["schemas"]["WorkspaceCreateRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["WorkspaceCreateRequest"];
+                "multipart/form-data": components["schemas"]["WorkspaceCreateRequest"];
             };
         };
         responses: {
@@ -892,9 +1219,9 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["PatchedWorkspaceEdit"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedWorkspaceEdit"];
-                "multipart/form-data": components["schemas"]["PatchedWorkspaceEdit"];
+                "application/json": components["schemas"]["PatchedWorkspaceEditRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedWorkspaceEditRequest"];
+                "multipart/form-data": components["schemas"]["PatchedWorkspaceEditRequest"];
             };
         };
         responses: {
@@ -945,9 +1272,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CollectionCreate"];
-                "application/x-www-form-urlencoded": components["schemas"]["CollectionCreate"];
-                "multipart/form-data": components["schemas"]["CollectionCreate"];
+                "application/json": components["schemas"]["CollectionCreateRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["CollectionCreateRequest"];
+                "multipart/form-data": components["schemas"]["CollectionCreateRequest"];
             };
         };
         responses: {
@@ -957,6 +1284,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CollectionData"];
+                };
+            };
+        };
+    };
+    api_v1_workspaces_documents_list: {
+        parameters: {
+            query?: {
+                /** @description The pagination cursor value. */
+                cursor?: string;
+                /** @description Number of results to return per page. */
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedDocumentDataList"];
                 };
             };
         };
@@ -998,9 +1351,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["InviteInput"];
-                "application/x-www-form-urlencoded": components["schemas"]["InviteInput"];
-                "multipart/form-data": components["schemas"]["InviteInput"];
+                "application/json": components["schemas"]["InviteInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["InviteInputRequest"];
+                "multipart/form-data": components["schemas"]["InviteInputRequest"];
             };
         };
         responses: {
@@ -1051,9 +1404,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["MembershipCreate"];
-                "application/x-www-form-urlencoded": components["schemas"]["MembershipCreate"];
-                "multipart/form-data": components["schemas"]["MembershipCreate"];
+                "application/json": components["schemas"]["MembershipCreateRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["MembershipCreateRequest"];
+                "multipart/form-data": components["schemas"]["MembershipCreateRequest"];
             };
         };
         responses: {

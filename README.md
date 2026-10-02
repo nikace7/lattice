@@ -2,7 +2,8 @@
 
 A cited knowledge workspace built with Next.js, Django, PostgreSQL/pgvector,
 and Celery. Accounts, workspaces, collection organization and access management
-are implemented. Uploads, search, and answer generation are not implemented yet.
+are implemented, along with private PDF/TXT uploads and source inspection.
+Search and answer generation are not implemented yet.
 The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
 observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).
 
@@ -30,8 +31,8 @@ Mailpit captures local mail at http://localhost:8026; nothing is sent externally
 
 Create an account, then a workspace. Its creator becomes the owner. Owners can add
 existing accounts by username under **People & access**, choose their workspace
-role, and grant access to restricted collections. Email invitations and password
-recovery are still pending; this build does not send account mail.
+role, and grant access to restricted collections. Invitations and password recovery
+use local Mailpit. Create a collection, then open Documents to upload a source.
 
 Use `pnpm run setup` exactly: bare `pnpm setup` invokes pnpm's own global setup
 command instead of this repository's script.
@@ -43,6 +44,7 @@ command instead of this repository's script.
 | `pnpm run setup` | Install locked JS/Python dependencies and create local configuration |
 | `pnpm dev` | Build and start the Compose development stack |
 | `pnpm infra:up` | Start PostgreSQL, Redis and Mailpit for host development/tests |
+| `pnpm parser:up` | Build and start the offline parser for host development/browser tests |
 | `pnpm migrate` | Apply backend migrations using host `.env` |
 | `pnpm dev:web` | Host Next.js on port 3000 |
 | `pnpm dev:api` | Host Django ASGI on port 4412 with reload |
@@ -56,6 +58,7 @@ Verification uses **real PostgreSQL with pgvector**, never an SQLite substitute:
 
 ```sh
 pnpm infra:up
+pnpm parser:up
 pnpm migrate
 pnpm verify
 pnpm --filter @lattice/web exec playwright install chromium
@@ -67,7 +70,8 @@ The E2E runner starts its own production web server on port 4411 and API on 4412
 so run `pnpm build` first if you did not run `pnpm verify`. It recreates only the
 reserved `test_lattice_browser` database on the configured PostgreSQL server;
 never store real data there. It tests registration, workspaces, grant/revoke,
-logout, responsive layouts and automated accessibility rules.
+logout, recovery, invitations, PDF/TXT upload, source locations, responsive layouts
+and automated accessibility rules. Extraction uses the real offline parser container.
 Backend commands also work from `backend`, e.g. `uv run python manage.py migrate`.
 
 Host tools use PostgreSQL port **5440**, Redis **6380**, and SMTP **1026**, all bound
@@ -84,8 +88,8 @@ Use `127.0.0.1` in host database/Redis URLs to avoid IPv6 fallback delays on Win
 ```text
 apps/web/        Next.js App Router, design tokens, Vitest and Playwright
 backend/config/ Django settings, ASGI, Celery, health endpoints
-backend/modules/ Identity, workspaces, collections, authorization and audit
-backend/pipeline/ Future bounded ingestion/retrieval services
+backend/modules/ Identity, workspaces, collections, documents, authorization and audit
+backend/pipeline/ Bounded PDF/TXT parser and offline parser supervisor
 contracts/      Generated OpenAPI
 fixtures/       Corpus and evaluation conventions (no measured corpus yet)
 infra/          Container definitions and Caddy routing
@@ -107,6 +111,9 @@ docs/           Blueprint, progress, design and operating notes
   password recovery through local Mailpit, with expiring, one-use links.
 - `RAG_MODE=RETRIEVAL_ONLY` is the initial configuration. This does not claim retrieval
   exists. Other mode names are validated, but provider behavior is not implemented.
+- R2 accepts PDF and UTF-8 TXT up to 25 MiB, with at most 100 PDF pages. Originals,
+  extracted passages and PNG previews require current collection access. Scanned
+  pages are marked for review; OCR, indexing and source replacement are future work.
 - The optional `local-models` Compose profile starts Ollama only. It does not pull a
   model. `models:prepare`, demo seeding/reset, reconciliation/purge commands, and
   evaluations belong to the relevant product milestones and are not fake success stubs.

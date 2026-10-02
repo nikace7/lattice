@@ -13,6 +13,7 @@
     "dev:web": "pnpm --filter @lattice/web dev",
     "dev:api": "uv run --project backend --env-file .env uvicorn config.asgi:application --app-dir backend --host 127.0.0.1 --port 4412 --reload",
     "infra:up": "docker compose up -d --wait db-pgvector redis mailpit",
+    "parser:up": "docker compose up -d --build parser",
     "infra:down": "docker compose down",
     "migrate": "uv run --project backend python backend/manage.py migrate",
     "lint": "pnpm --filter @lattice/web lint && uv run --project backend ruff check backend",

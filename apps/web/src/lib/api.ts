@@ -5,6 +5,8 @@ export type Workspace = components["schemas"]["WorkspaceData"];
 export type Collection = components["schemas"]["CollectionData"];
 export type Member = components["schemas"]["MembershipData"];
 export type Grant = components["schemas"]["GrantData"];
+export type DocumentSource = components["schemas"]["DocumentData"];
+export type SourceBlock = components["schemas"]["BlockData"];
 export type Page<T> = {
   results: T[];
   next: string | null;
@@ -34,10 +36,10 @@ export async function api<T>(
     cache: "no-store",
     signal,
     headers: {
-      "Content-Type": "application/json",
+      ...(body instanceof FormData ? {} : { "Content-Type": "application/json" }),
       ...(method === "GET" ? {} : { "X-CSRFToken": csrfToken }),
     },
-    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+    ...(body === undefined ? {} : { body: body instanceof FormData ? body : JSON.stringify(body) }),
   });
   const data = await response.json().catch(() => null);
   if (!response.ok) {

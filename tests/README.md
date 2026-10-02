@@ -17,4 +17,9 @@ Browser tests recreate the reserved `test_lattice_browser` database and use an
 isolated Redis cache key prefix. The test database is retained on server shutdown
 and reset on the next run. Both ports 4411 and 4412 must be free. Screenshots and
 failure traces are gitignored under `apps/web/test-results`.
-Document ingestion, citation and lifecycle gates remain in `docs/BLUEPRINT.md`.
+R2 adds bounded PDF/TXT extraction, Unicode spans, physical-page boxes, encrypted
+and corrupt PDFs, upload idempotency/limits, queue retry and access-change tests.
+Browser tests also upload Nepali text and a native PDF through the real parser,
+check source highlights/focus return, and deny signed-out downloads. Start
+`pnpm parser:up` before running them. Citation/indexing and lifecycle gates remain
+in `docs/BLUEPRINT.md`.

@@ -12,8 +12,10 @@ x-backend: &backend
     MODEL_CACHE_ROOT: /data/models
     SMTP_HOST: mailpit
     SMTP_PORT: 1025
+    PARSER_SPOOL_ROOT: /data/parser
     OLLAMA_BASE_URL: http://ollama:11434
   volumes:
+    - ./.data/parser:/data/parser
     - storage:/data/storage
     - models:/data/models
   init: true
@@ -59,6 +61,7 @@ services:
     volumes:
       - ./backend/config:/app/backend/config:ro
       - ./backend/modules:/app/backend/modules:ro
+      - ./.data/parser:/data/parser
       - storage:/data/storage
       - models:/data/models
     healthcheck:
@@ -73,6 +76,22 @@ services:
     depends_on:
       migrate: { condition: service_completed_successfully }
       redis: { condition: service_healthy }
+      parser: { condition: service_started }
+  parser:
+    build:
+      context: .
+      dockerfile: infra/backend.Dockerfile
+    command: ["python", "backend/pipeline/parser_service.py", "/spool"]
+    network_mode: none
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    cpus: 2
+    mem_limit: 1g
+    pids_limit: 64
+    init: true
+    tmpfs: ["/tmp:size=32m"]
+    volumes: ["./.data/parser:/spool"]
   answer-worker:
     <<: *backend
     command: ["celery", "-A", "config", "worker", "--loglevel=info", "--queues=answers", "--concurrency=1"]
