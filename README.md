@@ -2,7 +2,7 @@
 
 A cited knowledge workspace built with Next.js, Django, PostgreSQL/pgvector,
 and Celery. Accounts, workspaces, collection organization and access management
-are implemented, along with private PDF/TXT uploads and source inspection.
+are implemented, along with private PDF/DOCX/TXT/Markdown uploads and source inspection.
 Search and answer generation are not implemented yet.
 The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
 observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).
@@ -89,7 +89,7 @@ Use `127.0.0.1` in host database/Redis URLs to avoid IPv6 fallback delays on Win
 apps/web/        Next.js App Router, design tokens, Vitest and Playwright
 backend/config/ Django settings, ASGI, Celery, health endpoints
 backend/modules/ Identity, workspaces, collections, documents, authorization and audit
-backend/pipeline/ Bounded PDF/TXT parser and offline parser supervisor
+backend/pipeline/ Bounded source parser and offline parser supervisor
 contracts/      Generated OpenAPI
 fixtures/       Corpus and evaluation conventions (no measured corpus yet)
 infra/          Container definitions and Caddy routing
@@ -111,9 +111,11 @@ docs/           Blueprint, progress, design and operating notes
   password recovery through local Mailpit, with expiring, one-use links.
 - `RAG_MODE=RETRIEVAL_ONLY` is the initial configuration. This does not claim retrieval
   exists. Other mode names are validated, but provider behavior is not implemented.
-- R2 accepts PDF and UTF-8 TXT up to 25 MiB, with at most 100 PDF pages. Originals,
+- Uploads accept PDF, DOCX and UTF-8 TXT/Markdown up to 25 MiB, with at most 100 PDF pages. Originals,
   extracted passages and PNG previews require current collection access. Scanned
   pages are marked for review; OCR, indexing and source replacement are future work.
+- DOCX uses paragraph/table-cell references; unsupported content produces review
+  warnings. Markdown is displayed as literal source text with inactive HTML and embeds.
 - The optional `local-models` Compose profile starts Ollama only. It does not pull a
   model. `models:prepare`, demo seeding/reset, reconciliation/purge commands, and
   evaluations belong to the relevant product milestones and are not fake success stubs.

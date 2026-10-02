@@ -245,6 +245,27 @@ def test_upload_requires_csrf(library):
     assert upload(client, collection).status_code == 403
 
 
+@pytest.mark.parametrize("kind,name", [("DOCX", "policy.docx"), ("MD", "policy.md")])
+def test_new_formats_use_scoped_upload_and_source_routes(library, kind, name):
+    from tests.test_document_formats import docx_bytes
+
+    client, _, collection = library
+    body = (
+        docx_bytes("<w:p><w:r><w:t>Body text</w:t></w:r></w:p>")
+        if kind == "DOCX"
+        else b"# Policy\nBody text"
+    )
+    response = upload(client, collection, body, name)
+    assert response.status_code == 201
+    document = process(response.data["id"])
+    detail = client.get(f"/api/v1/documents/{document.pk}").data
+    assert detail["kind"] == kind and detail["state"] == "EXTRACTED"
+    blocks = client.get(f"/api/v1/sources/{document.source.pk}/blocks").data["results"]
+    assert blocks[-1]["text"] == "Body text"
+    assert "page" not in blocks[-1]["locator"]
+    assert client.get(f"/api/v1/sources/{document.source.pk}/pages/1").status_code == 404
+
+
 def test_stale_attempt_cannot_publish(library):
     from modules.documents.models import ExtractionJob, ExtractionVersion
 

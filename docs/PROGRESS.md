@@ -19,7 +19,8 @@ Implemented:
 
 R1 is implemented: accounts, workspace membership, collection authorization,
 account recovery and invitations. R2 is implemented with final Docker-dependent
-integration validation deferred by the user. R3–R8 have not started. The ingestion worker
+integration validation deferred by the user. R3 document formats are implemented;
+OCR/indexing and R4–R8 remain pending. The ingestion worker
 delivers recovery email and document extraction; generation remains future work.
 
 ## Verification
@@ -143,3 +144,25 @@ remaining integration gates passed.
 R2 intentionally has one source/extraction per document. OCR/indexing, search,
 answers, replacement, reconciliation and retention are later milestones. Source
 quotas cover originals, with preview/failed-attempt disk usage documented separately.
+
+## R3 first slice: DOCX and Markdown — 2 October 2026
+
+- Added DOCX/Markdown to the existing private upload, extraction and source-viewer
+  flow. A migration expands the source-kind field; shared access checks and quotas
+  apply to both formats.
+- DOCX preserves body paragraph, heading and table-cell references without invented
+  page numbers. Bounded ZIP reads and defusedxml reject unsafe paths, macros,
+  encrypted entries and DTD/entities. Unsupported content produces review warnings.
+- Markdown retains literal syntax and Unicode line offsets. HTML, links and remote
+  embeds remain inactive text. The viewer displays the appropriate reference labels.
+
+Validation: 12 database-free parser/boundary tests and 3 web unit tests passed,
+including existing PDF/TXT regression checks, Nepali text, table anchors and inert
+Markdown rendering. Lint/format, TypeScript, Django system checks, OpenAPI generation
+and the production web build passed. Offline migration-state comparison found no
+drift; applying the migration and running PostgreSQL/API/browser/Compose checks
+remain deferred under the user's instruction to skip Docker for now.
+
+Next R3 work: OCR with language/confidence metadata, partial-extraction acceptance,
+job cancellation/recovery, tokenizer-bounded chunking and real pinned embeddings.
+No new searchable-index or full R3 completion claim is made by this format slice.
