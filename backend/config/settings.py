@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "modules.workspaces",
     "modules.collections.apps.CollectionsConfig",
     "modules.audit",
+    "modules.documents",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -84,6 +85,7 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Lattice sessions, workspace membership and collection access.",
     "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
 }
 REDIS_URL = env("REDIS_URL")
 CACHES = {
@@ -98,6 +100,7 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_TASK_IGNORE_RESULT = True
 CELERY_TASK_ROUTES = {
+    "modules.documents.tasks.*": {"queue": "ingestion"},
     "modules.identity.tasks.*": {"queue": "ingestion"},
     "modules.ingestion.*": {"queue": "ingestion"},
     "modules.conversations.*": {"queue": "answers"},
@@ -106,6 +109,16 @@ CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 STORAGE_ROOT = (REPO_ROOT / env("STORAGE_ROOT", default=".data/storage")).resolve()
+PARSER_SPOOL_ROOT = (REPO_ROOT / env("PARSER_SPOOL_ROOT", default=".data/parser")).resolve()
+PARSER_TIMEOUT_SECONDS = 330
+FILE_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024
+DATA_UPLOAD_MAX_MEMORY_SIZE = 26 * 1024 * 1024
+DATA_UPLOAD_MAX_NUMBER_FILES = 1
+FILE_UPLOAD_HANDLERS = [
+    "modules.documents.uploads.BoundedUploadHandler",
+    "django.core.files.uploadhandler.MemoryFileUploadHandler",
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+]
 MODEL_CACHE_ROOT = (REPO_ROOT / env("MODEL_CACHE_ROOT", default=".data/models")).resolve()
 RAG_MODE = env("RAG_MODE", default="RETRIEVAL_ONLY")
 if RAG_MODE not in {"LOCAL", "CLOUD", "RETRIEVAL_ONLY", "FIXTURE"}:

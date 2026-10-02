@@ -8,7 +8,10 @@ It also provides session, registration, login and logout endpoints with CSRF che
 Access mutations lock the workspace row and validate the current revision before
 writing, including protection against concurrent removal of the last owner.
 
+`documents` owns immutable originals, extraction jobs/versions, exact source blocks,
+scoped uploads/downloads/previews and retry fencing. Parser code lives in `pipeline`.
+
 Add modules when implementing their milestone:
-`documents`, `ingestion`, `retrieval`, `conversations`, `providers`, `evaluations`,
+`retrieval`, `conversations`, `providers`, `evaluations`,
 and other provider integrations. Collection scope must constrain database queries
 before ranking or limits.

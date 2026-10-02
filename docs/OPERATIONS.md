@@ -9,7 +9,8 @@ Owners can add an existing username or send an email invitation under People &
 access. Open local email at `http://localhost:8026`; Mailpit captures messages and
 does not deliver to real inboxes. Invitees sign in or register with the invited
 address before accepting. Forgot password is available on the sign-in screen.
-Collection data persists in PostgreSQL; uploads and answers are not available yet.
+Collection metadata persists in PostgreSQL; source files and page previews use
+private storage. Answers are not available yet.
 
 Recovery email requires the ingestion worker; invitations send during the owner
 request and report delivery failure. For host-only development run
@@ -40,8 +41,29 @@ vector extension migration and a writable private storage volume.
 
 The API waits for migrations and Redis. Workers consume separate `ingestion` and
 `answers` queues with bounded concurrency. Beat has persistent scheduler state;
-there are no scheduled product tasks yet. Future parsing requires its own bounded,
-network-isolated process; a generic Celery worker is not a parser security boundary.
+there are no scheduled product tasks yet. The ingestion worker sends extraction
+requests through `.data/parser` to the separate offline parser container.
+
+For host development and browser tests, run `pnpm parser:up` as well as
+`pnpm infra:up`. The parser has no network, database credentials or source-storage
+mount. It runs two bounded subprocesses with a 305-second deadline, 30 seconds per
+page, and a 1 GiB container limit. Rebuild it after changes to `backend/pipeline`.
+On Linux, grant the host user and container UID 10001 access to the private spool
+directory; do not expose it through the web server or make it world-writable.
+
+Uploads allow PDF or UTF-8 TXT, 25 MiB/file, 100 PDF pages, 2 million extracted
+characters and 20,000 blocks. Workspaces allow 500 sources and default to 2 GiB of
+original files (`MAX_WORKSPACE_STORAGE_BYTES`); previews and failed-attempt artifacts
+are additional disk usage. Encrypted PDFs are rejected. Scans/low-text pages need
+review; OCR and indexing are not part of R2. Each document has one immutable source.
+
+The source viewer reports queued, extracting, extracted, needs-review or failed.
+Retry transient failures after restoring the parser/broker; jobs stuck for ten
+minutes can be retried. Attempt IDs prevent old workers publishing after a retry.
+Requests normally remove their temporary spool directory on completion. Worker
+crashes can leave spool data, and failed attempts can leave private previews;
+automated reconciliation, replacement and retention belong to the lifecycle phase.
+Treat spool data as confidential and stop workers/parser before manual cleanup.
 
 `pnpm infra:down` retains all data. There is deliberately no destructive reset
 command. Do not remove volumes to fix a migration or credential mismatch. If `.env`

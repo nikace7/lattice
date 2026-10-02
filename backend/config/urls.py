@@ -1,6 +1,15 @@
 from django.urls import path
 
 from config import schema  # noqa: F401 -- registers our session authentication schema
+from modules.documents.api import (
+    BlocksView,
+    DocumentsView,
+    DocumentView,
+    OriginalView,
+    PreviewView,
+    RetryView,
+    UploadView,
+)
 from modules.identity.actions import (
     AcceptInvitationView,
     InvitationsView,
@@ -22,6 +31,13 @@ from modules.workspaces.api import (
 from .health import live, ready
 
 urlpatterns = [
+    path("api/v1/workspaces/<uuid:workspace_id>/documents", DocumentsView.as_view()),
+    path("api/v1/collections/<uuid:collection_id>/documents", UploadView.as_view()),
+    path("api/v1/documents/<uuid:document_id>", DocumentView.as_view()),
+    path("api/v1/documents/<uuid:document_id>/retry", RetryView.as_view()),
+    path("api/v1/sources/<uuid:source_id>/blocks", BlocksView.as_view()),
+    path("api/v1/sources/<uuid:source_id>/original", OriginalView.as_view()),
+    path("api/v1/sources/<uuid:source_id>/pages/<int:page>", PreviewView.as_view()),
     path("health/live", live),
     path("health/ready", ready),
     path("api/v1/auth/session", SessionView.as_view()),

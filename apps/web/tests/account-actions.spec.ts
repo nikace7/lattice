@@ -48,7 +48,7 @@ test("invite a new teammate through email, then recover their password", async (
     await guestPage.getByLabel("Password", { exact: true }).fill(password);
     await guestPage.getByRole("button", { name: "Create account", exact: true }).click();
     await guestPage.getByRole("button", { name: "Accept invitation" }).click();
-    await expect(guestPage.getByRole("heading", { name: "Collections", exact: true })).toBeVisible();
+    await expect(guestPage.getByRole("heading", { name: "Documents", exact: true })).toBeVisible();
     await expect(guestPage.getByRole("button", { name: "New collection" })).toHaveCount(0);
     await guestPage.goto(invitation);
     await guestPage.getByRole("button", { name: "Accept invitation" }).click();

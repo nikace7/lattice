@@ -11,6 +11,7 @@ import {
   type Workspace,
 } from "@/lib/api";
 import { CollectionAccess, Members } from "./workspace-access";
+import { Documents } from "./documents";
 import {
   ErrorNotice,
   Loading,
@@ -130,7 +131,7 @@ export function Authentication({ onSuccess, invitation = false }: { onSuccess: (
             </button>
           </p>
           <p className="release-note">
-            Early access · Accounts and collections are ready. Document upload
+            Early access · PDF and text sources are ready to inspect. Search
             and cited answers are coming next.
           </p>
         </div>
@@ -189,7 +190,7 @@ function Lobby({
       const workspace = await api<Workspace>("/workspaces", "POST", {
         name: new FormData(form).get("name"),
       });
-      router.push(`/w/${workspace.id}/documents`);
+      router.push(`/w/${workspace.id}/collections`);
     });
   }
   return (
@@ -403,9 +404,8 @@ function CollectionList({
       <div className="phase-note">
         <span aria-hidden="true">↳</span>
         <p>
-          <strong>Next, the documents.</strong> Upload, search, and cited
-          answers will follow. Your collections and access settings are saved
-          now.
+          <Link href={`/w/${workspace.id}/documents`}>Add documents</Link> to these
+          collections and inspect the source text. Search and cited answers come next.
         </p>
       </div>
     </section>
@@ -428,6 +428,7 @@ function WorkspaceRoom({
   const [listVersion, setListVersion] = useState(0);
   const [drawer, setDrawer] = useState(false);
   const isMembers = view === "settings/members";
+  const isDocuments = view === "documents" || view.startsWith("documents/");
   return (
     <div className="room">
       <header className="topbar">
@@ -460,11 +461,14 @@ function WorkspaceRoom({
           )}
           <nav aria-label="Workspace">
             <Link
-              href={`/w/${id}/documents`}
-              aria-current={!isMembers ? "page" : undefined}
+              href={`/w/${id}/collections`}
+              aria-current={!isMembers && !isDocuments ? "page" : undefined}
               onClick={() => setDrawer(false)}
             >
               <span aria-hidden="true">▤</span> Collections
+            </Link>
+            <Link href={`/w/${id}/documents`} aria-current={isDocuments ? "page" : undefined} onClick={() => setDrawer(false)}>
+              <span aria-hidden="true">▱</span> Documents
             </Link>
             {workspace.data?.role === "OWNER" && (
               <Link
@@ -481,12 +485,14 @@ function WorkspaceRoom({
             foundation<p>Careful reading starts with the right access.</p>
           </div>
         </aside>
-        <main id="main" tabIndex={-1} className="room-main">
+        <main id="main" tabIndex={-1} className={`room-main ${isDocuments ? "document-main" : ""}`}>
           <ErrorNotice error={workspace.error} retry={workspace.reload} />
           {!workspace.data && !workspace.error && <Loading />}
           {workspace.data &&
             (isMembers ? (
               <Members workspace={workspace.data} onChange={workspace.reload} />
+            ) : isDocuments ? (
+              <Documents key={view} workspace={workspace.data} documentId={view.split("/")[1]} />
             ) : (
               <CollectionList
                 key={`${id}:${listVersion}`}
@@ -495,7 +501,7 @@ function WorkspaceRoom({
               />
             ))}
         </main>
-        {!isMembers && workspace.data && (
+        {!isMembers && !isDocuments && workspace.data && (
           <aside className="inspector" aria-label="Collection details">
             {selected ? (
               <CollectionAccess

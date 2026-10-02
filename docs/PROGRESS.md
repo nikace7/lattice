@@ -18,8 +18,9 @@ Implemented:
 - Foundation tests, formatting/lint/type/build commands and GitHub Actions verification.
 
 R1 is implemented: accounts, workspace membership, collection authorization,
-account recovery and invitations. R2–R8 have not started. The ingestion worker
-also delivers recovery email; ingestion/generation jobs and scheduled tasks remain future work.
+account recovery and invitations. R2 is implemented with final Docker-dependent
+integration validation deferred by the user. R3–R8 have not started. The ingestion worker
+delivers recovery email and document extraction; generation remains future work.
 
 ## Verification
 
@@ -96,8 +97,8 @@ The foundation and workspace feature were committed and merged into `main` at
   and are submitted only in CSRF-protected POST bodies. API validation messages
   now preserve non-field errors such as expired links.
 
-Next: R2 PDF/TXT upload, bounded extraction and source inspection. No document
-upload, retrieval, generation or production email delivery is claimed yet.
+The next phase after R1 is R2 PDF/TXT upload, bounded extraction and source inspection.
+Retrieval, generation and production email delivery remain future work.
 
 Validation: `pnpm verify` passed lint, formatting, types, migration checks,
 24 PostgreSQL backend tests, the setup/unit tests and production build. All five
@@ -108,3 +109,37 @@ synthetic account completed recovery through the real API, Redis, Celery worker
 and Mailpit, then signed in with the changed password. Final review additionally
 verified that revoking an already consumed invitation returns a conflict rather
 than implying that the resulting membership was removed.
+
+## R2 document sources — 2 October 2026
+
+- Private PDF/UTF-8 TXT upload, immutable original hashes, idempotent upload IDs,
+  workspace quotas, scoped document/source APIs and revision-checked retries.
+- Native PDF extraction with physical pages and normalized bounding boxes; TXT
+  line/Unicode offsets and identity span maps preserve Nepali and combining marks.
+- Offline, non-root parser container with bounded subprocesses, no network or
+  application credentials, read-only root and validated output. Low-text pages
+  require review; encrypted PDFs are rejected, including empty-password encryption.
+- Responsive source reader, PNG page previews, passage selection/highlights,
+  mobile focus return, original downloads, progress and actionable failure states.
+- Current access is checked for source reads and again before extraction publication.
+  Attempt IDs prevent stale/duplicate tasks from publishing after retries.
+
+Completed locally: lint, Ruff formatting, TypeScript, OpenAPI generation, setup and
+web unit tests, production web build, standalone native/encrypted PDF and Unicode
+parser checks. Docker images built successfully before the engine disconnected.
+Earlier R2 runs passed 16 backend tests and exercised real TXT/PDF extraction in
+the browser; subsequent fixes still need the complete backend/browser suites.
+
+Final Docker-dependent verification is deferred at the user's request. Docker Desktop
+cannot attach its WSL data disk
+(`ERROR_SHARING_VIOLATION`) after a controlled restart. PostgreSQL is unavailable;
+the current backend and browser reruns stopped during database startup. No volumes
+were removed. Resume with Docker healthy, rebuild the stack, run `pnpm verify` and
+`pnpm test:e2e`, then smoke-test asynchronous extraction through the actual Celery
+worker. The user approved skipping Docker work for now and continuing the existing
+commit/merge/push workflow. This delivers the implementation without claiming the
+remaining integration gates passed.
+
+R2 intentionally has one source/extraction per document. OCR/indexing, search,
+answers, replacement, reconciliation and retention are later milestones. Source
+quotas cover originals, with preview/failed-attempt disk usage documented separately.

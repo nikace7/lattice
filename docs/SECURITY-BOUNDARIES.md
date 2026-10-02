@@ -7,10 +7,11 @@ rules use Django validators, and private API responses use `Cache-Control: no-st
 UUID IDs are identifiers, not authorization. Health responses contain component
 booleans rather than URLs, exception messages, or credentials.
 
-All future document, search, source, history and export paths must use the same
+All document/source and future search, history and export paths must use the same
 workspace/collection scope resolver before ranking or limiting. This resolver
-is implemented in `backend/modules/workspaces/access.py`. Document endpoints still
-need their own isolation tests before exposure.
+is implemented in `backend/modules/workspaces/access.py`. Document lists, source
+blocks, original downloads and previews recheck this scope; tests cover foreign
+workspaces, revoked grants, write-role ceilings and access changes during extraction.
 Revocation must withhold affected answer text as well as citation links.
 
 Owners manage membership and grants. Curators write permitted collections;
@@ -49,6 +50,17 @@ Source storage is private and is never mounted into the web or proxy container.
 There is no public media route. `.env`, caches, and runtime files are gitignored and
 excluded from Docker build contexts. Cloud credentials must never use `NEXT_PUBLIC_`.
 Retrieved document instructions are data and never authorize actions or network requests.
+
+Uploads validate extension, signature, UTF-8 and bounded size before saving with
+server-generated paths. Workspace locks serialize quota checks and idempotent
+creation. The parser container has no network, credentials or original-storage
+mount, a read-only root and bounded subprocess CPU/memory/time/output. Its private
+spool is shared between jobs, so this is container isolation, not per-file VM
+isolation. Treat parser compromise as a risk to concurrent spool jobs.
+PDF originals download as attachments; the reader shows generated PNGs, never
+embedded active PDF content. Text is escaped by React. Identity normalization
+preserves Unicode code points and records source spans, physical pages and boxes.
+Scanned/low-text pages require review. Extraction does not imply search readiness.
 
 Compose is a local development configuration. PostgreSQL, Redis, mail and proxy
 ports bind only to loopback. The backend and web run as non-root users in containers.
