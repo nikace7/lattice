@@ -87,6 +87,8 @@ def validate_result(result, kind):
         or not 0 <= result["pageCount"] <= 100
     ):
         raise InvalidSource("Invalid extraction result.")
+    if kind not in {"PDF", "DOCX", "TXT", "MD"} or (kind != "PDF" and result["pageCount"] != 0):
+        raise InvalidSource("Invalid extraction format or page count.")
     blocks = result.get("blocks")
     if not isinstance(blocks, list) or len(blocks) > MAX_BLOCKS:
         raise InvalidSource("Invalid extraction blocks.")
@@ -130,6 +132,24 @@ def validate_result(result, kind):
                 or box[1] > box[3]
             ):
                 raise InvalidSource("Invalid PDF locator.")
+        elif kind == "DOCX":
+            heading = location.get("headingPath")
+            if (
+                not isinstance(location.get("paragraph"), int)
+                or location["paragraph"] < 1
+                or not isinstance(heading, list)
+                or len(heading) > 9
+                or any(not isinstance(label, str) or len(label) > 240 for label in heading)
+                or "page" in location
+                or (
+                    any(key in location for key in ("table", "row", "cell"))
+                    and not all(
+                        isinstance(location.get(key), int) and location[key] >= 1
+                        for key in ("table", "row", "cell")
+                    )
+                )
+            ):
+                raise InvalidSource("Invalid DOCX locator.")
         elif (
             not isinstance(location.get("line"), int)
             or location["line"] < 1

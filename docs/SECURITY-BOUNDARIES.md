@@ -62,6 +62,11 @@ embedded active PDF content. Text is escaped by React. Identity normalization
 preserves Unicode code points and records source spans, physical pages and boxes.
 Scanned/low-text pages require review. Extraction does not imply search readiness.
 
+DOCX uses bounded ZIP reads and defusedxml with DTD/entity rejection. Archive paths
+are never extracted and relationship targets are never fetched; macros and encrypted
+entries are rejected. Unsupported Word content creates review warnings. Markdown
+is rendered as React text, without HTML parsing, clickable source URLs or remote embeds.
+
 Compose is a local development configuration. PostgreSQL, Redis, mail and proxy
 ports bind only to loopback. The backend and web run as non-root users in containers.
 Before deploying, configure HTTPS, production settings/hosts, proxy trust, HSTS,

@@ -32,7 +32,7 @@ function DocumentList({ workspace }: { workspace: Workspace }) {
   return <section>
     <p className="eyebrow">YOUR SOURCES, CLOSE AT HAND</p>
     <div className="section-heading"><h1>Documents</h1><button onClick={documents.reload}>Refresh documents</button></div>
-    <p className="muted">Upload PDF or UTF-8 text, then inspect the original evidence. Search and answers come next.</p>
+    <p className="muted">Upload PDF, Word, Markdown or plain text, then inspect the original evidence. Search and answers come next.</p>
     <ErrorNotice error={collections.error} retry={collections.reload} />
     {writable.length > 0 && <UploadForm collections={writable} workspace={workspace} />}
     {collections.data && <>
@@ -80,9 +80,9 @@ function UploadForm({ collections, workspace }: { collections: Collection[]; wor
     <select id="upload-collection" name="collection" disabled={action.busy} onChange={() => { uploadId.current = null; }}>
       {collections.map((collection) => <option key={collection.id} value={collection.id}>{collection.title}</option>)}
     </select>
-    <label htmlFor="source-file">PDF or TXT file</label>
-    <input id="source-file" name="file" type="file" accept=".pdf,.txt" required disabled={action.busy} onChange={() => { uploadId.current = null; }} aria-describedby="upload-limits" />
-    <p id="upload-limits" className="field-note">Up to 25 MiB, 100 PDF pages. Files stay private to this collection. Scanned pages need OCR, which is coming next.</p>
+    <label htmlFor="source-file">Document file</label>
+    <input id="source-file" name="file" type="file" accept=".pdf,.docx,.txt,.md" required disabled={action.busy} onChange={() => { uploadId.current = null; }} aria-describedby="upload-limits" />
+    <p id="upload-limits" className="field-note">PDF, DOCX, TXT or Markdown. Up to 25 MiB, 100 PDF pages. Text files must use UTF-8. Files stay private to this collection. Scanned pages need OCR, which is coming next.</p>
     <ErrorNotice error={action.error} />
     <button className="primary-button" disabled={action.busy}>{action.busy ? "Uploading and queuing…" : "Upload document"}</button>
   </form>;
@@ -122,7 +122,15 @@ function SourceViewer({ workspace, id }: { workspace: Workspace; id: string }) {
   </section>;
 }
 
-type Locator = { line?: number; page?: number; bbox?: number[] };
+type Locator = { line?: number; page?: number; bbox?: number[]; paragraph?: number; table?: number; row?: number; cell?: number; headingPath?: string[] };
+
+function locationLabel(block: SourceBlock) {
+  const location = block.locator as Locator;
+  if (location.page) return `Page ${location.page}`;
+  if (location.table) return `Table ${location.table}, row ${location.row}, cell ${location.cell} · Paragraph ${location.paragraph}`;
+  if (location.paragraph) return `Paragraph ${location.paragraph}`;
+  return `Line ${location.line}`;
+}
 
 function SourceContent({ document }: { document: DocumentSource }) {
   const [page, setPage] = useState(1);
@@ -146,19 +154,22 @@ function SourceContent({ document }: { document: DocumentSource }) {
     <div className={`source-reader ${pdf ? "pdf-reader" : ""}`}>
       <section className={`extracted-panel ${panel === "page" ? "mobile-hidden" : ""}`} aria-label="Extracted text">
         <h2>Extracted text</h2><p className="field-note">Select a passage to inspect its source location. Text is preserved without changing Unicode characters.</p>
+        {document.kind === "MD" && <p className="field-note">Markdown is shown as source text. HTML, links and remote images stay inactive.</p>}
+        {document.kind === "DOCX" && <p className="field-note">Word references use body paragraph and table-cell positions. Download the original to compare layout and formatting.</p>}
         <ErrorNotice error={blocks.error} retry={blocks.reload} />
         {!blocks.data && !blocks.error && <Loading>Loading source passages…</Loading>}
         {blocks.data && <>
           {!blocks.data.results.length && <p>No text was extracted from this page.</p>}
           <div className="source-passages">
             {blocks.data.results.map((block) => <button id={`block-${block.id}`} className="source-passage" aria-pressed={selected?.id === block.id} key={block.id} onClick={(event) => { setSelected(block); selectedButton.current = event.currentTarget; }}>
-              <small>{pdf ? `Page ${(block.locator as Locator).page}` : `Line ${(block.locator as Locator).line}`}</small>
+              <small>{locationLabel(block)}</small>
+              {(block.locator as Locator).headingPath?.length ? <small>{(block.locator as Locator).headingPath!.join(" › ")}</small> : null}
               <span>{block.text}</span>
             </button>)}
           </div>
           <Pagination page={blocks.data} onPage={(path) => { setCursor({ base, path }); setSelected(undefined); }} />
         </>}
-        {selected && <p role="status">Selected {pdf ? `page ${page}` : `line ${(selected.locator as Locator).line}`}. {pdf ? "The passage is highlighted on the source page." : "The highlight follows the original line number."}</p>}
+        {selected && <p role="status">Selected {locationLabel(selected)}. {pdf ? "The passage is highlighted on the source page." : "The selected passage retains its original source reference."}</p>}
       </section>
       {pdf && <section className={`page-panel ${panel === "text" ? "mobile-hidden" : ""}`} aria-label="Original page preview">
         <h2>Source page {page}</h2>

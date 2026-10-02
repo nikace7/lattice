@@ -23,3 +23,9 @@ Browser tests also upload Nepali text and a native PDF through the real parser,
 check source highlights/focus return, and deny signed-out downloads. Start
 `pnpm parser:up` before running them. Citation/indexing and lifecycle gates remain
 in `docs/BLUEPRINT.md`.
+
+Without Docker, run `uv run --project backend pytest backend/tests/test_document_formats.py`
+and `pnpm --filter @lattice/web test`. These check real DOCX/Markdown parsing,
+Unicode/anchor preservation, unsafe ZIP/XML rejection, existing PDF/TXT behavior,
+and source-viewer references/inactive embeds. API tests for new formats are in the
+PostgreSQL suite and remain separate from these isolated checks.

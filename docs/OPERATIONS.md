@@ -51,11 +51,25 @@ page, and a 1 GiB container limit. Rebuild it after changes to `backend/pipeline
 On Linux, grant the host user and container UID 10001 access to the private spool
 directory; do not expose it through the web server or make it world-writable.
 
-Uploads allow PDF or UTF-8 TXT, 25 MiB/file, 100 PDF pages, 2 million extracted
+Uploads allow PDF, DOCX or UTF-8 TXT/Markdown, 25 MiB/file, 100 PDF pages, 2 million extracted
 characters and 20,000 blocks. Workspaces allow 500 sources and default to 2 GiB of
 original files (`MAX_WORKSPACE_STORAGE_BYTES`); previews and failed-attempt artifacts
 are additional disk usage. Encrypted PDFs are rejected. Scans/low-text pages need
 review; OCR and indexing are not part of R2. Each document has one immutable source.
+
+The first R3 slice adds `.docx` and `.md`. DOCX ZIP metadata is capped at 100 MiB
+expanded/10,000 entries; each parsed XML part is capped at 16 MiB. DTD/entities,
+encrypted ZIP entries, macros, duplicate paths and unsafe member names are rejected.
+No ZIP member is extracted to disk and no external relationship is resolved.
+Standard `word/document.xml` packages support body paragraphs and top-level tables.
+Paragraph indices count body XML paragraphs, including empty and table paragraphs;
+row/cell numbers are XML positions, not reconstructed merged-cell coordinates.
+Built-in Heading1–Heading9 styles provide heading paths (labels capped at 240 characters).
+Headers, footers, notes, nested tables, embedded objects and complex content produce
+review warnings where detected. This is text inspection, not Word layout rendering.
+Markdown keeps literal syntax and original line offsets; it never renders active HTML
+or loads remote images. Apply the source-kind migration and rebuild parser/workers
+before using the new formats. R3 OCR, partial acceptance and indexing remain pending.
 
 The source viewer reports queued, extracting, extracted, needs-review or failed.
 Retry transient failures after restoring the parser/broker; jobs stuck for ten

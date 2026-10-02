@@ -80,7 +80,7 @@ class UploadView(APIView):
                 "Use a filename under 200 characters and a file no larger than 25 MiB."
             )
         suffix = PurePosixPath(filename).suffix.lower()
-        kind = {".pdf": "PDF", ".txt": "TXT"}.get(suffix)
+        kind = {".pdf": "PDF", ".docx": "DOCX", ".txt": "TXT", ".md": "MD"}.get(suffix)
         content = upload.read(MAX_BYTES + 1)
         try:
             validate_bytes(content, kind)

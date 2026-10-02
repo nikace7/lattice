@@ -21,7 +21,10 @@ class SourceVersion(models.Model):
     # R2 has one immutable source per document; replacement/version selection is R6.
     document = models.OneToOneField(Document, on_delete=models.CASCADE, related_name="source")
     filename = models.CharField(max_length=200)
-    kind = models.CharField(max_length=3, choices=[("PDF", "PDF"), ("TXT", "Text")])
+    kind = models.CharField(
+        max_length=4,
+        choices=[("PDF", "PDF"), ("DOCX", "Word document"), ("TXT", "Text"), ("MD", "Markdown")],
+    )
     byte_size = models.PositiveIntegerField()
     sha256 = models.CharField(max_length=64)
     created_at = models.DateTimeField(auto_now_add=True)
