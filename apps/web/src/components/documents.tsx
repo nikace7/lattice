@@ -9,6 +9,7 @@ import { ErrorNotice, Loading, Pagination, useAction, useResource } from "./reso
 const states: Record<string, string> = {
   QUEUED: "Queued for extraction", EXTRACTING: "Extracting text",
   EXTRACTED: "Text extracted", NEEDS_REVIEW: "Needs review", FAILED: "Extraction failed",
+  REVIEWED: "Extraction review accepted",
 };
 
 export function Documents({ workspace, documentId }: { workspace: Workspace; documentId?: string }) {
@@ -82,7 +83,12 @@ function UploadForm({ collections, workspace }: { collections: Collection[]; wor
     </select>
     <label htmlFor="source-file">Document file</label>
     <input id="source-file" name="file" type="file" accept=".pdf,.docx,.txt,.md" required disabled={action.busy} onChange={() => { uploadId.current = null; }} aria-describedby="upload-limits" />
-    <p id="upload-limits" className="field-note">PDF, DOCX, TXT or Markdown. Up to 25 MiB, 100 PDF pages. Text files must use UTF-8. Files stay private to this collection. Scanned pages need OCR, which is coming next.</p>
+    <p id="upload-limits" className="field-note">PDF, DOCX, TXT or Markdown. Up to 25 MiB, 100 PDF pages. Text files must use UTF-8. Files stay private to this collection.</p>
+    <label htmlFor="ocr-language">Scanned PDF language</label>
+    <select id="ocr-language" name="ocrLanguage" disabled={action.busy} onChange={() => { uploadId.current = null; }}>
+      <option value="eng">English</option><option value="nep">Nepali</option><option value="eng+nep">English + Nepali</option>
+    </select>
+    <p className="field-note">Pages with little native text use OCR and require review. Other file types ignore this setting.</p>
     <ErrorNotice error={action.error} />
     <button className="primary-button" disabled={action.busy}>{action.busy ? "Uploading and queuing…" : "Upload document"}</button>
   </form>;
@@ -104,7 +110,7 @@ function SourceViewer({ workspace, id }: { workspace: Workspace; id: string }) {
     {document.data && <>
       <p className="eyebrow">SOURCE VERSION 1</p>
       <h1 className="source-title">{document.data.title}</h1>
-      <p className="source-status" role="status">{states[document.data.state]}{["EXTRACTED", "NEEDS_REVIEW"].includes(document.data.state) ? " · Not indexed for search yet" : ""}</p>
+      <p className="source-status" role="status">{states[document.data.state]}{["EXTRACTED", "NEEDS_REVIEW", "REVIEWED"].includes(document.data.state) ? " · Not indexed for search yet" : ""}</p>
       <div className="source-actions">
         <a href={`/api/v1/sources/${document.data.sourceId}/original`} download>Download original</a>
         <button onClick={document.reload}>Refresh source</button>
@@ -115,14 +121,44 @@ function SourceViewer({ workspace, id }: { workspace: Workspace; id: string }) {
       </div>
       {document.data.error && <p className="error-notice" role="alert">{document.data.error}</p>}
       <ErrorNotice error={action.error} />
-      {document.data.warnings.length > 0 && <div className="source-warnings"><h2>Review needed</h2><ul>{document.data.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></div>}
+      {document.data.warnings.length > 0 && <div className="source-warnings"><h2>Extraction warnings</h2><ul>{document.data.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></div>}
+      {document.data.state === "REVIEWED" && <div className="source-warnings"><h2>{document.data.excludedPages.length ? "Partial extraction accepted" : "Extraction accepted"}</h2><p>{document.data.excludedPages.length ? `Excluded pages: ${document.data.excludedPages.join(", ")}.` : "All pages included."} Search indexing is still pending.</p><p>Review note: {document.data.reviewReason}</p></div>}
+      {document.data.canWrite && document.data.kind === "PDF" && document.data.state === "NEEDS_REVIEW" && document.data.pageReports.length > 0 && <ReviewForm key={document.data.revision} document={document.data} onAccepted={document.reload} />}
       {["QUEUED", "EXTRACTING"].includes(document.data.state) && <p>Extraction runs in the background. This page refreshes automatically. A stuck job can be retried after 10 minutes.</p>}
-      {["EXTRACTED", "NEEDS_REVIEW"].includes(document.data.state) && <SourceContent document={document.data} />}
+      {["EXTRACTED", "NEEDS_REVIEW", "REVIEWED"].includes(document.data.state) && <SourceContent document={document.data} />}
     </>}
   </section>;
 }
 
 type Locator = { line?: number; page?: number; bbox?: number[]; paragraph?: number; table?: number; row?: number; cell?: number; headingPath?: string[] };
+type PageReport = { page: number; status: string; preview: boolean; confidence: number | null; language: string; engine: string };
+
+function ReviewForm({ document, onAccepted }: { document: DocumentSource; onAccepted: () => void }) {
+  const reports = document.pageReports as PageReport[];
+  const required = reports.filter((page) => ["FAILED", "EMPTY"].includes(page.status)).map((page) => page.page);
+  const [excluded, setExcluded] = useState(required);
+  const action = useAction();
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const values = new FormData(event.currentTarget);
+    void action.run(async () => {
+      await api(`/documents/${document.id}/accept-review`, "POST", { expectedRevision: document.revision, excludedPages: excluded, reason: values.get("reason") });
+      onAccepted();
+    });
+  }
+  return <form className="upload-form" onSubmit={submit} aria-label="Review extraction">
+    <h2>Review extracted pages</h2>
+    <p>Compare the text with the source below. Failed or empty pages must be excluded. Accepted text is not indexed for search yet.</p>
+    <fieldset disabled={action.busy}><legend>Pages to exclude</legend>
+      {reports.map((page) => <label className="checkbox-label" key={page.page}><input type="checkbox" checked={excluded.includes(page.page)} disabled={required.includes(page.page)} onChange={(event) => setExcluded(event.target.checked ? [...excluded, page.page] : excluded.filter((n) => n !== page.page))} /> Exclude page {page.page} ({page.status.toLowerCase()}{required.includes(page.page) ? "; required" : ""})</label>)}
+    </fieldset>
+    <label htmlFor="review-reason">Review note</label>
+    <textarea id="review-reason" name="reason" required maxLength={1000} disabled={action.busy} />
+    <ErrorNotice error={action.error} />
+    <button className="primary-button" disabled={action.busy || excluded.length === reports.length}>{action.busy ? "Saving review…" : "Accept extraction"}</button>
+    {excluded.length === reports.length && <p>All pages are excluded. Upload a corrected file to continue.</p>}
+  </form>;
+}
 
 function locationLabel(block: SourceBlock) {
   const location = block.locator as Locator;
@@ -142,6 +178,7 @@ function SourceContent({ document }: { document: DocumentSource }) {
   const blocks = useResource<Page<SourceBlock>>(cursor?.base === base ? cursor.path : base);
   const box = (selected?.locator as Locator | undefined)?.bbox;
   const pdf = document.kind === "PDF";
+  const report = (document.pageReports as PageReport[]).find((item) => item.page === page);
   return <>
     {pdf && <div className="source-actions">
       <label htmlFor="physical-page">Physical page</label>
@@ -156,6 +193,8 @@ function SourceContent({ document }: { document: DocumentSource }) {
         <h2>Extracted text</h2><p className="field-note">Select a passage to inspect its source location. Text is preserved without changing Unicode characters.</p>
         {document.kind === "MD" && <p className="field-note">Markdown is shown as source text. HTML, links and remote images stay inactive.</p>}
         {document.kind === "DOCX" && <p className="field-note">Word references use body paragraph and table-cell positions. Download the original to compare layout and formatting.</p>}
+        {report?.status === "OCR" && <p className="field-note">OCR language: {report.language}. Engine confidence: {report.confidence ?? "unavailable"}{report.confidence !== null ? "%" : ""}. This is not a measured accuracy score; compare the text with the page.</p>}
+        {document.excludedPages.includes(page) && pdf && <p className="source-warnings">This page is excluded from the accepted extraction. Its original text remains available for inspection.</p>}
         <ErrorNotice error={blocks.error} retry={blocks.reload} />
         {!blocks.data && !blocks.error && <Loading>Loading source passages…</Loading>}
         {blocks.data && <>
@@ -174,12 +213,12 @@ function SourceContent({ document }: { document: DocumentSource }) {
       {pdf && <section className={`page-panel ${panel === "text" ? "mobile-hidden" : ""}`} aria-label="Original page preview">
         <h2>Source page {page}</h2>
         <p className="field-note">Original page image. Native extraction can misread complex layouts; compare it with the text.</p>
-        <div className="pdf-page">
+        {report && !report.preview ? <p>Preview unavailable for this page. Download the original to inspect it.</p> : <div className="pdf-page">
           {/* Same-origin, permission-checked image; Next image optimization must not cache private sources. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={`/api/v1/sources/${document.sourceId}/pages/${page}`} alt={`Original page ${page} of ${document.title}. Extracted text is available alongside this image.`} />
           {box && <div className="source-highlight" role="img" aria-label="Selected source passage" style={{ left: `${box[0] * 100}%`, top: `${box[1] * 100}%`, width: `${(box[2] - box[0]) * 100}%`, height: `${(box[3] - box[1]) * 100}%` }} />}
-        </div>
+        </div>}
         <button className="source-tab" onClick={() => { setPanel("text"); requestAnimationFrame(() => selectedButton.current?.focus()); }}>Back to extracted text</button>
       </section>}
     </div>

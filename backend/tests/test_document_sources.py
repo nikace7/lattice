@@ -43,7 +43,9 @@ def upload(client, collection, body=b"First line\r\nSecond line\n", name="policy
 def local_parser(source):
     from modules.documents.storage import source_path
 
-    return extract(source_path(source), source.kind, source_path(source).parent)
+    return extract(
+        source_path(source), source.kind, source_path(source).parent, source.ocr_language
+    )
 
 
 def process(document_id):
@@ -295,3 +297,52 @@ def test_password_encryption_is_rejected(tmp_path, filename):
     path = Path(__file__).resolve().parents[2] / "fixtures" / "corpus" / filename
     with pytest.raises(InvalidSource, match="Password-protected"):
         extract(path, "PDF", tmp_path)
+
+
+def test_partial_review_enforces_access_revision_and_exclusions(library):
+    from modules.documents.models import ExtractionVersion, SourceBlock
+
+    client, reader, collection = library
+    response = upload(client, collection, pdf_bytes(pages=2), "scan.pdf", ocrLanguage="nep")
+    document = Document.objects.get(pk=response.data["id"])
+    assert document.source.ocr_language == "nep"
+    job = document.source.job
+    job.state = "NEEDS_REVIEW"
+    job.save()
+    extraction = ExtractionVersion.objects.create(
+        source=document.source,
+        parser_version="test",
+        page_count=2,
+        page_reports=[{"page": 1, "status": "OCR"}, {"page": 2, "status": "FAILED"}],
+        warnings=["Review OCR"],
+    )
+    SourceBlock.objects.create(
+        extraction=extraction,
+        position=0,
+        text="Text",
+        original_text="Text",
+        locator={"page": 1},
+        span_map=[[0, 4, 0, 4]],
+    )
+    path = f"/api/v1/documents/{document.pk}/accept-review"
+    payload = {"expectedRevision": 1, "excludedPages": [2], "reason": "Checked against source"}
+    other = APIClient()
+    other.force_login(reader)
+    assert other.post(path, payload, format="json").status_code == 403
+    collection.access = "RESTRICTED"
+    collection.save()
+    assert other.post(path, payload, format="json").status_code == 404
+    assert client.post(path, {**payload, "expectedRevision": 9}, format="json").status_code == 409
+    assert client.post(path, {**payload, "excludedPages": []}, format="json").status_code == 400
+    assert client.post(path, {**payload, "excludedPages": [1, 2]}, format="json").status_code == 400
+    assert client.post(path, {**payload, "reason": " "}, format="json").status_code == 400
+    accepted = client.post(path, payload, format="json")
+    assert accepted.status_code == 200, accepted.data
+    assert accepted.data["state"] == "REVIEWED"
+    assert accepted.data["excludedPages"] == [2]
+    assert accepted.data["revision"] == 2
+    extraction.refresh_from_db()
+    assert extraction.accepted_by_id == document.created_by_id
+    assert extraction.accepted_at and extraction.review_reason == payload["reason"]
+    assert client.post(path, payload, format="json").status_code == 409
+    assert client.post(path, {**payload, "expectedRevision": 2}, format="json").status_code == 409

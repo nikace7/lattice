@@ -2,6 +2,7 @@
 
 import json
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -14,15 +15,25 @@ ROOT = Path(sys.argv[1]).resolve()
 
 def run(directory):
     try:
-        subprocess.run(
+        process = subprocess.Popen(
             [sys.executable, str(Path(__file__).with_name("source_parser.py")), str(directory)],
             cwd=directory,
             env={"PATH": os.defpath, "PYTHONUNBUFFERED": "1"},
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            timeout=305,
-            check=True,
+            stdin=subprocess.DEVNULL,
+            start_new_session=True,
         )
+        try:
+            if process.wait(timeout=305) != 0:
+                raise subprocess.SubprocessError("Parser failed")
+        finally:
+            # This group belongs only to this job, including any Tesseract child.
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            process.wait()
         if (directory / "result.json").exists():
             return
     except (subprocess.SubprocessError, OSError):

@@ -22,8 +22,8 @@ from modules.workspaces.api import audit, locked_collection, validated
 from modules.workspaces.serializers import RevisionInput
 from pipeline.source_parser import MAX_BYTES, InvalidSource, validate_bytes
 
-from .models import Document, ExtractionJob, SourceBlock, SourceVersion
-from .serializers import BlockData, DocumentData, UploadInput
+from .models import Document, ExtractionJob, ExtractionVersion, SourceBlock, SourceVersion
+from .serializers import BlockData, DocumentData, ReviewInput, UploadInput
 from .storage import source_directory, source_path
 from .tasks import enqueue
 
@@ -100,6 +100,7 @@ class UploadView(APIView):
                         or existing.created_by_id != request.user.pk
                         or existing.source.sha256 != digest
                         or existing.source.filename != filename
+                        or existing.source.ocr_language != data.validated_data["ocrLanguage"]
                     ):
                         raise Conflict(
                             "This upload identifier was already used for a different file."
@@ -128,6 +129,7 @@ class UploadView(APIView):
                     kind=kind,
                     byte_size=len(content),
                     sha256=digest,
+                    ocr_language=data.validated_data["ocrLanguage"],
                 )
                 job = ExtractionJob.objects.create(source=source)
                 source_directory(source).mkdir(parents=True, exist_ok=False)
@@ -184,6 +186,55 @@ class RetryView(APIView):
         document.save(update_fields=["revision"])
         audit(member.workspace, request.user, "document.retried", document)
         transaction.on_commit(lambda: enqueue(str(job.source_id), str(job.attempt)))
+        return Response(
+            DocumentData(
+                readable_documents(request.user).get(pk=document.pk), context={"request": request}
+            ).data
+        )
+
+
+def validate_review_pages(reports, excluded, page_count):
+    if len(reports) != page_count or page_count < 1:
+        raise ValidationError(
+            "This extraction has no complete page report. Upload the source again."
+        )
+    required = {p["page"] for p in reports if p["status"] in {"FAILED", "EMPTY"}}
+    if any(page > page_count for page in excluded) or not required.issubset(excluded):
+        raise ValidationError("Exclude every failed or empty page and choose valid page numbers.")
+
+
+class AcceptReviewView(APIView):
+    @extend_schema(request=ReviewInput, responses=DocumentData)
+    @transaction.atomic
+    def post(self, request, document_id):
+        document = get_object_or_404(readable_documents(request.user), pk=document_id)
+        member, collection = locked_collection(request.user, document.collection_id)
+        if not can_write(collection, member):
+            raise PermissionDenied("You need contribution access to accept extraction.")
+        data = validated(ReviewInput, request)
+        document.refresh_from_db()
+        if data["expectedRevision"] != document.revision:
+            raise Conflict()
+        job = ExtractionJob.objects.select_for_update().get(source__document=document)
+        if document.source.kind != "PDF" or job.state != "NEEDS_REVIEW":
+            raise Conflict("This PDF extraction is not awaiting review.")
+        extraction = ExtractionVersion.objects.select_for_update().get(source=document.source)
+        excluded = data["excludedPages"]
+        validate_review_pages(extraction.page_reports, excluded, extraction.page_count)
+        if not extraction.blocks.exclude(locator__page__in=excluded).exists():
+            raise ValidationError("At least one included page must contain extracted text.")
+        extraction.excluded_pages = excluded
+        extraction.review_reason = data["reason"]
+        extraction.accepted_by = request.user
+        extraction.accepted_at = timezone.now()
+        extraction.save(
+            update_fields=["excluded_pages", "review_reason", "accepted_by", "accepted_at"]
+        )
+        job.state = "REVIEWED"
+        job.save(update_fields=["state", "updated_at"])
+        document.revision += 1
+        document.save(update_fields=["revision"])
+        audit(member.workspace, request.user, "document.extraction_accepted", document)
         return Response(
             DocumentData(
                 readable_documents(request.user).get(pk=document.pk), context={"request": request}

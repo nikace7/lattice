@@ -3,6 +3,7 @@
 A cited knowledge workspace built with Next.js, Django, PostgreSQL/pgvector,
 and Celery. Accounts, workspaces, collection organization and access management
 are implemented, along with private PDF/DOCX/TXT/Markdown uploads and source inspection.
+Low-text PDF pages support English/Nepali OCR with explicit extraction review and page exclusions.
 Search and answer generation are not implemented yet.
 The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
 observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).
