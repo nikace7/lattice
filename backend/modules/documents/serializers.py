@@ -8,6 +8,20 @@ from .models import Document, SourceBlock
 class UploadInput(serializers.Serializer):
     uploadId = serializers.UUIDField()
     file = serializers.FileField()
+    ocrLanguage = serializers.ChoiceField(choices=["eng", "nep", "eng+nep"], default="eng")
+
+
+class ReviewInput(serializers.Serializer):
+    expectedRevision = serializers.IntegerField(min_value=1)
+    excludedPages = serializers.ListField(
+        child=serializers.IntegerField(min_value=1, max_value=100), max_length=100
+    )
+    reason = serializers.CharField(max_length=1000, allow_blank=False)
+
+    def validate_excludedPages(self, value):
+        if len(set(value)) != len(value):
+            raise serializers.ValidationError("Choose each excluded page only once.")
+        return sorted(value)
 
 
 class DocumentData(serializers.ModelSerializer):
@@ -19,6 +33,10 @@ class DocumentData(serializers.ModelSerializer):
     state = serializers.CharField(source="source.job.state")
     error = serializers.CharField(source="source.job.error")
     retryable = serializers.BooleanField(source="source.job.retryable")
+    ocrLanguage = serializers.CharField(source="source.ocr_language")
+    pageReports = serializers.SerializerMethodField()
+    excludedPages = serializers.SerializerMethodField()
+    reviewReason = serializers.SerializerMethodField()
     pageCount = serializers.SerializerMethodField()
     warnings = serializers.SerializerMethodField()
     canWrite = serializers.SerializerMethodField()
@@ -38,6 +56,10 @@ class DocumentData(serializers.ModelSerializer):
             "state",
             "error",
             "retryable",
+            "ocrLanguage",
+            "pageReports",
+            "excludedPages",
+            "reviewReason",
             "pageCount",
             "warnings",
             "canWrite",
@@ -50,6 +72,15 @@ class DocumentData(serializers.ModelSerializer):
 
     def get_warnings(self, obj) -> list[str]:
         return obj.source.extraction.warnings if hasattr(obj.source, "extraction") else []
+
+    def get_pageReports(self, obj) -> list[dict]:
+        return obj.source.extraction.page_reports if hasattr(obj.source, "extraction") else []
+
+    def get_excludedPages(self, obj) -> list[int]:
+        return obj.source.extraction.excluded_pages if hasattr(obj.source, "extraction") else []
+
+    def get_reviewReason(self, obj) -> str:
+        return obj.source.extraction.review_reason if hasattr(obj.source, "extraction") else ""
 
     def get_canWrite(self, obj) -> bool:
         return can_write(

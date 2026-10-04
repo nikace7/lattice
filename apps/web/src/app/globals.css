@@ -60,6 +60,7 @@ p {
 }
 button,
 input,
+textarea,
 select {
   font: inherit;
   border: 1px solid var(--color-control-border);
@@ -80,6 +81,7 @@ button:disabled {
   opacity: 0.6;
 }
 input,
+textarea,
 select {
   width: 100%;
   padding: 10px 12px;
@@ -723,7 +725,8 @@ small {
 .invitation-list small { display: block; }
 .document-main { grid-column: 2 / -1; min-width: 0; }
 .upload-form { margin: 24px 0; padding: 24px; background: white; border: 1px solid var(--color-border); border-radius: 8px; display: grid; gap: 12px; max-width: 680px; }
-.upload-form input, .upload-form select { width: 100%; min-width: 0; }
+.upload-form input:not([type="checkbox"]), .upload-form select { width: 100%; min-width: 0; }
+.upload-form textarea { min-height: 96px; resize: vertical; }
 .document-list { margin-top: 24px; }
 .document-list .workspace-row { grid-template-columns: auto minmax(0, 1fr) auto; }
 .document-list strong, .source-title { overflow-wrap: anywhere; }

@@ -19,8 +19,8 @@ Implemented:
 
 R1 is implemented: accounts, workspace membership, collection authorization,
 account recovery and invitations. R2 is implemented with final Docker-dependent
-integration validation deferred by the user. R3 document formats are implemented;
-OCR/indexing and R4–R8 remain pending. The ingestion worker
+integration validation deferred by the user. R3 document formats and OCR/review are implemented;
+indexing and R4–R8 remain pending. The ingestion worker
 delivers recovery email and document extraction; generation remains future work.
 
 ## Verification
@@ -166,3 +166,29 @@ remain deferred under the user's instruction to skip Docker for now.
 Next R3 work: OCR with language/confidence metadata, partial-extraction acceptance,
 job cancellation/recovery, tokenizer-bounded chunking and real pinned embeddings.
 No new searchable-index or full R3 completion claim is made by this format slice.
+
+## R3 second slice: OCR and extraction review — 4 October 2026
+
+- Added English/Nepali/bilingual OCR for low-text PDF pages, with normalized line
+  boxes, identity Unicode spans, engine version and confidence metadata. Every OCR
+  result requires review; confidence is not presented as measured accuracy.
+- Per-page extraction failures preserve successful pages. Explicit page exclusions
+  and a required review note allow owners/curators to accept partial PDF extraction.
+  Acceptance records reviewer/time, checks current permissions and revision, and
+  retains original pages for inspection. Accepted extraction is not yet indexed.
+- Parser-only Tesseract packages, bounded TSV output, page deadlines, one OCR thread,
+  process-group cleanup and worker validation retain the offline parser boundary.
+
+Validation: 25 database-free parser/review tests, 5 web unit tests and the setup test
+passed. Lint/format, TypeScript, Django system checks, contract generation, offline
+migration-state comparison and the production web build passed. A real
+Tesseract 5.5.0 smoke run in WSL Ubuntu using `eng+nep` recognized the complete
+synthetic English test sentence; its TSV was decoded by the application. This is
+not a Nepali accuracy evaluation or a test of the Debian parser container.
+PostgreSQL/API review tests are added but execution, migration application, browser
+integration and rebuilding/testing the OCR container remain deferred at the user's
+request to skip Docker. No full R3 completion claim is made.
+
+Next: ingestion cancellation/recovery, tokenizer-bounded chunking and pinned real
+embeddings, then index activation and retrieval. Indexing must honor accepted page
+exclusions and keep unreviewed extraction out of searchable results.

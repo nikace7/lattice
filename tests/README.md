@@ -24,8 +24,14 @@ check source highlights/focus return, and deny signed-out downloads. Start
 `pnpm parser:up` before running them. Citation/indexing and lifecycle gates remain
 in `docs/BLUEPRINT.md`.
 
-Without Docker, run `uv run --project backend pytest backend/tests/test_document_formats.py`
+Without Docker, run `uv run --project backend pytest backend/tests/test_document_formats.py backend/tests/test_ocr_review.py`
 and `pnpm --filter @lattice/web test`. These check real DOCX/Markdown parsing,
 Unicode/anchor preservation, unsafe ZIP/XML rejection, existing PDF/TXT behavior,
 and source-viewer references/inactive embeds. API tests for new formats are in the
 PostgreSQL suite and remain separate from these isolated checks.
+
+OCR tests cover Unicode/quoted TSV text, line boxes/confidence, bounded timeouts,
+per-page failures, retained successful pages and worker report validation. Web tests
+cover mandatory exclusions, review notes/revisions and read-only access. PostgreSQL
+review tests additionally cover current permissions, stale/replayed acceptance,
+exclusion rules and reviewer provenance; these remain deferred while Docker is skipped.

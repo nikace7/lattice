@@ -55,7 +55,7 @@ Uploads allow PDF, DOCX or UTF-8 TXT/Markdown, 25 MiB/file, 100 PDF pages, 2 mil
 characters and 20,000 blocks. Workspaces allow 500 sources and default to 2 GiB of
 original files (`MAX_WORKSPACE_STORAGE_BYTES`); previews and failed-attempt artifacts
 are additional disk usage. Encrypted PDFs are rejected. Scans/low-text pages need
-review; OCR and indexing are not part of R2. Each document has one immutable source.
+review. Each document has one immutable source; indexing remains pending.
 
 The first R3 slice adds `.docx` and `.md`. DOCX ZIP metadata is capped at 100 MiB
 expanded/10,000 entries; each parsed XML part is capped at 16 MiB. DTD/entities,
@@ -69,9 +69,26 @@ Headers, footers, notes, nested tables, embedded objects and complex content pro
 review warnings where detected. This is text inspection, not Word layout rendering.
 Markdown keeps literal syntax and original line offsets; it never renders active HTML
 or loads remote images. Apply the source-kind migration and rebuild parser/workers
-before using the new formats. R3 OCR, partial acceptance and indexing remain pending.
+before using the new formats.
 
-The source viewer reports queued, extracting, extracted, needs-review or failed.
+R3 OCR uses the parser-only image target with English/Nepali Tesseract language packs.
+Apply document migration `0003` and rebuild parser/API/workers together before using
+the OCR review flow. Choose English, Nepali or English + Nepali at upload; the choice
+is immutable for this source. Pages with fewer than 20 native non-whitespace characters
+use OCR at up to 150 DPI (4 million pixels). Each page shares a 30-second deadline
+across extraction, rendering and OCR. TSV output is limited to 8 MiB; total previews
+remain limited to 25 MiB. OCR confidence is an engine score, not measured accuracy.
+The extraction records engine version, language, confidence and per-page status.
+
+Owners/curators with current contribution access can accept reviewed PDF extraction.
+They must exclude every failed/empty page, retain some extracted text, and provide
+a review note. Acceptance checks the document revision and stores reviewer/time,
+exclusions and reason. All original pages remain inspectable. `REVIEWED` means
+review accepted; it does not mean indexed or searchable. Future indexing must omit
+excluded pages. Existing extractions without page reports require a new upload.
+DOCX warnings still require inspection; PDF page acceptance does not apply to DOCX.
+
+The source viewer reports queued, extracting, extracted, needs-review, reviewed or failed.
 Retry transient failures after restoring the parser/broker; jobs stuck for ten
 minutes can be retried. Attempt IDs prevent old workers publishing after a retry.
 Requests normally remove their temporary spool directory on completion. Worker

@@ -42,7 +42,9 @@ def parse_source(source):
     directory.mkdir()
     try:
         shutil.copyfile(source_path(source), directory / "input")
-        (directory / "request.tmp").write_text(source.kind)
+        (directory / "request.tmp").write_text(
+            json.dumps({"kind": source.kind, "ocrLanguage": source.ocr_language})
+        )
         (directory / "request.tmp").rename(directory / "request")
         deadline = time.monotonic() + settings.PARSER_TIMEOUT_SECONDS
         result_path = directory / "result.json"
@@ -61,7 +63,10 @@ def parse_source(source):
         artifact = source_directory(source) / str(source.job.attempt)
         artifact.mkdir(exist_ok=True)
         preview_bytes = 0
-        for page in range(1, result["pageCount"] + 1):
+        for report in result["pageReports"]:
+            if not report["preview"]:
+                continue
+            page = report["page"]
             image = directory / f"page-{page}.png"
             if image.is_symlink() or image.stat().st_size > 16 * 1024**2:
                 raise InvalidSource("Invalid page preview.")
@@ -87,8 +92,41 @@ def validate_result(result, kind):
         or not 0 <= result["pageCount"] <= 100
     ):
         raise InvalidSource("Invalid extraction result.")
-    if kind not in {"PDF", "DOCX", "TXT", "MD"} or (kind != "PDF" and result["pageCount"] != 0):
+    if (
+        kind not in {"PDF", "DOCX", "TXT", "MD"}
+        or (kind != "PDF" and result["pageCount"] != 0)
+        or (kind == "PDF" and result["pageCount"] == 0)
+    ):
         raise InvalidSource("Invalid extraction format or page count.")
+    reports = result.get("pageReports")
+    if not isinstance(reports, list) or len(reports) != result["pageCount"]:
+        raise InvalidSource("Invalid extraction page reports.")
+    for number, report in enumerate(reports, 1):
+        if (
+            not isinstance(report, dict)
+            or report.get("page") != number
+            or report.get("status") not in {"NATIVE", "OCR", "EMPTY", "FAILED"}
+            or not isinstance(report.get("preview"), bool)
+            or report.get("language") not in {"", "eng", "nep", "eng+nep"}
+            or not isinstance(report.get("engine"), str)
+            or len(report["engine"]) > 80
+            or (
+                report.get("confidence") is not None
+                and (
+                    not isinstance(report["confidence"], (int, float))
+                    or not 0 <= report["confidence"] <= 100
+                )
+            )
+        ):
+            raise InvalidSource("Invalid extraction page report.")
+        if report["status"] in {"NATIVE", "OCR", "EMPTY"} and not report["preview"]:
+            raise InvalidSource("Successful page extraction requires a preview.")
+        if report["status"] in {"OCR", "EMPTY"} and (
+            not report["language"]
+            or not report["engine"]
+            or (report["status"] == "OCR" and report.get("confidence") is None)
+        ):
+            raise InvalidSource("OCR provenance is incomplete.")
     blocks = result.get("blocks")
     if not isinstance(blocks, list) or len(blocks) > MAX_BLOCKS:
         raise InvalidSource("Invalid extraction blocks.")
@@ -98,6 +136,8 @@ def validate_result(result, kind):
         or any(not isinstance(w, str) or len(w) > 240 for w in result["warnings"])
     ):
         raise InvalidSource("Invalid extraction warnings.")
+    if any(report["status"] != "NATIVE" for report in reports) and not result["warnings"]:
+        raise InvalidSource("OCR and incomplete pages must require review.")
     if not isinstance(result.get("parserVersion"), str) or len(result["parserVersion"]) > 80:
         raise InvalidSource("Invalid parser version.")
     count = 0
@@ -130,6 +170,18 @@ def validate_result(result, kind):
                 )
                 or box[0] > box[2]
                 or box[1] > box[3]
+                or reports[location["page"] - 1]["status"] in {"FAILED", "EMPTY"}
+                or (
+                    (reports[location["page"] - 1]["status"] == "OCR")
+                    != (location.get("method") == "OCR")
+                )
+                or (
+                    location.get("method") == "OCR"
+                    and (
+                        not isinstance(location.get("confidence"), (int, float))
+                        or not 0 <= location["confidence"] <= 100
+                    )
+                )
             ):
                 raise InvalidSource("Invalid PDF locator.")
         elif kind == "DOCX":
@@ -194,6 +246,7 @@ def extract_source(source_id, attempt):
                 parser_version=result["parserVersion"],
                 page_count=result["pageCount"],
                 warnings=result["warnings"],
+                page_reports=result["pageReports"],
             )
             SourceBlock.objects.bulk_create(
                 [

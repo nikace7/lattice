@@ -4,6 +4,7 @@ x-backend: &backend
   build:
     context: .
     dockerfile: infra/backend.Dockerfile
+    target: runtime
   env_file: .env
   environment: &backend-env
     DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db-pgvector:5432/${POSTGRES_DB}
@@ -81,6 +82,7 @@ services:
     build:
       context: .
       dockerfile: infra/backend.Dockerfile
+      target: parser
     command: ["python", "backend/pipeline/parser_service.py", "/spool"]
     network_mode: none
     read_only: true

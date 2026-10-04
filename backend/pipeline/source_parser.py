@@ -1,10 +1,15 @@
 """No Django, database or provider access. Production calls this in the offline parser container."""
 
+import csv
 import json
 import math
+import os
 import re
+import shutil
 import signal
+import subprocess
 import sys
+import time
 from pathlib import Path, PurePosixPath
 from xml.etree.ElementTree import ParseError
 from zipfile import BadZipFile, ZipFile
@@ -17,7 +22,8 @@ MAX_CHARS = 2_000_000
 MAX_BLOCKS = 20_000
 MAX_DOCX_EXPANDED = 100 * 1024**2
 MAX_DOCX_XML = 16 * 1024**2
-PARSER_VERSION = "r3-formats-v1/pdfplumber-0.11.10"
+PARSER_VERSION = "r3-ocr-v1/native-under20/pdfplumber-0.11.10"
+OCR_LANGUAGES = {"eng", "nep", "eng+nep"}
 
 
 class InvalidSource(ValueError):
@@ -218,12 +224,110 @@ def extract_docx(path):
     return blocks, sorted(warnings)
 
 
-def extract(path, kind, output):
+def read_ocr_tsv(path, width, height, page):
+    if path.stat().st_size > 8 * 1024**2:
+        raise InvalidSource("OCR output exceeds its size limit.")
+    lines, scores, characters = {}, [], 0
+    try:
+        with path.open(encoding="utf-8", newline="") as stream:
+            for index, row in enumerate(
+                csv.DictReader(stream, delimiter="\t", quoting=csv.QUOTE_NONE)
+            ):
+                if index > 200_000:
+                    raise InvalidSource("OCR output exceeds its word limit.")
+                if row["level"] != "5" or not row["text"].strip():
+                    continue
+                text = row["text"]
+                confidence = float(row["conf"])
+                x, y, w, h = (int(row[key]) for key in ("left", "top", "width", "height"))
+                if not (
+                    0 <= confidence <= 100 and 0 <= x < x + w <= width and 0 <= y < y + h <= height
+                ):
+                    raise InvalidSource("Invalid OCR word location or confidence.")
+                key = tuple(int(row[k]) for k in ("block_num", "par_num", "line_num"))
+                if min(key) < 1:
+                    raise InvalidSource("Invalid OCR line reference.")
+                entry = lines.setdefault(
+                    key, {"words": [], "box": [x, y, x + w, y + h], "scores": []}
+                )
+                entry["words"].append(text)
+                entry["scores"].append(confidence)
+                box = entry["box"]
+                entry["box"] = [
+                    min(box[0], x),
+                    min(box[1], y),
+                    max(box[2], x + w),
+                    max(box[3], y + h),
+                ]
+                scores.append(confidence)
+                characters += len(text) + 1
+                if characters > MAX_CHARS or len(lines) > MAX_BLOCKS:
+                    raise InvalidSource("OCR text exceeds its content limit.")
+    except (KeyError, TypeError, ValueError, csv.Error, UnicodeError) as error:
+        raise InvalidSource("Invalid OCR output.") from error
+    blocks = []
+    for entry in lines.values():
+        text = " ".join(entry["words"])
+        x0, y0, x1, y1 = entry["box"]
+        blocks.append(
+            block(
+                text,
+                text,
+                {
+                    "page": page,
+                    "bbox": [x0 / width, y0 / height, x1 / width, y1 / height],
+                    "method": "OCR",
+                    "confidence": round(sum(entry["scores"]) / len(entry["scores"]), 2),
+                },
+            )
+        )
+    return blocks, round(sum(scores) / len(scores), 2) if scores else None
+
+
+def ocr_page(image, width, height, page, language, timeout):
+    executable = shutil.which("tesseract")
+    if not executable or language not in OCR_LANGUAGES:
+        raise InvalidSource("OCR is unavailable for the selected language.")
+    base = image.parent / f"ocr-{page}"
+    deadline = time.monotonic() + timeout
+    try:
+        version = (
+            subprocess.run(
+                [executable, "--version"],
+                capture_output=True,
+                check=True,
+                timeout=min(3, timeout),
+            )
+            .stdout.decode("utf-8", errors="replace")
+            .splitlines()[0][:80]
+        )
+        subprocess.run(
+            [executable, str(image), str(base), "-l", language, "--oem", "1", "--psm", "3", "tsv"],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            env={"PATH": os.environ.get("PATH", os.defpath), "OMP_THREAD_LIMIT": "1"},
+            timeout=max(0.01, deadline - time.monotonic()),
+            check=True,
+        )
+        blocks, confidence = read_ocr_tsv(base.with_suffix(".tsv"), width, height, page)
+        return blocks, confidence, version
+    except (OSError, subprocess.SubprocessError, IndexError) as error:
+        raise InvalidSource(
+            "OCR failed or exceeded its page deadline. Review or exclude this page."
+        ) from error
+    finally:
+        base.with_suffix(".tsv").unlink(missing_ok=True)
+
+
+def extract(path, kind, output, ocr_language="eng"):
+    if ocr_language not in OCR_LANGUAGES:
+        raise InvalidSource("Choose English, Nepali or English + Nepali for OCR.")
     path, output = Path(path), Path(output)
     if path.stat().st_size > MAX_BYTES:
         raise InvalidSource("The file exceeds 25 MiB.")
     text = validate_bytes(path.read_bytes(), kind)
-    blocks, warnings, pages = [], [], 0
+    blocks, warnings, pages, reports = [], [], 0, []
     if kind in {"TXT", "MD"}:
         offset = 0
         for number, original in enumerate(text.splitlines(keepends=True), 1):
@@ -254,49 +358,93 @@ def extract(path, kind, output):
                 raise InvalidSource("PDFs must contain between 1 and 100 pages.")
             characters, preview_bytes = 0, 0
             for page in pdf.pages:
+                started = time.monotonic()
+                report = {
+                    "page": page.page_number,
+                    "status": "FAILED",
+                    "preview": False,
+                    "confidence": None,
+                    "language": "",
+                    "engine": "",
+                }
+                page_blocks = []
+                image_path = output / f"page-{page.page_number}.png"
                 if hasattr(signal, "SIGALRM"):
                     signal.signal(signal.SIGALRM, page_timeout)
                     signal.alarm(30)
-                width, height = page.width, page.height
-                if (
-                    not all(math.isfinite(v) and 0 < v <= 3000 for v in (width, height))
-                    or width * height > 4_000_000
-                ):
-                    raise InvalidSource("A PDF page exceeds the preview size limit.")
-                page_chars = 0
-                for line in page.extract_text_lines(return_chars=False, expand_ligatures=False):
-                    text = line["text"]
-                    bbox = [
-                        (line["x0"] - page.bbox[0]) / width,
-                        (line["top"] - page.bbox[1]) / height,
-                        (line["x1"] - page.bbox[0]) / width,
-                        (line["bottom"] - page.bbox[1]) / height,
-                    ]
-                    if not all(math.isfinite(v) and 0 <= v <= 1 for v in bbox):
-                        raise InvalidSource("A PDF text location falls outside its page.")
-                    blocks.append(block(text, text, {"page": page.page_number, "bbox": bbox}))
-                    characters += len(text)
-                    page_chars += len(text.strip())
-                    if characters > MAX_CHARS or len(blocks) > MAX_BLOCKS:
-                        raise InvalidSource("The PDF exceeds the extracted text limit.")
-                if page_chars < 20:
-                    warnings.append(
-                        f"Page {page.page_number} has little or no text. OCR/review is required."
+                try:
+                    width, height = page.width, page.height
+                    if (
+                        not all(math.isfinite(v) and 0 < v <= 3000 for v in (width, height))
+                        or width * height > 4_000_000
+                    ):
+                        raise InvalidSource("Page exceeds its size limit.")
+                    for line in page.extract_text_lines(return_chars=False, expand_ligatures=False):
+                        text = line["text"]
+                        bbox = [
+                            (line["x0"] - page.bbox[0]) / width,
+                            (line["top"] - page.bbox[1]) / height,
+                            (line["x1"] - page.bbox[0]) / width,
+                            (line["bottom"] - page.bbox[1]) / height,
+                        ]
+                        if not all(math.isfinite(v) and 0 <= v <= 1 for v in bbox):
+                            raise InvalidSource("A text location falls outside its page.")
+                        page_blocks.append(
+                            block(text, text, {"page": page.page_number, "bbox": bbox})
+                        )
+                    needs_ocr = sum(not c.isspace() for b in page_blocks for c in b["text"]) < 20
+                    dpi = min(
+                        150 if needs_ocr else 72, 72 * math.sqrt(4_000_000 / (width * height))
                     )
-                image_path = output / f"page-{page.page_number}.png"
-                image = page.to_image(resolution=72, force_mediabox=True)
-                image.save(image_path, format="PNG")
-                preview_bytes += image_path.stat().st_size
+                    image = page.to_image(resolution=dpi, force_mediabox=True)
+                    image.save(image_path, format="PNG")
+                    report["preview"] = True
+                    if needs_ocr:
+                        report["language"] = ocr_language
+                        page_blocks, confidence, engine = ocr_page(
+                            image_path,
+                            *image.original.size,
+                            page.page_number,
+                            ocr_language,
+                            max(0.01, 30 - (time.monotonic() - started)),
+                        )
+                        report.update(
+                            status="OCR" if page_blocks else "EMPTY",
+                            confidence=confidence,
+                            engine=engine,
+                        )
+                        warnings.append(
+                            f"Page {page.page_number}: OCR text needs review."
+                            if page_blocks
+                            else f"Page {page.page_number}: no readable text; exclude this page."
+                        )
+                    else:
+                        report["status"] = "NATIVE"
+                except Exception:
+                    page_blocks = []
+                    report["status"] = "FAILED"
+                    warnings.append(
+                        f"Page {page.page_number}: extraction failed; exclude it or upload again."
+                    )
+                finally:
+                    if hasattr(signal, "SIGALRM"):
+                        signal.alarm(0)
+                    page.close()
+                reports.append(report)
+                blocks.extend(page_blocks)
+                characters += sum(len(b["text"]) for b in page_blocks)
+                if characters > MAX_CHARS or len(blocks) > MAX_BLOCKS:
+                    raise InvalidSource("The PDF exceeds the extracted text limit.")
+                if report["preview"]:
+                    preview_bytes += image_path.stat().st_size
                 if preview_bytes > MAX_BYTES:
                     raise InvalidSource("The PDF exceeds the total preview size limit.")
-                page.close()
-                if hasattr(signal, "SIGALRM"):
-                    signal.alarm(0)
     return {
         "parserVersion": PARSER_VERSION,
         "pageCount": pages,
         "warnings": warnings,
         "blocks": blocks,
+        "pageReports": reports,
     }
 
 
@@ -309,8 +457,12 @@ def main():
     resource.setrlimit(resource.RLIMIT_NOFILE, (64, 64))
     directory = Path(sys.argv[1]).resolve()
     try:
-        kind = (directory / "working").read_text()
-        result = extract(directory / "input", kind, directory)
+        request = (directory / "working").read_text()
+        # Existing queued R2/R3 requests contained only the kind.
+        options = json.loads(request) if request.startswith("{") else {"kind": request}
+        result = extract(
+            directory / "input", options["kind"], directory, options.get("ocrLanguage", "eng")
+        )
     except InvalidSource as error:
         result = {"error": str(error)}
     except Exception:

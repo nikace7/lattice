@@ -328,6 +328,39 @@ paths:
               schema:
                 $ref: '#/components/schemas/DocumentData'
           description: ''
+  /api/v1/documents/{document_id}/accept-review:
+    post:
+      operationId: api_v1_documents_accept_review_create
+      parameters:
+      - in: path
+        name: document_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReviewInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReviewInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentData'
+          description: ''
   /api/v1/documents/{document_id}/retry:
     post:
       operationId: api_v1_documents_retry_create
@@ -975,6 +1008,22 @@ components:
           type: string
         retryable:
           type: boolean
+        ocrLanguage:
+          type: string
+        pageReports:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+        excludedPages:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        reviewReason:
+          type: string
+          readOnly: true
         pageCount:
           type: integer
           readOnly: true
@@ -995,10 +1044,14 @@ components:
       - collectionId
       - createdAt
       - error
+      - excludedPages
       - id
       - kind
+      - ocrLanguage
       - pageCount
+      - pageReports
       - retryable
+      - reviewReason
       - revision
       - sha256
       - sourceId
@@ -1149,6 +1202,16 @@ components:
           type: string
       required:
       - message
+    OcrLanguageEnum:
+      enum:
+      - eng
+      - nep
+      - eng+nep
+      type: string
+      description: |-
+        * `eng` - eng
+        * `nep` - nep
+        * `eng+nep` - eng+nep
     PaginatedBlockDataList:
       type: object
       required:
@@ -1353,6 +1416,27 @@ components:
       required:
       - password
       - token
+    ReviewInputRequest:
+      type: object
+      properties:
+        expectedRevision:
+          type: integer
+          minimum: 1
+        excludedPages:
+          type: array
+          items:
+            type: integer
+            maximum: 100
+            minimum: 1
+          maxItems: 100
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 1000
+      required:
+      - excludedPages
+      - expectedRevision
+      - reason
     RevisionInputRequest:
       type: object
       properties:
@@ -1404,6 +1488,10 @@ components:
         file:
           type: string
           format: binary
+        ocrLanguage:
+          allOf:
+          - $ref: '#/components/schemas/OcrLanguageEnum'
+          default: eng
       required:
       - file
       - uploadId

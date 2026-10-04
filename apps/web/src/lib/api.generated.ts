@@ -180,6 +180,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/documents/{document_id}/accept-review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_documents_accept_review_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/documents/{document_id}/retry": {
         parameters: {
             query?: never;
@@ -455,6 +471,12 @@ export interface components {
             state: string;
             error: string;
             retryable: boolean;
+            ocrLanguage: string;
+            readonly pageReports: {
+                [key: string]: unknown;
+            }[];
+            readonly excludedPages: number[];
+            readonly reviewReason: string;
             readonly pageCount: number;
             readonly warnings: string[];
             readonly canWrite: boolean;
@@ -519,6 +541,13 @@ export interface components {
         MessageData: {
             message: string;
         };
+        /**
+         * @description * `eng` - eng
+         *     * `nep` - nep
+         *     * `eng+nep` - eng+nep
+         * @enum {string}
+         */
+        OcrLanguageEnum: "eng" | "nep" | "eng+nep";
         PaginatedBlockDataList: {
             /**
              * Format: uri
@@ -633,6 +662,11 @@ export interface components {
             token: string;
             password: string;
         };
+        ReviewInputRequest: {
+            expectedRevision: number;
+            excludedPages: number[];
+            reason: string;
+        };
         RevisionInputRequest: {
             expectedRevision: number;
         };
@@ -656,6 +690,8 @@ export interface components {
             uploadId: string;
             /** Format: binary */
             file: string;
+            /** @default eng */
+            ocrLanguage: components["schemas"]["OcrLanguageEnum"];
         };
         UserData: {
             /** Format: uuid */
@@ -984,6 +1020,33 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentData"];
+                };
+            };
+        };
+    };
+    api_v1_documents_accept_review_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["ReviewInputRequest"];
+                "multipart/form-data": components["schemas"]["ReviewInputRequest"];
+            };
+        };
         responses: {
             200: {
                 headers: {

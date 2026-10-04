@@ -61,6 +61,11 @@ PDF originals download as attachments; the reader shows generated PNGs, never
 embedded active PDF content. Text is escaped by React. Identity normalization
 preserves Unicode code points and records source spans, physical pages and boxes.
 Scanned/low-text pages require review. Extraction does not imply search readiness.
+OCR is local to the offline parser, with allowlisted language arguments and bounded
+subprocess/TSV output. Failed pages cannot supply source blocks; malformed reports
+cannot bypass review. PDF acceptance rechecks contribution access under the workspace
+lock, requires failed/empty-page exclusions and some retained text, and records the
+reviewer, time and reason. Page exclusions must also be enforced by future indexing.
 
 DOCX uses bounded ZIP reads and defusedxml with DTD/entity rejection. Archive paths
 are never extracted and relationship targets are never fetched; macros and encrypted

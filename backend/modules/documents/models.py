@@ -27,6 +27,11 @@ class SourceVersion(models.Model):
     )
     byte_size = models.PositiveIntegerField()
     sha256 = models.CharField(max_length=64)
+    ocr_language = models.CharField(
+        max_length=7,
+        default="eng",
+        choices=[("eng", "English"), ("nep", "Nepali"), ("eng+nep", "English + Nepali")],
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -39,6 +44,7 @@ class ExtractionJob(models.Model):
         EXTRACTING = "EXTRACTING", "Extracting"
         EXTRACTED = "EXTRACTED", "Text extracted"
         NEEDS_REVIEW = "NEEDS_REVIEW", "Needs review"
+        REVIEWED = "REVIEWED", "Review accepted"
         FAILED = "FAILED", "Failed"
 
     source = models.OneToOneField(SourceVersion, on_delete=models.CASCADE, related_name="job")
@@ -60,6 +66,13 @@ class ExtractionVersion(models.Model):
     parser_version = models.CharField(max_length=80)
     page_count = models.PositiveIntegerField(default=0)
     warnings = models.JSONField(default=list)
+    page_reports = models.JSONField(default=list)
+    excluded_pages = models.JSONField(default=list)
+    review_reason = models.CharField(max_length=1000, blank=True)
+    accepted_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.PROTECT
+    )
+    accepted_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
