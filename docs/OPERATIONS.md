@@ -40,8 +40,8 @@ are `/health/live` and `/health/ready` through port 4400. Readiness requires the
 vector extension migration and a writable private storage volume.
 
 The API waits for migrations and Redis. Workers consume separate `ingestion` and
-`answers` queues with bounded concurrency. Beat has persistent scheduler state;
-there are no scheduled product tasks yet. The ingestion worker sends extraction
+`answers` queues with bounded concurrency. Beat schedules extraction recovery every
+30 seconds on the ingestion queue. Run one beat instance. The ingestion worker sends extraction
 requests through `.data/parser` to the separate offline parser container.
 
 For host development and browser tests, run `pnpm parser:up` as well as
@@ -88,12 +88,28 @@ review accepted; it does not mean indexed or searchable. Future indexing must om
 excluded pages. Existing extractions without page reports require a new upload.
 DOCX warnings still require inspection; PDF page acceptance does not apply to DOCX.
 
-The source viewer reports queued, extracting, extracted, needs-review, reviewed or failed.
-Retry transient failures after restoring the parser/broker; jobs stuck for ten
-minutes can be retried. Attempt IDs prevent old workers publishing after a retry.
+The source viewer reports queued, extracting, extracted, needs-review, reviewed,
+cancelled or failed. Apply migration `0004` and restart API/workers/beat/parser
+together before using cancellation/recovery. Owners/curators with current contribution
+access can cancel queued/extracting work. Cancellation preserves the original and
+immediately prevents publication; a live worker notices within its next one-second
+poll, removes its spool and the supervisor terminates that job's process group.
+Cancellation after publication returns a conflict and preserves the extraction.
+
+Workers renew their database lease every 15 seconds while awaiting the parser;
+90 seconds without an update expires it. Beat recovery checks up to 100 expired
+queued/extracting jobs per run, rechecks uploader access and rotates attempt IDs
+before requeueing. After three automatic recoveries it records a retryable failure.
+Cancelled and terminal jobs are not automatically requeued. Retry transient failures
+after restoring the parser/broker; manual retry also handles cancelled or expired
+jobs and resets the recovery budget. The API supplies current retry eligibility.
+Attempt/state/lease checks prevent cancelled, expired or replaced workers publishing.
+Broker, worker and beat must be running for automatic recovery; manual retry remains
+available without beat. Queue loss is recovered from the durable queued database row.
 Requests normally remove their temporary spool directory on completion. Worker
 crashes can leave spool data, and failed attempts can leave private previews;
-automated reconciliation, replacement and retention belong to the lifecycle phase.
+an orphaned parser still has its 305-second process deadline. Automated artifact
+cleanup, replacement and retention belong to the lifecycle phase.
 Treat spool data as confidential and stop workers/parser before manual cleanup.
 
 `pnpm infra:down` retains all data. There is deliberately no destructive reset

@@ -196,6 +196,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/documents/{document_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_documents_cancel_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/documents/{document_id}/retry": {
         parameters: {
             query?: never;
@@ -1045,6 +1061,33 @@ export interface operations {
                 "application/json": components["schemas"]["ReviewInputRequest"];
                 "application/x-www-form-urlencoded": components["schemas"]["ReviewInputRequest"];
                 "multipart/form-data": components["schemas"]["ReviewInputRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentData"];
+                };
+            };
+        };
+    };
+    api_v1_documents_cancel_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevisionInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["RevisionInputRequest"];
+                "multipart/form-data": components["schemas"]["RevisionInputRequest"];
             };
         };
         responses: {

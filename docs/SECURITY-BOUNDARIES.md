@@ -67,6 +67,12 @@ cannot bypass review. PDF acceptance rechecks contribution access under the work
 lock, requires failed/empty-page exclusions and some retained text, and records the
 reviewer, time and reason. Page exclusions must also be enforced by future indexing.
 
+Cancellation and manual retries require current contribution access and revision
+checks under the workspace lock. Workers cannot renew expired leases or publish
+after cancellation, expiry or attempt replacement. Recovery rechecks uploader access
+and limits automatic requeues to three. Parser termination targets only the process
+group started for that spool job; original files are retained on cancellation.
+
 DOCX uses bounded ZIP reads and defusedxml with DTD/entity rejection. Archive paths
 are never extracted and relationship targets are never fetched; macros and encrypted
 entries are rejected. Unsupported Word content creates review warnings. Markdown

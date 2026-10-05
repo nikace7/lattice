@@ -192,3 +192,25 @@ request to skip Docker. No full R3 completion claim is made.
 Next: ingestion cancellation/recovery, tokenizer-bounded chunking and pinned real
 embeddings, then index activation and retrieval. Indexing must honor accepted page
 exclusions and keep unreviewed extraction out of searchable results.
+
+## R3 third slice: cancellation and recovery — 5 October 2026
+
+- Added revision-checked cancellation for queued/extracting jobs with current
+  contribution permissions. Originals remain downloadable and cancellation can be
+  retried. The UI uses server-provided retry eligibility.
+- Workers heartbeat every 15 seconds against a 90-second database lease. Beat checks
+  expired queued/extracting jobs every 30 seconds, rechecks uploader permissions and
+  requeues with fresh attempt IDs, stopping after three recoveries. Manual retry
+  resets that budget. Cancelled or terminal jobs are not automatically requeued.
+- Cancellation/lease loss stops the worker's spool wait, and the parser supervisor
+  terminates the job's owned process group when that spool disappears. Publication
+  checks attempt, state and lease while holding the existing workspace/job locks.
+
+Validation: 29 database-free backend tests and 7 web unit tests passed. A real Linux
+process-group cancellation smoke test in WSL stopped the synthetic child in 0.50s.
+Lint/format, TypeScript, Django system checks, contract generation, offline migration
+comparison, the setup test and production web build also passed.
+PostgreSQL cancellation/recovery tests are added; database execution, migration
+application, live Celery/beat recovery, Compose and browser integration remain
+deferred under the instruction to skip Docker. Artifact cleanup after worker crashes
+remains future lifecycle work. Next R3 work is chunking and pinned real embeddings.

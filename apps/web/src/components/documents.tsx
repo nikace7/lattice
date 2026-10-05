@@ -10,6 +10,7 @@ const states: Record<string, string> = {
   QUEUED: "Queued for extraction", EXTRACTING: "Extracting text",
   EXTRACTED: "Text extracted", NEEDS_REVIEW: "Needs review", FAILED: "Extraction failed",
   REVIEWED: "Extraction review accepted",
+  CANCELLED: "Extraction cancelled",
 };
 
 export function Documents({ workspace, documentId }: { workspace: Workspace; documentId?: string }) {
@@ -114,17 +115,22 @@ function SourceViewer({ workspace, id }: { workspace: Workspace; id: string }) {
       <div className="source-actions">
         <a href={`/api/v1/sources/${document.data.sourceId}/original`} download>Download original</a>
         <button onClick={document.reload}>Refresh source</button>
-        {document.data.canWrite && (document.data.retryable || ["QUEUED", "EXTRACTING"].includes(document.data.state)) && <button disabled={action.busy} onClick={() => void action.run(async () => {
+        {document.data.canWrite && document.data.retryable && <button disabled={action.busy} onClick={() => void action.run(async () => {
           await api(`/documents/${id}/retry`, "POST", { expectedRevision: document.data!.revision });
           document.reload();
         })}>Retry extraction</button>}
+        {document.data.canWrite && ["QUEUED", "EXTRACTING"].includes(document.data.state) && <button disabled={action.busy} onClick={() => void action.run(async () => {
+          await api(`/documents/${id}/cancel`, "POST", { expectedRevision: document.data!.revision });
+          document.reload();
+        })}>Cancel extraction</button>}
       </div>
       {document.data.error && <p className="error-notice" role="alert">{document.data.error}</p>}
       <ErrorNotice error={action.error} />
       {document.data.warnings.length > 0 && <div className="source-warnings"><h2>Extraction warnings</h2><ul>{document.data.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></div>}
       {document.data.state === "REVIEWED" && <div className="source-warnings"><h2>{document.data.excludedPages.length ? "Partial extraction accepted" : "Extraction accepted"}</h2><p>{document.data.excludedPages.length ? `Excluded pages: ${document.data.excludedPages.join(", ")}.` : "All pages included."} Search indexing is still pending.</p><p>Review note: {document.data.reviewReason}</p></div>}
       {document.data.canWrite && document.data.kind === "PDF" && document.data.state === "NEEDS_REVIEW" && document.data.pageReports.length > 0 && <ReviewForm key={document.data.revision} document={document.data} onAccepted={document.reload} />}
-      {["QUEUED", "EXTRACTING"].includes(document.data.state) && <p>Extraction runs in the background. This page refreshes automatically. A stuck job can be retried after 10 minutes.</p>}
+      {["QUEUED", "EXTRACTING"].includes(document.data.state) && <p>Extraction runs in the background. This page refreshes automatically. Interrupted jobs recover automatically up to three times; retry becomes available after 90 seconds without an update.</p>}
+      {document.data.state === "CANCELLED" && <p>Extraction was cancelled. The original file is preserved; retry to start a new attempt.</p>}
       {["EXTRACTED", "NEEDS_REVIEW", "REVIEWED"].includes(document.data.state) && <SourceContent document={document.data} />}
     </>}
   </section>;

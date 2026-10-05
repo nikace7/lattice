@@ -1,6 +1,5 @@
 import hashlib
 import uuid
-from datetime import timedelta
 from pathlib import PurePosixPath
 
 from django.conf import settings
@@ -172,20 +171,44 @@ class RetryView(APIView):
         if data["expectedRevision"] != document.revision:
             raise Conflict()
         job = ExtractionJob.objects.select_for_update().get(source__document=document)
-        stale = job.state in {
-            "QUEUED",
-            "EXTRACTING",
-        } and job.updated_at < timezone.now() - timedelta(minutes=10)
-        if not (job.state == "FAILED" and job.retryable) and not stale:
+        if not job.can_retry:
             raise Conflict(
                 "Extraction is active or cannot be retried. Upload a corrected file if needed."
             )
         job.state, job.error, job.retryable, job.attempt = "QUEUED", "", False, uuid.uuid4()
+        job.recoveries = 0
         job.save()
         document.revision += 1
         document.save(update_fields=["revision"])
         audit(member.workspace, request.user, "document.retried", document)
         transaction.on_commit(lambda: enqueue(str(job.source_id), str(job.attempt)))
+        return Response(
+            DocumentData(
+                readable_documents(request.user).get(pk=document.pk), context={"request": request}
+            ).data
+        )
+
+
+class CancelView(APIView):
+    @extend_schema(request=RevisionInput, responses=DocumentData)
+    @transaction.atomic
+    def post(self, request, document_id):
+        document = get_object_or_404(readable_documents(request.user), pk=document_id)
+        member, collection = locked_collection(request.user, document.collection_id)
+        if not can_write(collection, member):
+            raise PermissionDenied("You need contribution access to cancel extraction.")
+        data = validated(RevisionInput, request)
+        document.refresh_from_db()
+        if data["expectedRevision"] != document.revision:
+            raise Conflict()
+        job = ExtractionJob.objects.select_for_update().get(source__document=document)
+        if job.state not in {"QUEUED", "EXTRACTING"}:
+            raise Conflict("Only queued or extracting documents can be cancelled.")
+        job.state, job.error, job.retryable = "CANCELLED", "", False
+        job.save(update_fields=["state", "error", "retryable", "updated_at"])
+        document.revision += 1
+        document.save(update_fields=["revision"])
+        audit(member.workspace, request.user, "document.cancelled", document)
         return Response(
             DocumentData(
                 readable_documents(request.user).get(pk=document.pk), context={"request": request}
