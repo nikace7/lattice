@@ -436,6 +436,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{workspace_id}/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_workspaces_search_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health/live": {
         parameters: {
             query?: never;
@@ -599,6 +615,13 @@ export interface components {
             message: string;
         };
         /**
+         * @description * `KEYWORD` - KEYWORD
+         *     * `SEMANTIC` - SEMANTIC
+         *     * `HYBRID` - HYBRID
+         * @enum {string}
+         */
+        ModeEnum: "KEYWORD" | "SEMANTIC" | "HYBRID";
+        /**
          * @description * `eng` - eng
          *     * `nep` - nep
          *     * `eng+nep` - eng+nep
@@ -697,6 +720,18 @@ export interface components {
             expectedRevision?: number;
             name?: string;
         };
+        RankedHitData: {
+            /** Format: uuid */
+            chunkId: string;
+            lexicalRank: number | null;
+            vectorRank: number | null;
+            /** Format: double */
+            rrf: number;
+            /** Format: double */
+            lexicalScore: number | null;
+            /** Format: double */
+            cosineDistance: number | null;
+        };
         ReadyStatus: {
             status: components["schemas"]["ReadyStatusStatusEnum"];
             checks: {
@@ -735,6 +770,48 @@ export interface components {
          * @enum {string}
          */
         RoleEnum: "OWNER" | "CURATOR" | "MEMBER" | "VIEWER";
+        SearchData: {
+            /** Format: uuid */
+            runId: string;
+            mode: string;
+            results: components["schemas"]["SearchHitData"][];
+            diagnostics: components["schemas"]["SearchDiagnosticsData"] | null;
+        };
+        SearchDiagnosticsData: {
+            mode: string;
+            scope: string[];
+            corpusHash: string;
+            profileHash: string;
+            indexIds: string[];
+            accessEpoch: number;
+            elapsedMs: number;
+            lexical: unknown[];
+            vector: unknown[];
+            selected: components["schemas"]["RankedHitData"][];
+        };
+        SearchHitData: {
+            /** Format: uuid */
+            chunkId: string;
+            /** Format: uuid */
+            documentId: string;
+            /** Format: uuid */
+            sourceId: string;
+            /** Format: uuid */
+            indexId: string;
+            title: string;
+            text: string;
+            partial: boolean;
+            spans: unknown[];
+            locations: unknown[];
+        };
+        SearchInputRequest: {
+            query: string;
+            /** @default KEYWORD */
+            mode: components["schemas"]["ModeEnum"];
+            collectionIds?: string[];
+            /** @default false */
+            details: boolean;
+        };
         SessionData: {
             user: components["schemas"]["UserData"] | null;
             csrfToken: string;
@@ -1283,8 +1360,12 @@ export interface operations {
     api_v1_sources_blocks_list: {
         parameters: {
             query?: {
+                /** @description Only blocks backing this active source passage. */
+                chunkId?: string;
                 /** @description The pagination cursor value. */
                 cursor?: string;
+                /** @description Physical PDF page, from 1 to 100. */
+                page?: number;
                 /** @description Number of results to return per page. */
                 pageSize?: number;
             };
@@ -1627,6 +1708,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MembershipData"];
+                };
+            };
+        };
+    };
+    api_v1_workspaces_search_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["SearchInputRequest"];
+                "multipart/form-data": components["schemas"]["SearchInputRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchData"];
                 };
             };
         };

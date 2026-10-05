@@ -9,7 +9,7 @@ afterEach(() => { cleanup(); vi.clearAllMocks(); });
 
 const workspace: Workspace = { id: "workspace", name: "Library", role: "OWNER", revision: 1, accessEpoch: 1 };
 
-function openSource(kind: string, locator: SourceBlock["locator"], text: string, overrides: Partial<DocumentSource> = {}) {
+function openSource(kind: string, locator: SourceBlock["locator"], text: string, overrides: Partial<DocumentSource> = {}, chunkId?: string) {
   const document: DocumentSource = {
     id: "document", title: "Policy", collectionId: "collection", sourceId: "source", revision: 1,
     kind, byteSize: 10, sha256: "hash", state: "EXTRACTED", error: "", retryable: false,
@@ -22,8 +22,16 @@ function openSource(kind: string, locator: SourceBlock["locator"], text: string,
     results: [{ id: "block", position: 0, text, originalText: text, locator, spanMap: [[0, text.length, 0, text.length]] }],
     next: null, previous: null,
   });
-  return render(<Documents workspace={workspace} documentId="document" />);
+  return render(<Documents workspace={workspace} documentId="document" chunkId={chunkId} />);
 }
+
+test("search passage opens only its source blocks and the matching physical PDF page", async () => {
+  openSource("PDF", { page: 3, bbox: [0, 0, 1, 1] }, "Matched passage", { pageCount: 4 }, "chunk");
+  await screen.findByRole("button", { name: /Page 3.*Matched passage/ });
+  expect(api).toHaveBeenCalledWith("/sources/source/blocks?chunkId=chunk", "GET", undefined, expect.any(AbortSignal));
+  expect(screen.getByRole("img", { name: /Original page 3/ })).toHaveAttribute("src", "/api/v1/sources/source/pages/3");
+  expect(screen.getByRole("link", { name: "Open the full document" })).toHaveAttribute("href", "/w/workspace/documents/document");
+});
 
 test("Word source selection shows paragraph and cell references without page numbers", async () => {
   openSource("DOCX", { paragraph: 4, table: 1, row: 2, cell: 3, headingPath: ["Policy"] }, "नेपाली");

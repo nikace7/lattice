@@ -7,6 +7,7 @@ export type Member = components["schemas"]["MembershipData"];
 export type Grant = components["schemas"]["GrantData"];
 export type DocumentSource = components["schemas"]["DocumentData"];
 export type SourceBlock = components["schemas"]["BlockData"];
+export type SearchResult = components["schemas"]["SearchData"];
 export type Page<T> = {
   results: T[];
   next: string | null;

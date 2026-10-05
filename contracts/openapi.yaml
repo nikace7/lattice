@@ -546,12 +546,23 @@ paths:
     get:
       operationId: api_v1_sources_blocks_list
       parameters:
+      - in: query
+        name: chunkId
+        schema:
+          type: string
+          format: uuid
+        description: Only blocks backing this active source passage.
       - name: cursor
         required: false
         in: query
         description: The pagination cursor value.
         schema:
           type: string
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Physical PDF page, from 1 to 100.
       - name: pageSize
         required: false
         in: query
@@ -956,6 +967,39 @@ paths:
               schema:
                 $ref: '#/components/schemas/MembershipData'
           description: ''
+  /api/v1/workspaces/{workspace_id}/search:
+    post:
+      operationId: api_v1_workspaces_search_create
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SearchInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SearchInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchData'
+          description: ''
   /health/live:
     get:
       operationId: health_live_retrieve
@@ -1334,6 +1378,16 @@ components:
           type: string
       required:
       - message
+    ModeEnum:
+      enum:
+      - KEYWORD
+      - SEMANTIC
+      - HYBRID
+      type: string
+      description: |-
+        * `KEYWORD` - KEYWORD
+        * `SEMANTIC` - SEMANTIC
+        * `HYBRID` - HYBRID
     OcrLanguageEnum:
       enum:
       - eng
@@ -1490,6 +1544,36 @@ components:
           type: string
           minLength: 1
           maxLength: 120
+    RankedHitData:
+      type: object
+      properties:
+        chunkId:
+          type: string
+          format: uuid
+        lexicalRank:
+          type: integer
+          nullable: true
+        vectorRank:
+          type: integer
+          nullable: true
+        rrf:
+          type: number
+          format: double
+        lexicalScore:
+          type: number
+          format: double
+          nullable: true
+        cosineDistance:
+          type: number
+          format: double
+          nullable: true
+      required:
+      - chunkId
+      - cosineDistance
+      - lexicalRank
+      - lexicalScore
+      - rrf
+      - vectorRank
     ReadyStatus:
       type: object
       properties:
@@ -1589,6 +1673,130 @@ components:
         * `CURATOR` - Curator
         * `MEMBER` - Member
         * `VIEWER` - Viewer
+    SearchData:
+      type: object
+      properties:
+        runId:
+          type: string
+          format: uuid
+        mode:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchHitData'
+        diagnostics:
+          allOf:
+          - $ref: '#/components/schemas/SearchDiagnosticsData'
+          nullable: true
+      required:
+      - diagnostics
+      - mode
+      - results
+      - runId
+    SearchDiagnosticsData:
+      type: object
+      properties:
+        mode:
+          type: string
+        scope:
+          type: array
+          items:
+            type: string
+            format: uuid
+        corpusHash:
+          type: string
+        profileHash:
+          type: string
+        indexIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        accessEpoch:
+          type: integer
+        elapsedMs:
+          type: integer
+        lexical:
+          type: array
+          items: {}
+        vector:
+          type: array
+          items: {}
+        selected:
+          type: array
+          items:
+            $ref: '#/components/schemas/RankedHitData'
+      required:
+      - accessEpoch
+      - corpusHash
+      - elapsedMs
+      - indexIds
+      - lexical
+      - mode
+      - profileHash
+      - scope
+      - selected
+      - vector
+    SearchHitData:
+      type: object
+      properties:
+        chunkId:
+          type: string
+          format: uuid
+        documentId:
+          type: string
+          format: uuid
+        sourceId:
+          type: string
+          format: uuid
+        indexId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        text:
+          type: string
+        partial:
+          type: boolean
+        spans:
+          type: array
+          items: {}
+        locations:
+          type: array
+          items: {}
+      required:
+      - chunkId
+      - documentId
+      - indexId
+      - locations
+      - partial
+      - sourceId
+      - spans
+      - text
+      - title
+    SearchInputRequest:
+      type: object
+      properties:
+        query:
+          type: string
+          minLength: 1
+          maxLength: 4000
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/ModeEnum'
+          default: KEYWORD
+        collectionIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 100
+        details:
+          type: boolean
+          default: false
+      required:
+      - query
     SessionData:
       type: object
       properties:

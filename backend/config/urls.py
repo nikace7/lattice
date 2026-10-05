@@ -22,6 +22,7 @@ from modules.identity.actions import (
     ResetView,
 )
 from modules.identity.api import LoginView, LogoutView, RegisterView, SessionView
+from modules.retrieval.api import SearchView
 from modules.workspaces.api import (
     CollectionsView,
     CollectionView,
@@ -35,6 +36,7 @@ from modules.workspaces.api import (
 from .health import live, ready
 
 urlpatterns = [
+    path("api/v1/workspaces/<uuid:workspace_id>/search", SearchView.as_view()),
     path("api/v1/workspaces/<uuid:workspace_id>/documents", DocumentsView.as_view()),
     path("api/v1/collections/<uuid:collection_id>/documents", UploadView.as_view()),
     path("api/v1/documents/<uuid:document_id>", DocumentView.as_view()),

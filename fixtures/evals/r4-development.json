@@ -1,0 +1,34 @@
+{
+  "version": "r4-development-v1",
+  "description": "Small synthetic retrieval development check. Not the frozen R8 suite or a general language-quality benchmark.",
+  "documents": [
+    {"id": "leave", "title": "Leave requests", "text": "At fictional Cedar Studio, annual leave requests must be submitted at least five working days before the planned start. Managers respond within two working days."},
+    {"id": "expenses", "title": "Expense claims", "text": "Cedar Studio reimburses approved travel expenses. Submit receipts within thirty calendar days. Meals are limited to forty dollars per day."},
+    {"id": "release", "title": "Atlas release schedule", "text": "Atlas version 2.4 launches on 18 November. The release freeze starts on 11 November. The release coordinator is Mira."},
+    {"id": "backup", "title": "Backup policy", "text": "Cedar Studio performs encrypted backups every night. Backups are retained for fourteen days. Restoration tests take place on the first Monday of each month."},
+    {"id": "nep-leave", "title": "बिदा अनुरोध", "text": "काल्पनिक जुन कार्यालयमा बिदाको अनुरोध सात कार्यदिन अगाडि दिनुपर्छ। व्यवस्थापकले तीन कार्यदिनभित्र निर्णय दिन्छन्।"},
+    {"id": "nep-library", "title": "पुस्तकालय समय", "text": "जुन कार्यालयको पुस्तकालय बिहान नौ बजेदेखि साँझ पाँच बजेसम्म खुल्छ। शनिबार पुस्तकालय बन्द हुन्छ। एक पटक तीनवटा पुस्तक लिन सकिन्छ।"},
+    {"id": "nep-travel", "title": "यात्रा खर्च", "text": "जुन कार्यालयमा यात्रा खर्चको रसिद पन्ध्र दिनभित्र बुझाउनुपर्छ। होटलको अधिकतम खर्च प्रति रात पाँच हजार रुपैयाँ हो।"},
+    {"id": "nep-safety", "title": "सुरक्षा अभ्यास", "text": "जुन कार्यालयमा आगलागी सुरक्षा अभ्यास हरेक तीन महिनामा गरिन्छ। आपतकालीन अवस्थामा सबै कर्मचारी पूर्वी ढोकाबाट बाहिर निस्कनुपर्छ।"},
+    {"id": "parking", "title": "Visitor parking", "text": "Cedar Studio visitors park in the west courtyard. Staff must register visiting vehicles with reception before arrival. Overnight parking is prohibited."},
+    {"id": "laptops", "title": "Laptop replacement", "text": "Cedar Studio replaces staff laptops every four years. Return the power adapter and security key with the old laptop. Equipment repairs go through the help desk."},
+    {"id": "meetings", "title": "Meeting rooms", "text": "The Cedar room seats twelve people and has a projector. Book meetings through the shared calendar. Cancel unused reservations ten minutes before the start."},
+    {"id": "training", "title": "Training allowance", "text": "Cedar Studio provides each employee two hundred dollars annually for professional courses. Training purchases require advance approval from a manager."},
+    {"id": "nep-network", "title": "अतिथि इन्टरनेट", "text": "जुन कार्यालयका पाहुनाले अतिथि इन्टरनेट मात्र प्रयोग गर्नुपर्छ। पासवर्ड स्वागत कक्षमा पाइन्छ। पासवर्ड हरेक सोमबार परिवर्तन हुन्छ।"},
+    {"id": "nep-cafe", "title": "खाजा समय", "text": "जुन कार्यालयको खाजा घर दिउँसो बाह्र बजेदेखि दुई बजेसम्म खुल्छ। कर्मचारीले आफ्नै भाँडा सफा गर्नुपर्छ। बिहीबार शाकाहारी खाना उपलब्ध हुन्छ।"},
+    {"id": "nep-delivery", "title": "सामान प्राप्ति", "text": "जुन कार्यालयमा सामान उत्तरी प्रवेशद्वारबाट बुझिन्छ। स्वागत कक्षले प्राप्त सामानको अभिलेख राख्छ। व्यक्तिगत सामान तीन दिनभित्र लिनुपर्छ।"},
+    {"id": "nep-garden", "title": "बगैँचा हेरचाह", "text": "जुन कार्यालयको बगैँचामा हरेक बिहान पानी हालिन्छ। शुक्रबार स्वयंसेवकले फूल र बिरुवाको हेरचाह गर्छन्। बगैँचामा धूम्रपान गर्न पाइँदैन।"}
+  ],
+  "cases": [
+    {"id": "en-1", "language": "en", "query": "How far in advance should annual leave be requested?", "gold": ["leave"]},
+    {"id": "en-2", "language": "en", "query": "What is the daily limit for meal reimbursement?", "gold": ["expenses"]},
+    {"id": "en-3", "language": "en", "query": "When does Atlas 2.4 launch?", "gold": ["release"]},
+    {"id": "en-4", "language": "en", "query": "How long are encrypted backups retained?", "gold": ["backup"]},
+    {"id": "en-5", "language": "en", "query": "What are the deadlines for leave requests and travel receipts?", "gold": ["leave", "expenses"]},
+    {"id": "ne-1", "language": "ne", "query": "जुन कार्यालयमा बिदा कति दिन अगाडि माग्नुपर्छ?", "gold": ["nep-leave"]},
+    {"id": "ne-2", "language": "ne", "query": "पुस्तकालय कुन दिन बन्द हुन्छ?", "gold": ["nep-library"]},
+    {"id": "ne-3", "language": "ne", "query": "होटलमा एक रातको खर्चको सीमा कति हो?", "gold": ["nep-travel"]},
+    {"id": "ne-4", "language": "ne", "query": "आगलागी हुँदा कर्मचारी कुन ढोकाबाट निस्कनुपर्छ?", "gold": ["nep-safety"]},
+    {"id": "ne-5", "language": "ne", "query": "बिदाको अनुरोध र यात्रा खर्चको रसिद कहिलेसम्म बुझाउनुपर्छ?", "gold": ["nep-leave", "nep-travel"]}
+  ]
+}
