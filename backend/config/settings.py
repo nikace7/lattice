@@ -4,6 +4,8 @@ from urllib.parse import urlsplit
 import environ
 from django.core.exceptions import ImproperlyConfigured
 
+from pipeline.embedding import REVISION
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 REPO_ROOT = BASE_DIR.parent
 env = environ.Env()
@@ -99,7 +101,9 @@ CELERY_BROKER_URL = REDIS_URL
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_TASK_IGNORE_RESULT = True
+CELERY_IMPORTS = ("modules.documents.indexing",)
 CELERY_TASK_ROUTES = {
+    "modules.documents.indexing.*": {"queue": "ingestion"},
     "modules.documents.tasks.*": {"queue": "ingestion"},
     "modules.identity.tasks.*": {"queue": "ingestion"},
     "modules.ingestion.*": {"queue": "ingestion"},
@@ -108,6 +112,10 @@ CELERY_TASK_ROUTES = {
 CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BEAT_SCHEDULE = {
+    "recover-indexes": {
+        "task": "modules.documents.indexing.recover_indexes",
+        "schedule": 30.0,
+    },
     "recover-extractions": {
         "task": "modules.documents.tasks.recover_extractions",
         "schedule": 30.0,
@@ -126,6 +134,8 @@ FILE_UPLOAD_HANDLERS = [
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 ]
 MODEL_CACHE_ROOT = (REPO_ROOT / env("MODEL_CACHE_ROOT", default=".data/models")).resolve()
+if env("LOCAL_EMBED_MODEL_REVISION", default="") not in {"", REVISION}:
+    raise ImproperlyConfigured("LOCAL_EMBED_MODEL_REVISION must match the pinned E5 revision.")
 RAG_MODE = env("RAG_MODE", default="RETRIEVAL_ONLY")
 if RAG_MODE not in {"LOCAL", "CLOUD", "RETRIEVAL_ONLY", "FIXTURE"}:
     raise ImproperlyConfigured("RAG_MODE must be LOCAL, CLOUD, RETRIEVAL_ONLY or FIXTURE.")

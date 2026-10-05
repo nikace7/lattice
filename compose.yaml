@@ -73,6 +73,10 @@ services:
       start_period: 15s
   ingestion-worker:
     <<: *backend
+    build:
+      context: .
+      dockerfile: infra/backend.Dockerfile
+      target: ingestion
     command: ["celery", "-A", "config", "worker", "--loglevel=info", "--queues=ingestion", "--concurrency=2"]
     depends_on:
       migrate: { condition: service_completed_successfully }

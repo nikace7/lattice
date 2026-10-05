@@ -15,6 +15,7 @@ function openSource(kind: string, locator: SourceBlock["locator"], text: string,
     kind, byteSize: 10, sha256: "hash", state: "EXTRACTED", error: "", retryable: false,
     pageCount: 0, warnings: [], canWrite: true, createdAt: "2026-10-02T00:00:00Z",
     ocrLanguage: "eng", pageReports: [], excludedPages: [], reviewReason: "",
+    index: null,
     ...overrides,
   };
   vi.mocked(api).mockImplementation(async (path) => path === "/documents/document" ? document : {
@@ -40,6 +41,26 @@ test("Markdown HTML and remote embeds remain inert source text", async () => {
   expect(passage).toHaveTextContent(text);
   expect(container.querySelectorAll("script, img, iframe")).toHaveLength(0);
   expect(container.querySelector('a[href^="https://example.invalid"]')).toBeNull();
+});
+
+test("index request carries the current revision and read-only users have no index actions", async () => {
+  openSource("TXT", { line: 1 }, "Text");
+  fireEvent.click(await screen.findByRole("button", { name: "Prepare search index" }));
+  await waitFor(() => expect(api).toHaveBeenCalledWith("/documents/document/index", "POST", { expectedRevision: 1 }));
+  cleanup();
+  openSource("TXT", { line: 1 }, "Text", { canWrite: false });
+  await screen.findByText("Not indexed yet");
+  expect(screen.queryByRole("button", { name: "Prepare search index" })).not.toBeInTheDocument();
+});
+
+test("running index can be cancelled and ready partial index is labelled", async () => {
+  openSource("TXT", { line: 1 }, "Text", { index: { state: "EMBEDDING", active: false, chunkCount: 2, error: "", canRetry: false, semantic: true } });
+  fireEvent.click(await screen.findByRole("button", { name: "Cancel indexing" }));
+  await waitFor(() => expect(api).toHaveBeenCalledWith("/documents/document/cancel-index", "POST", { expectedRevision: 1 }));
+  cleanup();
+  openSource("PDF", { page: 1 }, "Text", { excludedPages: [2], index: { state: "READY", active: true, chunkCount: 2, error: "", canRetry: false, semantic: true } });
+  await screen.findByText(/Partial document indexed/);
+  expect(screen.queryByRole("button", { name: "Cancel indexing" })).not.toBeInTheDocument();
 });
 
 test("review requires failed-page exclusion and submits a revision with the review note", async () => {

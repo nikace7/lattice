@@ -212,6 +212,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/documents/{document_id}/cancel-index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_documents_cancel_index_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_documents_index_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/documents/{document_id}/retry": {
         parameters: {
             query?: never;
@@ -473,6 +505,7 @@ export interface components {
             password: string;
         };
         DocumentData: {
+            readonly index: components["schemas"]["IndexData"] | null;
             /** Format: uuid */
             readonly id: string;
             readonly title: string;
@@ -518,6 +551,14 @@ export interface components {
         GrantsEditRequest: {
             expectedRevision: number;
             grants: components["schemas"]["GrantInputRequest"][];
+        };
+        IndexData: {
+            readonly state: components["schemas"]["StateEnum"];
+            readonly active: boolean;
+            chunkCount: number;
+            readonly error: string;
+            canRetry: boolean;
+            readonly semantic: boolean;
         };
         InvitationData: {
             /** Format: uuid */
@@ -698,6 +739,16 @@ export interface components {
             user: components["schemas"]["UserData"] | null;
             csrfToken: string;
         };
+        /**
+         * @description * `QUEUED` - Queued
+         *     * `CHUNKING` - Chunking
+         *     * `EMBEDDING` - Embedding
+         *     * `READY` - Ready
+         *     * `FAILED` - Failed
+         *     * `CANCELLED` - Cancelled
+         * @enum {string}
+         */
+        StateEnum: "QUEUED" | "CHUNKING" | "EMBEDDING" | "READY" | "FAILED" | "CANCELLED";
         TokenInputRequest: {
             token: string;
         };
@@ -1075,6 +1126,60 @@ export interface operations {
         };
     };
     api_v1_documents_cancel_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevisionInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["RevisionInputRequest"];
+                "multipart/form-data": components["schemas"]["RevisionInputRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentData"];
+                };
+            };
+        };
+    };
+    api_v1_documents_cancel_index_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevisionInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["RevisionInputRequest"];
+                "multipart/form-data": components["schemas"]["RevisionInputRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentData"];
+                };
+            };
+        };
+    };
+    api_v1_documents_index_create: {
         parameters: {
             query?: never;
             header?: never;

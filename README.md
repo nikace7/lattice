@@ -4,6 +4,7 @@ A cited knowledge workspace built with Next.js, Django, PostgreSQL/pgvector,
 and Celery. Accounts, workspaces, collection organization and access management
 are implemented, along with private PDF/DOCX/TXT/Markdown uploads and source inspection.
 Low-text PDF pages support English/Nepali OCR with explicit extraction review and page exclusions.
+Accepted sources can now produce resumable keyword-only or real local E5 indexes.
 Search and answer generation are not implemented yet.
 The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
 observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).
@@ -53,6 +54,8 @@ command instead of this repository's script.
 | `pnpm build` | Production frontend build |
 | `pnpm test:e2e` | Playwright/axe against production web and a disposable API database |
 | `pnpm contracts:generate` | Validate OpenAPI and regenerate TypeScript API types |
+| `pnpm models:prepare` | Explicitly download the pinned E5 model/tokenizer into host model storage |
+| `pnpm models:check` | Verify real offline embeddings, reference pooling and Unicode chunk spans |
 | `pnpm infra:down` | Stop this Compose project; keep persistent volumes |
 
 Verification uses **real PostgreSQL with pgvector**, never an SQLite substitute:
@@ -65,6 +68,14 @@ pnpm verify
 pnpm --filter @lattice/web exec playwright install chromium
 pnpm test:e2e
 ```
+
+Index preparation is explicit in the source viewer after extraction/review.
+The default `RAG_MODE=RETRIEVAL_ONLY` builds a keyword-only index; configure
+`RAG_MODE=LOCAL` before preparing a semantic index. Both use the pinned E5 tokenizer.
+Host indexing needs `uv sync --project backend --extra local` and `pnpm models:prepare`.
+Compose has separate model storage: prepare it with
+`docker compose run --rm --no-deps ingestion-worker python backend/manage.py prepare_models`.
+See [operations](docs/OPERATIONS.md) for deployment, retries and current limits.
 
 On Linux CI, use `playwright install --with-deps chromium` to install system libraries.
 The E2E runner starts its own production web server on port 4411 and API on 4412,

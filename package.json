@@ -8,6 +8,8 @@
     "pnpm": ">=10 <11"
   },
   "scripts": {
+    "models:prepare": "uv run --project backend --extra local python backend/manage.py prepare_models",
+    "models:check": "uv run --project backend --extra local python backend/manage.py check_models",
     "setup": "node scripts/project.mjs setup",
     "dev": "node scripts/project.mjs dev",
     "dev:web": "pnpm --filter @lattice/web dev",
