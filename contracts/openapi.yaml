@@ -361,6 +361,39 @@ paths:
               schema:
                 $ref: '#/components/schemas/DocumentData'
           description: ''
+  /api/v1/documents/{document_id}/cancel:
+    post:
+      operationId: api_v1_documents_cancel_create
+      parameters:
+      - in: path
+        name: document_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevisionInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RevisionInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RevisionInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentData'
+          description: ''
   /api/v1/documents/{document_id}/retry:
     post:
       operationId: api_v1_documents_retry_create

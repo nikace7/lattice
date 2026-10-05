@@ -3,11 +3,13 @@ import logging
 import shutil
 import time
 import uuid
+from functools import partial
 from pathlib import Path
 
 from celery import shared_task
 from django.conf import settings
 from django.db import transaction
+from django.db.models import F
 from django.utils import timezone
 from kombu.exceptions import OperationalError
 
@@ -15,10 +17,81 @@ from modules.workspaces.access import can_write
 from modules.workspaces.models import Membership, Workspace
 from pipeline.source_parser import MAX_BLOCKS, MAX_BYTES, MAX_CHARS, InvalidSource
 
-from .models import ExtractionJob, ExtractionVersion, SourceBlock, SourceVersion
+from .models import (
+    LEASE_DURATION,
+    Document,
+    ExtractionJob,
+    ExtractionVersion,
+    SourceBlock,
+    SourceVersion,
+)
 from .storage import source_directory, source_path
 
 logger = logging.getLogger(__name__)
+
+
+class ExtractionStopped(Exception):
+    """Cancellation or loss of the attempt's publication lease."""
+
+
+def maintain_lease(source_id, attempt, renew=False):
+    now = timezone.now()
+    current = ExtractionJob.objects.filter(
+        source_id=source_id,
+        attempt=attempt,
+        state="EXTRACTING",
+        updated_at__gt=now - LEASE_DURATION,
+    )
+    if not (current.update(updated_at=now) if renew else current.exists()):
+        raise ExtractionStopped
+
+
+@shared_task
+def recover_extractions():
+    cutoff = timezone.now() - LEASE_DURATION
+    # ponytail: at most 100 recoveries per run; add a state/time index if backlog grows.
+    expired = list(
+        ExtractionJob.objects.filter(
+            state__in=["QUEUED", "EXTRACTING"],
+            updated_at__lte=cutoff,
+        )
+        .order_by("updated_at")
+        .values_list("source_id", "source__document__collection__workspace_id")[:100]
+    )
+    for source_id, workspace_id in expired:
+        with transaction.atomic():
+            workspace = Workspace.objects.select_for_update().get(pk=workspace_id)
+            job = (
+                ExtractionJob.objects.select_for_update(of=("self",))
+                .select_related("source__document__collection")
+                .get(source_id=source_id)
+            )
+            if not job.lease_expired:
+                continue
+            document = job.source.document
+            member = Membership.objects.filter(
+                workspace=workspace,
+                user=document.created_by,
+                active=True,
+                user__is_active=True,
+            ).first()
+            if not member or not can_write(document.collection, member):
+                job.state, job.retryable = "FAILED", False
+                job.error = (
+                    "The uploader's contribution access changed. Ask an owner to upload again."
+                )
+            elif job.recoveries >= 3:
+                job.state, job.retryable = "FAILED", True
+                job.error = (
+                    "Automatic recovery stopped after three attempts. Check the worker and retry."
+                )
+            else:
+                job.state, job.error, job.retryable = "QUEUED", "", False
+                job.attempt = uuid.uuid4()
+                job.recoveries += 1
+                transaction.on_commit(partial(enqueue, str(source_id), str(job.attempt)))
+            job.save()
+            Document.objects.filter(pk=document.pk).update(revision=F("revision") + 1)
 
 
 def enqueue(source_id, attempt):
@@ -41,6 +114,8 @@ def parse_source(source):
         raise RuntimeError("Invalid parser spool directory.")
     directory.mkdir()
     try:
+        maintain_lease(source.pk, source.job.attempt, renew=True)
+        heartbeat = time.monotonic() + 15
         shutil.copyfile(source_path(source), directory / "input")
         (directory / "request.tmp").write_text(
             json.dumps({"kind": source.kind, "ocrLanguage": source.ocr_language})
@@ -49,9 +124,14 @@ def parse_source(source):
         deadline = time.monotonic() + settings.PARSER_TIMEOUT_SECONDS
         result_path = directory / "result.json"
         while not result_path.exists():
+            renew = time.monotonic() >= heartbeat
+            maintain_lease(source.pk, source.job.attempt, renew=renew)
+            if renew:
+                heartbeat = time.monotonic() + 15
             if time.monotonic() > deadline:
                 raise TimeoutError("Parser unavailable or timed out.")
-            time.sleep(0.25)
+            time.sleep(1)
+        maintain_lease(source.pk, source.job.attempt)
         if result_path.stat().st_size > 16 * 1024**2:
             raise InvalidSource("Extracted content exceeds the output limit.")
         result = json.loads(result_path.read_text(encoding="utf-8"))
@@ -219,6 +299,8 @@ def extract_source(source_id, attempt):
     if not claimed:
         return
     source = SourceVersion.objects.select_related("document__collection", "job").get(pk=source_id)
+    if str(source.job.attempt) != attempt or source.job.state != "EXTRACTING":
+        return
     try:
         result = parse_source(source)
         validate_result(result, source.kind)
@@ -227,7 +309,7 @@ def extract_source(source_id, attempt):
                 pk=source.document.collection.workspace_id
             )
             job = ExtractionJob.objects.select_for_update().get(source=source)
-            if str(job.attempt) != attempt or job.state != "EXTRACTING":
+            if str(job.attempt) != attempt or job.state != "EXTRACTING" or job.lease_expired:
                 return
             member = Membership.objects.filter(
                 workspace=workspace,
@@ -264,6 +346,8 @@ def extract_source(source_id, attempt):
             )
             job.state = "NEEDS_REVIEW" if result["warnings"] else "EXTRACTED"
             job.save(update_fields=["state", "updated_at"])
+    except ExtractionStopped:
+        return
     except Exception as error:
         safe_error = (
             str(error)[:240]

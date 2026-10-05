@@ -346,3 +346,95 @@ def test_partial_review_enforces_access_revision_and_exclusions(library):
     assert extraction.accepted_at and extraction.review_reason == payload["reason"]
     assert client.post(path, payload, format="json").status_code == 409
     assert client.post(path, {**payload, "expectedRevision": 2}, format="json").status_code == 409
+
+
+def test_cancel_permissions_revision_and_late_worker_fence(library):
+    from modules.documents.models import ExtractionVersion
+
+    client, reader, collection = library
+    document = Document.objects.get(pk=upload(client, collection).data["id"])
+    path = f"/api/v1/documents/{document.pk}/cancel"
+    other = APIClient()
+    other.force_login(reader)
+    assert other.post(path, {"expectedRevision": 1}, format="json").status_code == 403
+    collection.access = "RESTRICTED"
+    collection.save()
+    assert other.post(path, {"expectedRevision": 1}, format="json").status_code == 404
+    assert client.post(path, {"expectedRevision": 2}, format="json").status_code == 409
+
+    def cancel_during_parse(source):
+        result = local_parser(source)
+        cancelled = client.post(path, {"expectedRevision": 1}, format="json")
+        assert cancelled.status_code == 200
+        assert cancelled.data["state"] == "CANCELLED" and cancelled.data["retryable"]
+        return result
+
+    with patch("modules.documents.tasks.parse_source", side_effect=cancel_during_parse):
+        extract_source(str(document.source.pk), str(document.source.job.attempt))
+    assert not ExtractionVersion.objects.exists()
+    assert client.post(path, {"expectedRevision": 1}, format="json").status_code == 409
+    original = client.get(f"/api/v1/sources/{document.source.pk}/original")
+    assert b"".join(original.streaming_content)
+    retried = client.post(
+        f"/api/v1/documents/{document.pk}/retry", {"expectedRevision": 2}, format="json"
+    )
+    assert retried.status_code == 200
+    assert not retried.data["retryable"]
+    process(document.pk)
+    assert ExtractionVersion.objects.count() == 1
+    assert client.post(path, {"expectedRevision": 3}, format="json").status_code == 409
+
+
+def test_recovery_requeues_expired_jobs_with_new_attempts_and_stops_at_limit(
+    library,
+    django_capture_on_commit_callbacks,
+):
+    from datetime import timedelta
+
+    from django.utils import timezone
+
+    from modules.documents.models import ExtractionJob
+    from modules.documents.tasks import recover_extractions
+
+    client, _, collection = library
+    document = Document.objects.get(pk=upload(client, collection).data["id"])
+    job = document.source.job
+    with patch("modules.documents.tasks.enqueue") as enqueue:
+        recover_extractions()
+        enqueue.assert_not_called()
+        for recovery in range(4):
+            old_attempt = str(job.attempt)
+            ExtractionJob.objects.filter(pk=job.pk).update(
+                state="EXTRACTING" if recovery % 2 else "QUEUED",
+                updated_at=timezone.now() - timedelta(seconds=91),
+            )
+            with django_capture_on_commit_callbacks(execute=True):
+                recover_extractions()
+            job.refresh_from_db()
+            assert job.recoveries == min(recovery + 1, 3)
+            assert job.state == ("QUEUED" if recovery < 3 else "FAILED")
+            with patch("modules.documents.tasks.parse_source") as parser:
+                extract_source(str(document.source.pk), old_attempt)
+            parser.assert_not_called()
+        assert enqueue.call_count == 3
+    assert job.retryable
+
+    # Manual retry resets the bounded recovery budget.
+    document.refresh_from_db()
+    response = client.post(
+        f"/api/v1/documents/{document.pk}/retry",
+        {"expectedRevision": document.revision},
+        format="json",
+    )
+    assert response.status_code == 200
+    job.refresh_from_db()
+    assert job.recoveries == 0
+    Membership.objects.filter(user=document.created_by).update(active=False)
+    ExtractionJob.objects.filter(pk=job.pk).update(
+        updated_at=timezone.now() - timedelta(seconds=91)
+    )
+    with patch("modules.documents.tasks.enqueue") as enqueue:
+        recover_extractions()
+        enqueue.assert_not_called()
+    job.refresh_from_db()
+    assert job.state == "FAILED" and not job.retryable

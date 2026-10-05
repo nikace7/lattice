@@ -107,6 +107,12 @@ CELERY_TASK_ROUTES = {
 }
 CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_BEAT_SCHEDULE = {
+    "recover-extractions": {
+        "task": "modules.documents.tasks.recover_extractions",
+        "schedule": 30.0,
+    },
+}
 
 STORAGE_ROOT = (REPO_ROOT / env("STORAGE_ROOT", default=".data/storage")).resolve()
 PARSER_SPOOL_ROOT = (REPO_ROOT / env("PARSER_SPOOL_ROOT", default=".data/parser")).resolve()

@@ -16,6 +16,10 @@ or empty pages and supply a reason. Acceptance records actor/time and exclusions
 but does not create a searchable index. Future indexing must honor excluded pages.
 Tesseract runs only in the parser image with a bounded deadline and one OpenMP thread;
 the supervisor kills the entire job process group after completion or timeout.
+Removing a cancelled job's spool also stops its owned process group. The worker
+checks cancellation/attempt ownership while waiting and renews a 90-second database
+lease every 15 seconds. Beat requeues expired jobs with new attempts up to three times;
+publication requires the current attempt, extracting state and an unexpired lease.
 
 OCR reference: [Tesseract command-line usage and TSV output](https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html).
 

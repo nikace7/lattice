@@ -70,3 +70,20 @@ test("read-only users cannot accept extraction", async () => {
   await screen.findByText("Policy");
   expect(screen.queryByRole("form", { name: "Review extraction" })).not.toBeInTheDocument();
 });
+
+test("active extraction can be cancelled with its revision but cannot be retried early", async () => {
+  openSource("TXT", {}, "", { state: "EXTRACTING", retryable: false });
+  const cancel = await screen.findByRole("button", { name: "Cancel extraction" });
+  expect(screen.queryByRole("button", { name: "Retry extraction" })).not.toBeInTheDocument();
+  fireEvent.click(cancel);
+  await waitFor(() => expect(api).toHaveBeenCalledWith("/documents/document/cancel", "POST", { expectedRevision: 1 }));
+  expect(screen.queryByRole("button", { name: "Retry extraction" })).not.toBeInTheDocument();
+});
+
+test("cancelled extraction offers retry and keeps its original download", async () => {
+  openSource("TXT", {}, "", { state: "CANCELLED", retryable: true });
+  fireEvent.click(await screen.findByRole("button", { name: "Retry extraction" }));
+  await waitFor(() => expect(api).toHaveBeenCalledWith("/documents/document/retry", "POST", { expectedRevision: 1 }));
+  expect(await screen.findByRole("link", { name: "Download original" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Cancel extraction" })).not.toBeInTheDocument();
+});

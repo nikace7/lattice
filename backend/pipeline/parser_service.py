@@ -25,7 +25,12 @@ def run(directory):
             start_new_session=True,
         )
         try:
-            if process.wait(timeout=305) != 0:
+            deadline = time.monotonic() + 305
+            while process.poll() is None:
+                if not directory.exists() or time.monotonic() >= deadline:
+                    raise subprocess.SubprocessError("Parser cancelled or timed out")
+                time.sleep(0.25)
+            if process.returncode != 0:
                 raise subprocess.SubprocessError("Parser failed")
         finally:
             # This group belongs only to this job, including any Tesseract child.

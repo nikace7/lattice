@@ -4,6 +4,7 @@ from config import schema  # noqa: F401 -- registers our session authentication 
 from modules.documents.api import (
     AcceptReviewView,
     BlocksView,
+    CancelView,
     DocumentsView,
     DocumentView,
     OriginalView,
@@ -36,6 +37,7 @@ urlpatterns = [
     path("api/v1/collections/<uuid:collection_id>/documents", UploadView.as_view()),
     path("api/v1/documents/<uuid:document_id>", DocumentView.as_view()),
     path("api/v1/documents/<uuid:document_id>/retry", RetryView.as_view()),
+    path("api/v1/documents/<uuid:document_id>/cancel", CancelView.as_view()),
     path("api/v1/documents/<uuid:document_id>/accept-review", AcceptReviewView.as_view()),
     path("api/v1/sources/<uuid:source_id>/blocks", BlocksView.as_view()),
     path("api/v1/sources/<uuid:source_id>/original", OriginalView.as_view()),

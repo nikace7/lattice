@@ -1,7 +1,11 @@
 import uuid
+from datetime import timedelta
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
+
+LEASE_DURATION = timedelta(seconds=90)
 
 
 class Document(models.Model):
@@ -46,16 +50,33 @@ class ExtractionJob(models.Model):
         NEEDS_REVIEW = "NEEDS_REVIEW", "Needs review"
         REVIEWED = "REVIEWED", "Review accepted"
         FAILED = "FAILED", "Failed"
+        CANCELLED = "CANCELLED", "Cancelled"
 
     source = models.OneToOneField(SourceVersion, on_delete=models.CASCADE, related_name="job")
     state = models.CharField(max_length=12, choices=State.choices, default=State.QUEUED)
     attempt = models.UUIDField(default=uuid.uuid4)
     error = models.CharField(max_length=240, blank=True)
     retryable = models.BooleanField(default=False)
+    recoveries = models.PositiveSmallIntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.source_id}: {self.state}"
+
+    @property
+    def lease_expired(self):
+        return (
+            self.state in {"QUEUED", "EXTRACTING"}
+            and self.updated_at <= timezone.now() - LEASE_DURATION
+        )
+
+    @property
+    def can_retry(self):
+        return (
+            self.state == "CANCELLED"
+            or (self.state == "FAILED" and self.retryable)
+            or self.lease_expired
+        )
 
 
 class ExtractionVersion(models.Model):

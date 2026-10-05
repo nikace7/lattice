@@ -32,7 +32,7 @@ class DocumentData(serializers.ModelSerializer):
     sha256 = serializers.CharField(source="source.sha256")
     state = serializers.CharField(source="source.job.state")
     error = serializers.CharField(source="source.job.error")
-    retryable = serializers.BooleanField(source="source.job.retryable")
+    retryable = serializers.BooleanField(source="source.job.can_retry")
     ocrLanguage = serializers.CharField(source="source.ocr_language")
     pageReports = serializers.SerializerMethodField()
     excludedPages = serializers.SerializerMethodField()

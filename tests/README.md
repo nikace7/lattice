@@ -35,3 +35,9 @@ per-page failures, retained successful pages and worker report validation. Web t
 cover mandatory exclusions, review notes/revisions and read-only access. PostgreSQL
 review tests additionally cover current permissions, stale/replayed acceptance,
 exclusion rules and reviewer provenance; these remain deferred while Docker is skipped.
+
+`backend/tests/test_job_lifecycle.py` runs without a database and checks retry
+eligibility, lease renewal rejection, cancellation spool cleanup and owned process
+termination. PostgreSQL document tests cover cancellation permissions/revisions,
+late publication, recovery attempt fencing, recovery limits and access revocation.
+Web unit tests cover cancel/retry controls and preserving access to the original.
