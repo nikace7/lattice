@@ -724,6 +724,15 @@ small {
 .invitation-list span { min-width: 0; overflow-wrap: anywhere; }
 .invitation-list small { display: block; }
 .document-main { grid-column: 2 / -1; min-width: 0; }
+.search-results { list-style: none; padding: 0; max-width: 900px; }
+.search-results li { padding: 24px 0; border-bottom: 1px solid var(--color-border); overflow-wrap: anywhere; }
+.search-results h2 { font-size: 22px; }
+.search-excerpt { font-family: var(--font-reading); font-size: 18px; line-height: 1.7; white-space: pre-wrap; }
+.search-diagnostics { margin-top: 24px; }
+.search-diagnostics .field-note { overflow-wrap: anywhere; }
+.search-score-table { overflow-x: auto; margin: 16px 0; }
+.search-score-table table { width: 100%; border-collapse: collapse; text-align: left; }
+.search-score-table th, .search-score-table td { padding: 12px; border-bottom: 1px solid var(--color-border); }
 .upload-form { margin: 24px 0; padding: 24px; background: white; border: 1px solid var(--color-border); border-radius: 8px; display: grid; gap: 12px; max-width: 680px; }
 .upload-form input:not([type="checkbox"]), .upload-form select { width: 100%; min-width: 0; }
 .upload-form textarea { min-height: 96px; resize: vertical; }

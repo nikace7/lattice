@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "modules.collections.apps.CollectionsConfig",
     "modules.audit",
     "modules.documents",
+    "modules.retrieval",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

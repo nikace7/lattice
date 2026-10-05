@@ -71,7 +71,7 @@ export function ErrorNotice({
     <div className="error-notice" role="alert">
       <p>{error.message}</p>
       {retry && (
-        <button className="text-button" onClick={retry}>
+        <button type="button" className="text-button" onClick={retry}>
           Try again
         </button>
       )}
@@ -105,6 +105,7 @@ export function Pagination({
   return (
     <nav aria-label="Page navigation" className="pagination">
       <button
+        type="button"
         disabled={!page.previous}
         onClick={() => {
           const path = nextPath(page.previous);
@@ -114,6 +115,7 @@ export function Pagination({
         Previous
       </button>
       <button
+        type="button"
         disabled={!page.next}
         onClick={() => {
           const path = nextPath(page.next);

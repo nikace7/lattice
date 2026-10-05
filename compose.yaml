@@ -55,6 +55,10 @@ services:
       db-pgvector: { condition: service_healthy }
   api:
     <<: *backend
+    build:
+      context: .
+      dockerfile: infra/backend.Dockerfile
+      target: ingestion
     depends_on:
       migrate: { condition: service_completed_successfully }
       redis: { condition: service_healthy }

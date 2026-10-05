@@ -83,11 +83,23 @@ Workers recheck requesting-user access under the workspace lock before staged wr
 and activation. All required chunks/vectors must exist before an index is active;
 unreviewed warnings, stale attempts, expired leases and cancelled jobs cannot activate.
 Chunk spans point to the same extraction; there is no independent browser-supplied
-workspace/profile or cross-document chunk linkage. Search must apply current access
-and active-index filtering before ranking when implemented in R4.
+workspace/profile or cross-document chunk linkage. Search applies current collection
+access and active-index filtering before either ranking path and its top-k limit.
 Model acquisition is explicit and pinned. Runtime checks checksums, loads safetensors
 locally with remote code disabled and does not send source text to a provider.
 Unexpected indexing errors expose a generic message; logs contain IDs/error types.
+
+Search scopes intersect requested collections with current membership/grants, never
+broaden an empty selection, and require identical local profiles for semantic/hybrid.
+Query embedding runs outside workspace locks; the complete scope/index/access snapshot
+is rechecked under the workspace lock before ranking and response construction.
+Concurrent changes produce a conflict instead of releasing stale results. Direct
+passage inspection checks the original's current access and matching active index.
+Diagnostics require OWNER/CURATOR and use the same readable corpus. Search metadata
+contains no raw questions or source text. Client filters cancel pending responses and
+clear old excerpts; rendered document text remains inert. PostgreSQL race/access tests
+are provided but their execution remains deferred, so these are implementation
+boundaries rather than a claim of completed integration verification.
 
 Compose is a local development configuration. PostgreSQL, Redis, mail and proxy
 ports bind only to loopback. The backend and web run as non-root users in containers.

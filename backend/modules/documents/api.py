@@ -8,7 +8,7 @@ from django.db.models import Sum
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import generics
 from rest_framework.exceptions import NotFound, PermissionDenied, ValidationError
 from rest_framework.parsers import MultiPartParser
@@ -24,6 +24,7 @@ from pipeline.source_parser import MAX_BYTES, InvalidSource, validate_bytes
 
 from .indexing import RUNNING, configured_profile, enqueue_index
 from .models import (
+    Chunk,
     Document,
     ExtractionJob,
     ExtractionVersion,
@@ -361,6 +362,18 @@ class BlockPages(Pages):
     page_size = 100
 
 
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "chunkId",
+                type=uuid.UUID,
+                description="Only blocks backing this active source passage.",
+            ),
+            OpenApiParameter("page", type=int, description="Physical PDF page, from 1 to 100."),
+        ]
+    )
+)
 class BlocksView(generics.ListAPIView):
     serializer_class = BlockData
     pagination_class = BlockPages
@@ -368,6 +381,20 @@ class BlocksView(generics.ListAPIView):
     def get_queryset(self):
         source = readable_source(self.request.user, self.kwargs["source_id"])
         blocks = SourceBlock.objects.filter(extraction__source=source)
+        chunk_id = self.request.query_params.get("chunkId")
+        if chunk_id:
+            try:
+                chunk_id = uuid.UUID(chunk_id)
+            except ValueError as error:
+                raise ValidationError("Choose a valid passage.") from error
+            chunk = get_object_or_404(
+                Chunk,
+                pk=chunk_id,
+                index__extraction__source=source,
+                index__active=True,
+                index__state="READY",
+            )
+            blocks = blocks.filter(pk__in=[span["block_id"] for span in chunk.spans])
         page = self.request.query_params.get("page")
         if page:
             if not page.isdigit() or not 1 <= int(page) <= 100:

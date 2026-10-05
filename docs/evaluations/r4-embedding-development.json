@@ -1,0 +1,254 @@
+{
+  "suite": "r4-development-v1",
+  "suiteHash": "a0b740dc1af60b5f97cbc517d21b195073377e541aa19057c84771414400e9fc",
+  "profile": {
+    "provider": "local",
+    "model": "intfloat/multilingual-e5-small",
+    "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+    "dimensions": 384,
+    "tokenizer": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+    "preprocessing": "e5-prefix-mean-l2-v1"
+  },
+  "backend": "offline cosine only",
+  "elapsedSeconds": 12.48,
+  "metrics": {
+    "SEMANTIC": {
+      "en": {
+        "questions": 5,
+        "goldGroupsFound": 6,
+        "goldGroups": 6,
+        "evidenceRecallAt8": 1.0,
+        "anyHitQuestions": 5,
+        "fullEvidenceQuestions": 5,
+        "meanReciprocalRank": 1.0
+      },
+      "ne": {
+        "questions": 5,
+        "goldGroupsFound": 6,
+        "goldGroups": 6,
+        "evidenceRecallAt8": 1.0,
+        "anyHitQuestions": 5,
+        "fullEvidenceQuestions": 5,
+        "meanReciprocalRank": 1.0
+      }
+    }
+  },
+  "cases": {
+    "SEMANTIC": [
+      {
+        "id": "en-1",
+        "language": "en",
+        "query": "How far in advance should annual leave be requested?",
+        "gold": [
+          "leave"
+        ],
+        "goldChunkIds": [
+          "95333de9-d673-5e43-bac8-1336a1c457ad"
+        ],
+        "retrieved": [
+          "leave",
+          "nep-leave",
+          "release",
+          "nep-safety",
+          "training",
+          "expenses",
+          "backup",
+          "nep-travel"
+        ]
+      },
+      {
+        "id": "en-2",
+        "language": "en",
+        "query": "What is the daily limit for meal reimbursement?",
+        "gold": [
+          "expenses"
+        ],
+        "goldChunkIds": [
+          "f0c5ff58-ffce-5118-8a22-3ad143c89f7e"
+        ],
+        "retrieved": [
+          "expenses",
+          "nep-travel",
+          "backup",
+          "nep-cafe",
+          "leave",
+          "meetings",
+          "nep-network",
+          "training"
+        ]
+      },
+      {
+        "id": "en-3",
+        "language": "en",
+        "query": "When does Atlas 2.4 launch?",
+        "gold": [
+          "release"
+        ],
+        "goldChunkIds": [
+          "0122fb78-1a6b-52fb-a4fb-4e4e7b7bd025"
+        ],
+        "retrieved": [
+          "release",
+          "backup",
+          "leave",
+          "laptops",
+          "meetings",
+          "parking",
+          "training",
+          "nep-network"
+        ]
+      },
+      {
+        "id": "en-4",
+        "language": "en",
+        "query": "How long are encrypted backups retained?",
+        "gold": [
+          "backup"
+        ],
+        "goldChunkIds": [
+          "aaa906f9-7bbe-5fff-9d98-7793319e6179"
+        ],
+        "retrieved": [
+          "backup",
+          "laptops",
+          "nep-delivery",
+          "release",
+          "expenses",
+          "nep-safety",
+          "nep-network",
+          "leave"
+        ]
+      },
+      {
+        "id": "en-5",
+        "language": "en",
+        "query": "What are the deadlines for leave requests and travel receipts?",
+        "gold": [
+          "leave",
+          "expenses"
+        ],
+        "goldChunkIds": [
+          "95333de9-d673-5e43-bac8-1336a1c457ad",
+          "f0c5ff58-ffce-5118-8a22-3ad143c89f7e"
+        ],
+        "retrieved": [
+          "leave",
+          "expenses",
+          "release",
+          "backup",
+          "nep-leave",
+          "laptops",
+          "nep-delivery",
+          "meetings"
+        ]
+      },
+      {
+        "id": "ne-1",
+        "language": "ne",
+        "query": "\u091c\u0941\u0928 \u0915\u093e\u0930\u094d\u092f\u093e\u0932\u092f\u092e\u093e \u092c\u093f\u0926\u093e \u0915\u0924\u093f \u0926\u093f\u0928 \u0905\u0917\u093e\u0921\u093f \u092e\u093e\u0917\u094d\u0928\u0941\u092a\u0930\u094d\u091b?",
+        "gold": [
+          "nep-leave"
+        ],
+        "goldChunkIds": [
+          "2676438b-6e6a-5566-bafd-ade8f239dfae"
+        ],
+        "retrieved": [
+          "nep-leave",
+          "nep-delivery",
+          "nep-travel",
+          "nep-safety",
+          "nep-cafe",
+          "leave",
+          "nep-library",
+          "nep-network"
+        ]
+      },
+      {
+        "id": "ne-2",
+        "language": "ne",
+        "query": "\u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0915\u0941\u0928 \u0926\u093f\u0928 \u092c\u0928\u094d\u0926 \u0939\u0941\u0928\u094d\u091b?",
+        "gold": [
+          "nep-library"
+        ],
+        "goldChunkIds": [
+          "43d9ccdf-dbb2-5a8a-9791-b6fa74d5509e"
+        ],
+        "retrieved": [
+          "nep-library",
+          "nep-cafe",
+          "nep-garden",
+          "nep-leave",
+          "nep-delivery",
+          "nep-safety",
+          "nep-network",
+          "nep-travel"
+        ]
+      },
+      {
+        "id": "ne-3",
+        "language": "ne",
+        "query": "\u0939\u094b\u091f\u0932\u092e\u093e \u090f\u0915 \u0930\u093e\u0924\u0915\u094b \u0916\u0930\u094d\u091a\u0915\u094b \u0938\u0940\u092e\u093e \u0915\u0924\u093f \u0939\u094b?",
+        "gold": [
+          "nep-travel"
+        ],
+        "goldChunkIds": [
+          "aa6d013e-594f-5b00-8715-8c89ef1438fe"
+        ],
+        "retrieved": [
+          "nep-travel",
+          "nep-network",
+          "nep-cafe",
+          "nep-leave",
+          "nep-library",
+          "nep-safety",
+          "nep-delivery",
+          "nep-garden"
+        ]
+      },
+      {
+        "id": "ne-4",
+        "language": "ne",
+        "query": "\u0906\u0917\u0932\u093e\u0917\u0940 \u0939\u0941\u0901\u0926\u093e \u0915\u0930\u094d\u092e\u091a\u093e\u0930\u0940 \u0915\u0941\u0928 \u0922\u094b\u0915\u093e\u092c\u093e\u091f \u0928\u093f\u0938\u094d\u0915\u0928\u0941\u092a\u0930\u094d\u091b?",
+        "gold": [
+          "nep-safety"
+        ],
+        "goldChunkIds": [
+          "c468d9d5-91b6-5f1d-80ca-a30d7dcecff4"
+        ],
+        "retrieved": [
+          "nep-safety",
+          "nep-garden",
+          "nep-leave",
+          "nep-cafe",
+          "nep-delivery",
+          "nep-network",
+          "nep-travel",
+          "nep-library"
+        ]
+      },
+      {
+        "id": "ne-5",
+        "language": "ne",
+        "query": "\u092c\u093f\u0926\u093e\u0915\u094b \u0905\u0928\u0941\u0930\u094b\u0927 \u0930 \u092f\u093e\u0924\u094d\u0930\u093e \u0916\u0930\u094d\u091a\u0915\u094b \u0930\u0938\u093f\u0926 \u0915\u0939\u093f\u0932\u0947\u0938\u092e\u094d\u092e \u092c\u0941\u091d\u093e\u0909\u0928\u0941\u092a\u0930\u094d\u091b?",
+        "gold": [
+          "nep-leave",
+          "nep-travel"
+        ],
+        "goldChunkIds": [
+          "2676438b-6e6a-5566-bafd-ade8f239dfae",
+          "aa6d013e-594f-5b00-8715-8c89ef1438fe"
+        ],
+        "retrieved": [
+          "nep-travel",
+          "nep-leave",
+          "expenses",
+          "nep-delivery",
+          "nep-network",
+          "leave",
+          "nep-cafe",
+          "nep-safety"
+        ]
+      }
+    ]
+  }
+}

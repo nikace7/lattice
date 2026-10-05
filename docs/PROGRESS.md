@@ -22,7 +22,7 @@ account recovery and invitations. R2 is implemented with final Docker-dependent
 integration validation deferred by the user. R3 document formats, OCR/review,
 chunking and local embedding/index preparation are implemented, with database/worker
 integration gates still deferred and table/Markdown limitations recorded below.
-R4–R8 remain pending. The ingestion worker
+R4 scoped search is implemented with PostgreSQL/browser gates deferred; R5–R8 remain pending. The ingestion worker
 delivers recovery email and document extraction; generation remains future work.
 
 ## Verification
@@ -254,3 +254,35 @@ explicitly. Markdown Setext recognition and cell-wise packing are not implemente
 An existing index cannot switch profiles until R6 shadow reindexing. Next feature
 phase is R4 scoped lexical/vector/hybrid retrieval; complete deferred integration
 checks when Docker is available.
+
+## R4 scoped retrieval — 5 October 2026
+
+- Added keyword, semantic and hybrid search with selected collection intersections,
+  active-index filtering before both top-k paths, exact-profile enforcement, and a
+  scope/access/index recheck after query embedding. No silent profile or scope fallback.
+- PostgreSQL weighted title/DOCX-heading/body websearch with NFC matching and
+  English/simple Devanagari configuration; exact pgvector cosine; stable top-20
+  paths, RRF, overlap deduplication and up to eight passages with document diversity.
+- Added Search navigation, collection/method controls, source-block links with
+  correct PDF pages, partial-source labels and owner/curator score tables. Changing
+  filters cancels pending display updates and clears old results. Errors retain input.
+- Stored metadata-only search runs with ranks, hashes, effective scope and timings.
+  Query inference is bounded to one per API process and requests to 30/user/minute.
+  API image now includes the same local-model dependencies as ingestion.
+- Added a reproducible 16-document/10-question development evaluator. Real pinned
+  E5 offline cosine retrieval found 6/6 gold evidence groups across five English
+  questions and 6/6 across five Nepali questions; MRR 1.0 for each. Observed run:
+  12.48 seconds including model load. Report and exact suite hash are saved in
+  `docs/evaluations/r4-embedding-development.json`. This small development result
+  is not PostgreSQL validation, a held-out evaluation, or general language accuracy.
+
+Validation: 40 database-free backend checks, 13 web unit tests, setup test, lint,
+Ruff format, production build/TypeScript, Django checks, offline migration-state
+comparison and contract generation
+passed. PostgreSQL query compilation was checked without a connection. Four new
+PostgreSQL tests cover top-k permission filtering, confusable workspaces, explicit
+empty/forged scope, profile mismatch, numerical cosine ordering, heading/Unicode
+matching, revocation during embedding and source passage access; they collected
+but were not run. Migration application, database evaluation, live API/browser and
+Compose checks remain deferred at the user's request to skip Docker. R4 is not yet
+fully integration-validated. R5 adds real generation, evidence validation and citations.

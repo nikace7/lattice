@@ -126,8 +126,8 @@ documents; no backup retention or purge guarantees are claimed at initialization
 ### Local indexing
 
 Apply document migration `0005`, then rebuild/restart API, ingestion-worker and beat.
-The ingestion image alone installs the optional `local` Python extra (CPU PyTorch
-and Transformers); parser/API images do not need those packages. Set `RAG_MODE=LOCAL`
+The ingestion and API images install the optional `local` Python extra (CPU PyTorch
+and Transformers); parser and base runtime images do not. Set `RAG_MODE=LOCAL`
 for real semantic vectors, or keep `RETRIEVAL_ONLY` for explicit keyword-only indexes.
 Cloud/fixture indexing is not implemented and returns a clear validation error.
 
@@ -154,8 +154,7 @@ Open an extracted/reviewed source and select **Prepare search index**. In R3, on
 immutable index/profile belongs to each extraction. Choose LOCAL before initial
 indexing if semantic search is wanted: switching an existing index to another
 profile requires the R6 shadow-reindex feature. No existing environment mode is
-changed by setup. Ready indexes are preparation for R4 search, not an available
-search or answer feature today.
+changed by setup. Ready indexes are available in Search. Generation remains future work.
 
 Chunks target 320 and cap at 384 E5 tokens, with up to 40 tokens of overlap within
 the same section. PDF pages and DOCX headings separate sections; TXT blank lines
@@ -186,6 +185,61 @@ retry resets that budget. Processing has a 20-minute cooperative deadline and a
 21-minute Celery hard limit on supported worker platforms. Use Linux workers for
 production process limits. Cancelled, completed and failed jobs are not auto-requeued.
 Partial artifact retention/cleanup remains part of R6.
+
+### R4 search
+
+Apply retrieval migration `0001`, then rebuild the API image. The API uses the
+existing ingestion build target so query embeddings have the same dependencies.
+Host semantic search needs `uv sync --project backend --extra local` and prepared
+host model files. No runtime downloads or provider fallback occur.
+
+Search defaults to keyword. Semantic and hybrid reject a selected scope containing
+NONE or mismatched profiles; choose keyword or explicitly narrow collections.
+An omitted collection list means all current readable collections; an empty list
+means none. Unknown/inaccessible collection IDs are intersected out without
+broadening scope. No active indexes means an empty result, without model loading.
+Queries cap at 4,000 characters; semantic inputs additionally must fit 512 tokens
+including the prefix and special tokens. Long inputs fail rather than truncate.
+
+Keyword search uses PostgreSQL websearch syntax and weighted title/DOCX heading/body
+vectors, with English configuration or simple configuration for Devanagari content.
+This is PostgreSQL text ranking, not BM25. NFC applies to matching only; displayed
+source text and offsets remain unchanged. Exact cosine and keyword ranking each
+take 20 hits with chunk-ID tie breaks; equal RRF uses `1/(60+rank)`. Top 12 are
+deduplicated for identical or >=90% similar overlapping text within the same source,
+then up to 8 passages are selected, at most 3 per document when multiple documents
+remain. Generation-token budgeting will be added with R5's generator tokenizer.
+The APIs follow [Django full-text search](https://docs.djangoproject.com/en/5.2/ref/contrib/postgres/search/)
+and [pgvector's Django distance functions](https://github.com/pgvector/pgvector-python#django).
+
+Search is limited to 30 requests per user per minute. One query inference runs per
+API process; concurrent semantic requests get 503 and can retry. Model loading is
+cached per process, with no result cache. Restart the API after replacing prepared
+model artifacts. Database statements, including workspace-lock waits, cap at 10s.
+Exact ranking computes vectors dynamically at this scale; measured performance
+must justify stored search vectors/GIN or filtered ANN indexes later.
+
+SearchRun retains only authorized IDs, ranks, scores, hashes, timing and effective
+scope, without questions or excerpts. There is no historical-results endpoint.
+Retention/purge of this metadata is future R6 work. Curator diagnostics are scoped
+to their readable collections; the role does not grant access to restricted sources.
+
+Development evaluation (run from the host repository root):
+
+```sh
+# Requires PostgreSQL and applied migrations; temporary synthetic rows roll back.
+uv run --project backend --extra local python backend/manage.py evaluate_retrieval
+# Explicit offline embedding check; does NOT test database/keyword/hybrid retrieval.
+uv run --project backend --extra local python backend/manage.py evaluate_retrieval --embedding-only
+```
+
+The versioned 16-document/10-question development corpus reports evidence Recall@8,
+any/full-evidence counts and MRR separately for English/Nepali. Canonical source
+blocks use the actual chunker/tokenizer; this small check does not test parsers,
+API permissions, grounding or the full R8 held-out corpus. Database mode compares
+keyword/semantic/hybrid over the same temporary corpus. All model inference happens
+before the temporary DB transaction. The observed offline report is in
+`docs/evaluations/r4-embedding-development.json`; PostgreSQL results remain pending.
 
 Optional Ollama: `docker compose --profile local-models up -d ollama`. The service
 has no published host port and no preinstalled models. Generation/Qwen preparation

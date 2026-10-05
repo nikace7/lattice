@@ -53,3 +53,16 @@ stale delivery, cancellation, access revocation, exclusions and explicit NONE mo
 Those tests do not replace the real-model command; model batches in the DB suite
 are controlled test doubles. PostgreSQL/Compose/browser execution remains deferred
 while Docker is skipped. UI unit tests exercise index actions and partial-ready labels.
+
+R4: `backend/tests/test_ranking.py` runs without a database and checks deterministic
+RRF/diversity, Unicode query boundaries, PostgreSQL query compilation/parameters,
+query vector validation and evaluation counts. `backend/tests/test_retrieval.py`
+requires PostgreSQL/pgvector for actual lexical/cosine results, scoped top-k, profile
+checks, curator boundaries, revocation and passage reads. It uses numerical test
+vectors, not an E5 accuracy claim. Search UI tests cover inert excerpts, preserved
+input, scope changes/late responses and exact source-block/page navigation.
+
+The host `evaluate_retrieval` management command uses real E5 and a versioned small
+development corpus. Default mode compares all paths on temporary PostgreSQL records,
+then rolls them back. `--embedding-only` explicitly runs offline cosine ranking and
+does not validate the database. See `docs/OPERATIONS.md` for commands and limitations.

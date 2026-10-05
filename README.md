@@ -5,7 +5,9 @@ and Celery. Accounts, workspaces, collection organization and access management
 are implemented, along with private PDF/DOCX/TXT/Markdown uploads and source inspection.
 Low-text PDF pages support English/Nepali OCR with explicit extraction review and page exclusions.
 Accepted sources can now produce resumable keyword-only or real local E5 indexes.
-Search and answer generation are not implemented yet.
+Scoped keyword, semantic and hybrid search now include source links and curator
+ranking details. Answer generation is not implemented yet. R4 database/browser
+integration validation remains deferred while Docker is unavailable.
 The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
 observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).
 
@@ -75,6 +77,10 @@ The default `RAG_MODE=RETRIEVAL_ONLY` builds a keyword-only index; configure
 Host indexing needs `uv sync --project backend --extra local` and `pnpm models:prepare`.
 Compose has separate model storage: prepare it with
 `docker compose run --rm --no-deps ingestion-worker python backend/manage.py prepare_models`.
+Open **Search** to search ready indexes. Keyword works with NONE and local indexes;
+semantic/hybrid require the exact local profile throughout the selected scope.
+The API image now includes the local extra for query embeddings. Host semantic
+search also needs that extra and prepared model files.
 See [operations](docs/OPERATIONS.md) for deployment, retries and current limits.
 
 On Linux CI, use `playwright install --with-deps chromium` to install system libraries.

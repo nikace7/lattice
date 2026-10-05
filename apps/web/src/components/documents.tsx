@@ -13,8 +13,8 @@ const states: Record<string, string> = {
   CANCELLED: "Extraction cancelled",
 };
 
-export function Documents({ workspace, documentId }: { workspace: Workspace; documentId?: string }) {
-  return documentId ? <SourceViewer key={documentId} workspace={workspace} id={documentId} /> : <DocumentList workspace={workspace} />;
+export function Documents({ workspace, documentId, chunkId }: { workspace: Workspace; documentId?: string; chunkId?: string }) {
+  return documentId ? <SourceViewer key={`${documentId}:${chunkId ?? ""}`} workspace={workspace} id={documentId} chunkId={chunkId} /> : <DocumentList workspace={workspace} />;
 }
 
 function DocumentList({ workspace }: { workspace: Workspace }) {
@@ -34,7 +34,7 @@ function DocumentList({ workspace }: { workspace: Workspace }) {
   return <section>
     <p className="eyebrow">YOUR SOURCES, CLOSE AT HAND</p>
     <div className="section-heading"><h1>Documents</h1><button onClick={documents.reload}>Refresh documents</button></div>
-    <p className="muted">Upload PDF, Word, Markdown or plain text, then inspect the original evidence. Search and answers come next.</p>
+    <p className="muted">Upload PDF, Word, Markdown or plain text, then prepare an index to search the original evidence.</p>
     <ErrorNotice error={collections.error} retry={collections.reload} />
     {writable.length > 0 && <UploadForm collections={writable} workspace={workspace} />}
     {collections.data && <>
@@ -95,7 +95,7 @@ function UploadForm({ collections, workspace }: { collections: Collection[]; wor
   </form>;
 }
 
-function SourceViewer({ workspace, id }: { workspace: Workspace; id: string }) {
+function SourceViewer({ workspace, id, chunkId }: { workspace: Workspace; id: string; chunkId?: string }) {
   const document = useResource<DocumentSource>(`/documents/${id}`);
   const action = useAction();
   const state = document.data?.state;
@@ -133,7 +133,7 @@ function SourceViewer({ workspace, id }: { workspace: Workspace; id: string }) {
       {document.data.canWrite && ["PDF", "DOCX"].includes(document.data.kind) && document.data.state === "NEEDS_REVIEW" && <ReviewForm key={document.data.revision} document={document.data} onAccepted={document.reload} />}
       {["QUEUED", "EXTRACTING"].includes(document.data.state) && <p>Extraction runs in the background. This page refreshes automatically. Interrupted jobs recover automatically up to three times; retry becomes available after 90 seconds without an update.</p>}
       {document.data.state === "CANCELLED" && <p>Extraction was cancelled. The original file is preserved; retry to start a new attempt.</p>}
-      {["EXTRACTED", "NEEDS_REVIEW", "REVIEWED"].includes(document.data.state) && <SourceContent document={document.data} />}
+      {["EXTRACTED", "NEEDS_REVIEW", "REVIEWED"].includes(document.data.state) && <SourceContent document={document.data} chunkId={chunkId} fullDocumentHref={`/w/${workspace.id}/documents/${id}`} />}
     </>}
   </section>;
 }
@@ -153,7 +153,7 @@ function IndexStatus({ document, reload }: { document: DocumentSource; reload: (
   }
   return <div className="source-warnings">
     <p role="status">{index ? labels[index.state] : "Not indexed yet"}{index?.active ? ` · ${index.semantic ? "Semantic" : "Keyword-only"} index${document.excludedPages.length ? " · Partial document indexed" : ""}` : ""}</p>
-    <p className="field-note">Search and answers arrive in the next phases. Preparing an index preserves references to the source passages.</p>
+    <p className="field-note">Ready indexes are available in Search. Preparing an index preserves references to the source passages.</p>
     {index?.error && <p className="error-notice" role="alert">{index.error}</p>}
     <ErrorNotice error={action.error} />
     {document.canWrite && (!index || index.canRetry) && <button disabled={action.busy} onClick={() => submit()}>{index ? "Retry indexing" : "Prepare search index"}</button>}
@@ -197,21 +197,23 @@ function locationLabel(block: SourceBlock) {
   return `Line ${location.line}`;
 }
 
-function SourceContent({ document }: { document: DocumentSource }) {
+function SourceContent({ document, chunkId, fullDocumentHref }: { document: DocumentSource; chunkId?: string; fullDocumentHref: string }) {
   const [page, setPage] = useState(1);
   const [panel, setPanel] = useState("text");
   const [selected, setSelected] = useState<SourceBlock>();
   const selectedButton = useRef<HTMLButtonElement | null>(null);
-  const base = `/sources/${document.sourceId}/blocks${document.kind === "PDF" ? `?page=${page}` : ""}`;
+  const base = `/sources/${document.sourceId}/blocks${chunkId ? `?chunkId=${chunkId}` : document.kind === "PDF" ? `?page=${page}` : ""}`;
   const [cursor, setCursor] = useState<{ base: string; path: string }>();
   const blocks = useResource<Page<SourceBlock>>(cursor?.base === base ? cursor.path : base);
   const box = (selected?.locator as Locator | undefined)?.bbox;
   const pdf = document.kind === "PDF";
-  const report = (document.pageReports as PageReport[]).find((item) => item.page === page);
+  const shownPage = chunkId ? (selected?.locator as Locator | undefined)?.page ?? (blocks.data?.results[0]?.locator as Locator | undefined)?.page ?? 1 : page;
+  const report = (document.pageReports as PageReport[]).find((item) => item.page === shownPage);
   return <>
+    {chunkId && <p className="source-warnings">Source blocks for the selected search passage. <Link href={fullDocumentHref}>Open the full document</Link></p>}
     {pdf && <div className="source-actions">
       <label htmlFor="physical-page">Physical page</label>
-      <select id="physical-page" value={page} onChange={(event) => { setPage(Number(event.target.value)); setSelected(undefined); }}>
+      <select id="physical-page" value={shownPage} disabled={!!chunkId} onChange={(event) => { setPage(Number(event.target.value)); setSelected(undefined); }}>
         {Array.from({ length: document.pageCount }, (_, index) => <option key={index} value={index + 1}>{index + 1} of {document.pageCount}</option>)}
       </select>
       <button className="source-tab" aria-pressed={panel === "text"} onClick={() => setPanel("text")}>Extracted text</button>
@@ -239,13 +241,13 @@ function SourceContent({ document }: { document: DocumentSource }) {
         </>}
         {selected && <p role="status">Selected {locationLabel(selected)}. {pdf ? "The passage is highlighted on the source page." : "The selected passage retains its original source reference."}</p>}
       </section>
-      {pdf && <section className={`page-panel ${panel === "text" ? "mobile-hidden" : ""}`} aria-label="Original page preview">
-        <h2>Source page {page}</h2>
+      {pdf && (!chunkId || (blocks.data && blocks.data.results.length > 0)) && <section className={`page-panel ${panel === "text" ? "mobile-hidden" : ""}`} aria-label="Original page preview">
+        <h2>Source page {shownPage}</h2>
         <p className="field-note">Original page image. Native extraction can misread complex layouts; compare it with the text.</p>
         {report && !report.preview ? <p>Preview unavailable for this page. Download the original to inspect it.</p> : <div className="pdf-page">
           {/* Same-origin, permission-checked image; Next image optimization must not cache private sources. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`/api/v1/sources/${document.sourceId}/pages/${page}`} alt={`Original page ${page} of ${document.title}. Extracted text is available alongside this image.`} />
+          <img src={`/api/v1/sources/${document.sourceId}/pages/${shownPage}`} alt={`Original page ${shownPage} of ${document.title}. Extracted text is available alongside this image.`} />
           {box && <div className="source-highlight" role="img" aria-label="Selected source passage" style={{ left: `${box[0] * 100}%`, top: `${box[1] * 100}%`, width: `${(box[2] - box[0]) * 100}%`, height: `${(box[3] - box[1]) * 100}%` }} />}
         </div>}
         <button className="source-tab" onClick={() => { setPanel("text"); requestAnimationFrame(() => selectedButton.current?.focus()); }}>Back to extracted text</button>
