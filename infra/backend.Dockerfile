@@ -12,6 +12,11 @@ ENV PATH="/app/backend/.venv/bin:$PATH" PYTHONPATH=/app/backend
 USER lattice
 CMD ["uvicorn", "config.asgi:application", "--host", "0.0.0.0", "--port", "8000"]
 
+FROM runtime AS ingestion
+USER root
+RUN uv sync --project backend --locked --no-dev --extra local
+USER lattice
+
 FROM runtime AS parser
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \

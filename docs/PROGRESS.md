@@ -19,8 +19,10 @@ Implemented:
 
 R1 is implemented: accounts, workspace membership, collection authorization,
 account recovery and invitations. R2 is implemented with final Docker-dependent
-integration validation deferred by the user. R3 document formats and OCR/review are implemented;
-indexing and R4–R8 remain pending. The ingestion worker
+integration validation deferred by the user. R3 document formats, OCR/review,
+chunking and local embedding/index preparation are implemented, with database/worker
+integration gates still deferred and table/Markdown limitations recorded below.
+R4–R8 remain pending. The ingestion worker
 delivers recovery email and document extraction; generation remains future work.
 
 ## Verification
@@ -214,3 +216,41 @@ PostgreSQL cancellation/recovery tests are added; database execution, migration
 application, live Celery/beat recovery, Compose and browser integration remain
 deferred under the instruction to skip Docker. Artifact cleanup after worker crashes
 remains future lifecycle work. Next R3 work is chunking and pinned real embeddings.
+
+## R3 fourth slice: chunks, real embeddings and index activation — 5 October 2026
+
+- Added source-preserving chunks with exact Unicode block spans, target 320/hard
+  384 tokenizer tokens and up to 40 tokens of same-section overlap. Excluded pages
+  never enter the index. PDF pages, Word headings/tables, text paragraph gaps and
+  ATX-like Markdown lines define conservative boundaries.
+- Pinned multilingual E5-small revision `614241f622f53c4eeff9890bdc4f31cfecc418b3`,
+  CPU PyTorch and Transformers. Explicit preparation records file checksums and MIT
+  license; runtime is local-only safetensors with remote code disabled. Real query/
+  passage prefixes, masked mean pooling, normalized 384-dimensional vectors and
+  a counted 512-token input limit are enforced without truncation.
+- Added inactive IndexVersion/Chunk/Embedding384 staging, resumable 32-vector
+  batches and transactional activation only after completeness/access/lease checks.
+  Keyword-only NONE mode is explicit; it never creates synthetic vectors. Retry,
+  cancellation and bounded lease recovery are exposed through the source viewer.
+  Word warning acceptance records a review note without invented page exclusions.
+- Model packages are optional for host use and installed only in the Compose
+  ingestion image. Existing environment mode is unchanged. Index preparation is
+  an explicit action after extraction/review; search and generation remain future work.
+
+Observed validation: 35 database-free backend tests, 9 web unit tests and the setup
+test passed. Real offline E5 inference matched an independent implementation of the
+model-card pooling for both query and passage prefixes. All 13 chunks of synthetic
+English/Nepali text preserved source coverage and embedded successfully (6.89 seconds
+for the check including load on this Windows host; not a retrieval benchmark).
+Production web build, TypeScript, Django system checks, OpenAPI generation,
+lint/format, offline migration-state comparison and index task registration passed.
+The 28 PostgreSQL source/index tests collected successfully; they were not executed.
+
+Migration `0005` and PostgreSQL indexing tests are provided but database execution,
+live worker/beat behavior, Compose rebuild and browser integration remain deferred
+under the instruction to skip Docker. No full R3 integration-pass claim is made.
+First-row table context plus each row must fit 384 tokens; oversized rows fail
+explicitly. Markdown Setext recognition and cell-wise packing are not implemented.
+An existing index cannot switch profiles until R6 shadow reindexing. Next feature
+phase is R4 scoped lexical/vector/hybrid retrieval; complete deferred integration
+checks when Docker is available.

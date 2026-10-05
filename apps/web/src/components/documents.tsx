@@ -25,7 +25,7 @@ function DocumentList({ workspace }: { workspace: Workspace }) {
   const [cursor, setCursor] = useState<{ base: string; path: string }>();
   const documents = useResource<Page<DocumentSource>>(cursor?.base === base ? cursor.path : base);
   const writable = collections.data?.results.filter((collection) => collection.canWrite) ?? [];
-  const pending = documents.data?.results.some((document) => ["QUEUED", "EXTRACTING"].includes(document.state));
+  const pending = documents.data?.results.some((document) => ["QUEUED", "EXTRACTING"].includes(document.state) || ["QUEUED", "CHUNKING", "EMBEDDING"].includes(document.index?.state ?? ""));
   useEffect(() => {
     if (!pending) return;
     const timer = setTimeout(documents.reload, 2500);
@@ -51,7 +51,7 @@ function DocumentList({ workspace }: { workspace: Workspace }) {
       {documents.data.results.length ? <div className="document-list">
         {documents.data.results.map((document) => <Link className="workspace-row" key={document.id} href={`/w/${workspace.id}/documents/${document.id}`}>
           <span className="access-badge">{document.kind}</span>
-          <span><strong>{document.title}</strong><small>{states[document.state]} · source version 1 · {Math.ceil(document.byteSize / 1024)} KiB</small></span>
+          <span><strong>{document.title}</strong><small>{states[document.state]} · {document.index?.active ? "Index ready" : "Not indexed"} · source version 1 · {Math.ceil(document.byteSize / 1024)} KiB</small></span>
           <span aria-hidden="true">↗</span>
         </Link>)}
       </div> : <div className="empty-library"><h2>No documents here yet.</h2><p>{writable.length ? "Add your first source using the form above." : "Ask a curator to add documents, or create a collection if you are an owner."}</p><Link href={`/w/${workspace.id}/collections`}>View collections</Link></div>}
@@ -99,11 +99,12 @@ function SourceViewer({ workspace, id }: { workspace: Workspace; id: string }) {
   const document = useResource<DocumentSource>(`/documents/${id}`);
   const action = useAction();
   const state = document.data?.state;
+  const indexState = document.data?.index?.state;
   useEffect(() => {
-    if (!state || !["QUEUED", "EXTRACTING"].includes(state)) return;
+    if (!["QUEUED", "EXTRACTING"].includes(state ?? "") && !["QUEUED", "CHUNKING", "EMBEDDING"].includes(indexState ?? "")) return;
     const timer = setTimeout(document.reload, 2500);
     return () => clearTimeout(timer);
-  }, [state, document.data, document.reload]);
+  }, [state, indexState, document.data, document.reload]);
   return <section>
     <Link href={`/w/${workspace.id}/documents`}>← All documents</Link>
     <ErrorNotice error={document.error} retry={document.reload} />
@@ -111,7 +112,8 @@ function SourceViewer({ workspace, id }: { workspace: Workspace; id: string }) {
     {document.data && <>
       <p className="eyebrow">SOURCE VERSION 1</p>
       <h1 className="source-title">{document.data.title}</h1>
-      <p className="source-status" role="status">{states[document.data.state]}{["EXTRACTED", "NEEDS_REVIEW", "REVIEWED"].includes(document.data.state) ? " · Not indexed for search yet" : ""}</p>
+      <p className="source-status" role="status">{states[document.data.state]}</p>
+      {["EXTRACTED", "REVIEWED"].includes(document.data.state) && <IndexStatus document={document.data} reload={document.reload} />}
       <div className="source-actions">
         <a href={`/api/v1/sources/${document.data.sourceId}/original`} download>Download original</a>
         <button onClick={document.reload}>Refresh source</button>
@@ -127,8 +129,8 @@ function SourceViewer({ workspace, id }: { workspace: Workspace; id: string }) {
       {document.data.error && <p className="error-notice" role="alert">{document.data.error}</p>}
       <ErrorNotice error={action.error} />
       {document.data.warnings.length > 0 && <div className="source-warnings"><h2>Extraction warnings</h2><ul>{document.data.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></div>}
-      {document.data.state === "REVIEWED" && <div className="source-warnings"><h2>{document.data.excludedPages.length ? "Partial extraction accepted" : "Extraction accepted"}</h2><p>{document.data.excludedPages.length ? `Excluded pages: ${document.data.excludedPages.join(", ")}.` : "All pages included."} Search indexing is still pending.</p><p>Review note: {document.data.reviewReason}</p></div>}
-      {document.data.canWrite && document.data.kind === "PDF" && document.data.state === "NEEDS_REVIEW" && document.data.pageReports.length > 0 && <ReviewForm key={document.data.revision} document={document.data} onAccepted={document.reload} />}
+      {document.data.state === "REVIEWED" && <div className="source-warnings"><h2>{document.data.excludedPages.length ? "Partial extraction accepted" : "Extraction accepted"}</h2><p>{document.data.kind === "DOCX" ? "Extracted Word content accepted; the listed omissions remain excluded." : document.data.excludedPages.length ? `Excluded pages: ${document.data.excludedPages.join(", ")}.` : "All pages included."}</p><p>Review note: {document.data.reviewReason}</p></div>}
+      {document.data.canWrite && ["PDF", "DOCX"].includes(document.data.kind) && document.data.state === "NEEDS_REVIEW" && <ReviewForm key={document.data.revision} document={document.data} onAccepted={document.reload} />}
       {["QUEUED", "EXTRACTING"].includes(document.data.state) && <p>Extraction runs in the background. This page refreshes automatically. Interrupted jobs recover automatically up to three times; retry becomes available after 90 seconds without an update.</p>}
       {document.data.state === "CANCELLED" && <p>Extraction was cancelled. The original file is preserved; retry to start a new attempt.</p>}
       {["EXTRACTED", "NEEDS_REVIEW", "REVIEWED"].includes(document.data.state) && <SourceContent document={document.data} />}
@@ -137,6 +139,27 @@ function SourceViewer({ workspace, id }: { workspace: Workspace; id: string }) {
 }
 
 type Locator = { line?: number; page?: number; bbox?: number[]; paragraph?: number; table?: number; row?: number; cell?: number; headingPath?: string[] };
+
+function IndexStatus({ document, reload }: { document: DocumentSource; reload: () => void }) {
+  const action = useAction();
+  const index = document.index;
+  const running = ["QUEUED", "CHUNKING", "EMBEDDING"].includes(index?.state ?? "");
+  const labels: Record<string, string> = { QUEUED: "Queued for indexing", CHUNKING: "Preparing source passages", EMBEDDING: "Preparing search index", READY: "Index ready", FAILED: "Indexing failed", CANCELLED: "Indexing cancelled" };
+  function submit(cancel = false) {
+    void action.run(async () => {
+      await api(`/documents/${document.id}/${cancel ? "cancel-index" : "index"}`, "POST", { expectedRevision: document.revision });
+      reload();
+    });
+  }
+  return <div className="source-warnings">
+    <p role="status">{index ? labels[index.state] : "Not indexed yet"}{index?.active ? ` · ${index.semantic ? "Semantic" : "Keyword-only"} index${document.excludedPages.length ? " · Partial document indexed" : ""}` : ""}</p>
+    <p className="field-note">Search and answers arrive in the next phases. Preparing an index preserves references to the source passages.</p>
+    {index?.error && <p className="error-notice" role="alert">{index.error}</p>}
+    <ErrorNotice error={action.error} />
+    {document.canWrite && (!index || index.canRetry) && <button disabled={action.busy} onClick={() => submit()}>{index ? "Retry indexing" : "Prepare search index"}</button>}
+    {document.canWrite && running && <button disabled={action.busy} onClick={() => submit(true)}>Cancel indexing</button>}
+  </div>;
+}
 type PageReport = { page: number; status: string; preview: boolean; confidence: number | null; language: string; engine: string };
 
 function ReviewForm({ document, onAccepted }: { document: DocumentSource; onAccepted: () => void }) {
@@ -153,16 +176,16 @@ function ReviewForm({ document, onAccepted }: { document: DocumentSource; onAcce
     });
   }
   return <form className="upload-form" onSubmit={submit} aria-label="Review extraction">
-    <h2>Review extracted pages</h2>
-    <p>Compare the text with the source below. Failed or empty pages must be excluded. Accepted text is not indexed for search yet.</p>
-    <fieldset disabled={action.busy}><legend>Pages to exclude</legend>
+    <h2>Review extraction</h2>
+    <p>{document.kind === "PDF" ? "Compare the text with the source below. Failed or empty pages must be excluded." : "Compare the extracted text with the original Word file. Accepting acknowledges the listed omissions; only the extracted content will be indexed."}</p>
+    {reports.length > 0 && <fieldset disabled={action.busy}><legend>Pages to exclude</legend>
       {reports.map((page) => <label className="checkbox-label" key={page.page}><input type="checkbox" checked={excluded.includes(page.page)} disabled={required.includes(page.page)} onChange={(event) => setExcluded(event.target.checked ? [...excluded, page.page] : excluded.filter((n) => n !== page.page))} /> Exclude page {page.page} ({page.status.toLowerCase()}{required.includes(page.page) ? "; required" : ""})</label>)}
-    </fieldset>
+    </fieldset>}
     <label htmlFor="review-reason">Review note</label>
     <textarea id="review-reason" name="reason" required maxLength={1000} disabled={action.busy} />
     <ErrorNotice error={action.error} />
-    <button className="primary-button" disabled={action.busy || excluded.length === reports.length}>{action.busy ? "Saving review…" : "Accept extraction"}</button>
-    {excluded.length === reports.length && <p>All pages are excluded. Upload a corrected file to continue.</p>}
+    <button className="primary-button" disabled={action.busy || (reports.length > 0 && excluded.length === reports.length)}>{action.busy ? "Saving review…" : "Accept extraction"}</button>
+    {reports.length > 0 && excluded.length === reports.length && <p>All pages are excluded. Upload a corrected file to continue.</p>}
   </form>;
 }
 

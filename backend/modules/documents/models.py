@@ -4,6 +4,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from pgvector.django import VectorField
 
 LEASE_DURATION = timedelta(seconds=90)
 
@@ -118,3 +119,78 @@ class SourceBlock(models.Model):
 
     def __str__(self):
         return f"{self.extraction_id}: {self.position}"
+
+
+class IndexVersion(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # R3 has one immutable profile per extraction; shadow profile migration belongs to R6.
+    extraction = models.OneToOneField(
+        ExtractionVersion, on_delete=models.CASCADE, related_name="index"
+    )
+    requested_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    profile = models.JSONField()
+    chunker = models.CharField(max_length=80)
+    state = models.CharField(
+        max_length=12,
+        default="QUEUED",
+        choices=[
+            (state, state.title())
+            for state in ["QUEUED", "CHUNKING", "EMBEDDING", "READY", "FAILED", "CANCELLED"]
+        ],
+    )
+    active = models.BooleanField(default=False)
+    attempt = models.UUIDField(default=uuid.uuid4)
+    recoveries = models.PositiveSmallIntegerField(default=0)
+    chunk_count = models.PositiveIntegerField(default=0)
+    error = models.CharField(max_length=240, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(active=False) | models.Q(state="READY"),
+                name="active_index_ready",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.extraction_id}: {self.state}"
+
+    @property
+    def lease_expired(self):
+        return (
+            self.state in {"QUEUED", "CHUNKING", "EMBEDDING"}
+            and self.updated_at <= timezone.now() - LEASE_DURATION
+        )
+
+    @property
+    def can_retry(self):
+        return self.state in {"FAILED", "CANCELLED"} or self.lease_expired
+
+
+class Chunk(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    index = models.ForeignKey(IndexVersion, on_delete=models.CASCADE, related_name="chunks")
+    position = models.PositiveIntegerField()
+    text = models.TextField()
+    sha256 = models.CharField(max_length=64)
+    spans = models.JSONField()
+    token_count = models.PositiveSmallIntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["index", "position"], name="unique_index_chunk")
+        ]
+
+    def __str__(self):
+        return f"{self.index_id}: {self.position}"
+
+
+class Embedding384(models.Model):
+    chunk = models.OneToOneField(
+        Chunk, on_delete=models.CASCADE, primary_key=True, related_name="embedding"
+    )
+    vector = VectorField(dimensions=384)
+
+    def __str__(self):
+        return str(self.chunk_id)

@@ -1,8 +1,23 @@
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from modules.workspaces.access import can_write, membership_for
 
-from .models import Document, SourceBlock
+from .models import Document, IndexVersion, SourceBlock
+
+
+class IndexData(serializers.ModelSerializer):
+    chunkCount = serializers.IntegerField(source="chunk_count")
+    canRetry = serializers.BooleanField(source="can_retry")
+    semantic = serializers.SerializerMethodField()
+
+    class Meta:
+        model = IndexVersion
+        fields = ["state", "active", "chunkCount", "error", "canRetry", "semantic"]
+        read_only_fields = fields
+
+    def get_semantic(self, obj) -> bool:
+        return obj.profile["provider"] != "NONE"
 
 
 class UploadInput(serializers.Serializer):
@@ -25,6 +40,7 @@ class ReviewInput(serializers.Serializer):
 
 
 class DocumentData(serializers.ModelSerializer):
+    index = serializers.SerializerMethodField()
     collectionId = serializers.UUIDField(source="collection_id")
     sourceId = serializers.UUIDField(source="source.id")
     kind = serializers.CharField(source="source.kind")
@@ -45,6 +61,7 @@ class DocumentData(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = [
+            "index",
             "id",
             "title",
             "collectionId",
@@ -66,6 +83,12 @@ class DocumentData(serializers.ModelSerializer):
             "createdAt",
         ]
         read_only_fields = fields
+
+    @extend_schema_field(IndexData(allow_null=True))
+    def get_index(self, obj):
+        extraction = getattr(obj.source, "extraction", None)
+        index = getattr(extraction, "index", None)
+        return IndexData(index).data if index else None
 
     def get_pageCount(self, obj) -> int:
         return obj.source.extraction.page_count if hasattr(obj.source, "extraction") else 0

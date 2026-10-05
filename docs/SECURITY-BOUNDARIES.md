@@ -65,7 +65,7 @@ OCR is local to the offline parser, with allowlisted language arguments and boun
 subprocess/TSV output. Failed pages cannot supply source blocks; malformed reports
 cannot bypass review. PDF acceptance rechecks contribution access under the workspace
 lock, requires failed/empty-page exclusions and some retained text, and records the
-reviewer, time and reason. Page exclusions must also be enforced by future indexing.
+reviewer, time and reason. Index preparation also enforces page exclusions.
 
 Cancellation and manual retries require current contribution access and revision
 checks under the workspace lock. Workers cannot renew expired leases or publish
@@ -77,6 +77,17 @@ DOCX uses bounded ZIP reads and defusedxml with DTD/entity rejection. Archive pa
 are never extracted and relationship targets are never fetched; macros and encrypted
 entries are rejected. Unsupported Word content creates review warnings. Markdown
 is rendered as React text, without HTML parsing, clickable source URLs or remote embeds.
+
+Index requests/cancellation require current contribution access and revision checks.
+Workers recheck requesting-user access under the workspace lock before staged writes
+and activation. All required chunks/vectors must exist before an index is active;
+unreviewed warnings, stale attempts, expired leases and cancelled jobs cannot activate.
+Chunk spans point to the same extraction; there is no independent browser-supplied
+workspace/profile or cross-document chunk linkage. Search must apply current access
+and active-index filtering before ranking when implemented in R4.
+Model acquisition is explicit and pinned. Runtime checks checksums, loads safetensors
+locally with remote code disabled and does not send source text to a provider.
+Unexpected indexing errors expose a generic message; logs contain IDs/error types.
 
 Compose is a local development configuration. PostgreSQL, Redis, mail and proxy
 ports bind only to loopback. The backend and web run as non-root users in containers.

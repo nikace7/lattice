@@ -84,9 +84,10 @@ Owners/curators with current contribution access can accept reviewed PDF extract
 They must exclude every failed/empty page, retain some extracted text, and provide
 a review note. Acceptance checks the document revision and stores reviewer/time,
 exclusions and reason. All original pages remain inspectable. `REVIEWED` means
-review accepted; it does not mean indexed or searchable. Future indexing must omit
+review accepted; it does not mean indexed or searchable. Indexing omits
 excluded pages. Existing extractions without page reports require a new upload.
-DOCX warnings still require inspection; PDF page acceptance does not apply to DOCX.
+DOCX warnings require inspection and a review note accepting the listed omissions;
+page exclusions are rejected for Word documents.
 
 The source viewer reports queued, extracting, extracted, needs-review, reviewed,
 cancelled or failed. Apply migration `0004` and restart API/workers/beat/parser
@@ -122,10 +123,73 @@ The local data stores are `lattice_postgres`, `lattice_redis`, `lattice_storage`
 deletion-retention policy must be implemented and verified before storing real
 documents; no backup retention or purge guarantees are claimed at initialization.
 
+### Local indexing
+
+Apply document migration `0005`, then rebuild/restart API, ingestion-worker and beat.
+The ingestion image alone installs the optional `local` Python extra (CPU PyTorch
+and Transformers); parser/API images do not need those packages. Set `RAG_MODE=LOCAL`
+for real semantic vectors, or keep `RETRIEVAL_ONLY` for explicit keyword-only indexes.
+Cloud/fixture indexing is not implemented and returns a clear validation error.
+
+Prepare model files explicitly before requesting an index:
+
+```sh
+# Host development
+pnpm models:prepare
+pnpm models:check
+# Compose storage is separate from the host .data/models directory
+docker compose run --rm --no-deps ingestion-worker python backend/manage.py prepare_models
+docker compose run --rm --no-deps ingestion-worker python backend/manage.py check_models
+```
+
+E5 model/tokenizer revision is `614241f622f53c4eeff9890bdc4f31cfecc418b3` (MIT).
+Preparation downloads only the pinned config/tokenizer/safetensors/model card and
+records SHA-256 checksums. It does not download Ollama or send document text.
+`LOCAL_EMBED_MODEL_REVISION` may be blank for the code-pinned default or match that
+revision; another value fails configuration validation. Runtime checks the manifest
+and file checksums, loads local safetensors with remote code disabled, and never
+downloads missing files or falls back to another provider.
+
+Open an extracted/reviewed source and select **Prepare search index**. In R3, one
+immutable index/profile belongs to each extraction. Choose LOCAL before initial
+indexing if semantic search is wanted: switching an existing index to another
+profile requires the R6 shadow-reindex feature. No existing environment mode is
+changed by setup. Ready indexes are preparation for R4 search, not an available
+search or answer feature today.
+
+Chunks target 320 and cap at 384 E5 tokens, with up to 40 tokens of overlap within
+the same section. PDF pages and DOCX headings separate sections; TXT blank lines
+separate paragraphs and Markdown ATX-like heading lines are conservative boundaries
+(including inside literal code). Setext Markdown heading recognition is not yet
+implemented. Literal source text and Python Unicode code-point spans are retained;
+newlines joining blocks have no invented source span. Embedding uses `passage: `
+without adding a document title, and rejects inputs over 512 tokens including prefix
+and special tokens. Query embedding uses `query: `; both use masked mean pooling and
+L2 normalization. Exact 384 dimensions, finite values and unit norm are validated.
+
+Tables repeat the first row as source-backed context for each following row; this
+does not claim that the first row is a semantic header. A row plus its context must
+fit 384 tokens; wider/longer rows fail with an actionable message instead of dropping
+cells or silently truncating. Documents are capped at 10,000 chunks. Cell-wise
+packing for oversized rows remains a documented limitation.
+
+New chunks/vectors stay inactive. Batches of at most 32 vectors commit only after
+current permission, attempt and lease checks. Retry preserves completed batches,
+recomputes/checks chunk hashes/spans and resumes missing vectors. Activation is one
+transaction requiring every chunk and required vector. An explicit NONE profile
+requires complete chunks but stores no vectors. Cancellation prevents late writes;
+local inference stops at the next batch boundary. Originals and extraction survive.
+
+Index leases renew every 15 seconds and expire after 90 seconds. Beat recovers at
+most 100 expired jobs per run with fresh attempts, up to three recoveries. Manual
+retry resets that budget. Processing has a 20-minute cooperative deadline and a
+21-minute Celery hard limit on supported worker platforms. Use Linux workers for
+production process limits. Cancelled, completed and failed jobs are not auto-requeued.
+Partial artifact retention/cleanup remains part of R6.
+
 Optional Ollama: `docker compose --profile local-models up -d ollama`. The service
-has no published host port and no preinstalled models. A future explicit model
-preparation command must pin E5 revision/Qwen digest and record licenses, hardware,
-disk use and measured behavior. There is no automatic cloud or fixture fallback.
+has no published host port and no preinstalled models. Generation/Qwen preparation
+remains future work. There is no automatic cloud or fixture fallback.
 
 Dependency updates: use pnpm for JS and `uv add`/`uv lock` for Python, review both
 lockfiles, then run `pnpm verify` and `pnpm test:e2e`. The Next.js lint CLI is run

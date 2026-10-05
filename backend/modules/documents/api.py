@@ -19,9 +19,18 @@ from config.api import Conflict, Pages
 from modules.workspaces.access import can_write, membership_for, readable_collections
 from modules.workspaces.api import audit, locked_collection, validated
 from modules.workspaces.serializers import RevisionInput
+from pipeline.chunking import VERSION
 from pipeline.source_parser import MAX_BYTES, InvalidSource, validate_bytes
 
-from .models import Document, ExtractionJob, ExtractionVersion, SourceBlock, SourceVersion
+from .indexing import RUNNING, configured_profile, enqueue_index
+from .models import (
+    Document,
+    ExtractionJob,
+    ExtractionVersion,
+    IndexVersion,
+    SourceBlock,
+    SourceVersion,
+)
 from .serializers import BlockData, DocumentData, ReviewInput, UploadInput
 from .storage import source_directory, source_path
 from .tasks import enqueue
@@ -29,7 +38,7 @@ from .tasks import enqueue
 
 def readable_documents(user):
     return Document.objects.filter(collection__in=readable_collections(user)).select_related(
-        "collection", "source", "source__job", "source__extraction"
+        "collection", "source", "source__job", "source__extraction", "source__extraction__index"
     )
 
 
@@ -239,11 +248,14 @@ class AcceptReviewView(APIView):
         if data["expectedRevision"] != document.revision:
             raise Conflict()
         job = ExtractionJob.objects.select_for_update().get(source__document=document)
-        if document.source.kind != "PDF" or job.state != "NEEDS_REVIEW":
-            raise Conflict("This PDF extraction is not awaiting review.")
+        if document.source.kind not in {"PDF", "DOCX"} or job.state != "NEEDS_REVIEW":
+            raise Conflict("This extraction is not awaiting review.")
         extraction = ExtractionVersion.objects.select_for_update().get(source=document.source)
         excluded = data["excludedPages"]
-        validate_review_pages(extraction.page_reports, excluded, extraction.page_count)
+        if document.source.kind == "PDF":
+            validate_review_pages(extraction.page_reports, excluded, extraction.page_count)
+        elif excluded:
+            raise ValidationError("Word documents use paragraph references, not page exclusions.")
         if not extraction.blocks.exclude(locator__page__in=excluded).exists():
             raise ValidationError("At least one included page must contain extracted text.")
         extraction.excluded_pages = excluded
@@ -258,6 +270,85 @@ class AcceptReviewView(APIView):
         document.revision += 1
         document.save(update_fields=["revision"])
         audit(member.workspace, request.user, "document.extraction_accepted", document)
+        return Response(
+            DocumentData(
+                readable_documents(request.user).get(pk=document.pk), context={"request": request}
+            ).data
+        )
+
+
+class IndexView(APIView):
+    @extend_schema(request=RevisionInput, responses=DocumentData)
+    @transaction.atomic
+    def post(self, request, document_id):
+        document = get_object_or_404(readable_documents(request.user), pk=document_id)
+        member, collection = locked_collection(request.user, document.collection_id)
+        if not can_write(collection, member):
+            raise PermissionDenied("You need contribution access to prepare an index.")
+        data = validated(RevisionInput, request)
+        document.refresh_from_db()
+        if data["expectedRevision"] != document.revision:
+            raise Conflict()
+        if document.source.job.state not in {"EXTRACTED", "REVIEWED"}:
+            raise Conflict("Complete extraction and accept any warnings before indexing.")
+        extraction = document.source.extraction
+        if extraction.warnings and not extraction.accepted_at:
+            raise Conflict("Accept extraction warnings before indexing.")
+        try:
+            profile = configured_profile()
+        except ValueError as error:
+            raise ValidationError(str(error)) from error
+        index = IndexVersion.objects.select_for_update().filter(extraction=extraction).first()
+        if index:
+            if not index.can_retry:
+                raise Conflict("This index is already ready or still processing.")
+            if index.profile != profile or index.chunker != VERSION:
+                raise Conflict(
+                    "Profile migration is not available yet. Restore the original profile."
+                )
+            index.state, index.error, index.attempt = "QUEUED", "", uuid.uuid4()
+            index.recoveries, index.requested_by = 0, request.user
+            index.save()
+        else:
+            index = IndexVersion.objects.create(
+                extraction=extraction,
+                profile=profile,
+                chunker=VERSION,
+                requested_by=request.user,
+            )
+        document.revision += 1
+        document.save(update_fields=["revision"])
+        audit(member.workspace, request.user, "document.index_requested", document)
+        transaction.on_commit(lambda: enqueue_index(str(index.pk), str(index.attempt)))
+        return Response(
+            DocumentData(
+                readable_documents(request.user).get(pk=document.pk), context={"request": request}
+            ).data
+        )
+
+
+class CancelIndexView(APIView):
+    @extend_schema(request=RevisionInput, responses=DocumentData)
+    @transaction.atomic
+    def post(self, request, document_id):
+        document = get_object_or_404(readable_documents(request.user), pk=document_id)
+        member, collection = locked_collection(request.user, document.collection_id)
+        if not can_write(collection, member):
+            raise PermissionDenied("You need contribution access to cancel indexing.")
+        data = validated(RevisionInput, request)
+        document.refresh_from_db()
+        if data["expectedRevision"] != document.revision:
+            raise Conflict()
+        index = get_object_or_404(
+            IndexVersion.objects.select_for_update(), extraction__source__document=document
+        )
+        if index.state not in RUNNING:
+            raise Conflict("Only active indexing jobs can be cancelled.")
+        index.state, index.error = "CANCELLED", ""
+        index.save(update_fields=["state", "error", "updated_at"])
+        document.revision += 1
+        document.save(update_fields=["revision"])
+        audit(member.workspace, request.user, "document.index_cancelled", document)
         return Response(
             DocumentData(
                 readable_documents(request.user).get(pk=document.pk), context={"request": request}

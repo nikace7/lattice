@@ -41,3 +41,15 @@ eligibility, lease renewal rejection, cancellation spool cleanup and owned proce
 termination. PostgreSQL document tests cover cancellation permissions/revisions,
 late publication, recovery attempt fencing, recovery limits and access revocation.
 Web unit tests cover cancel/retry controls and preserving access to the original.
+
+`backend/tests/test_chunking_embedding.py` checks chunk source spans, Unicode/page
+coverage, section/overlap boundaries, exclusions, table context, vector validation,
+explicit model setup and lease fencing without a database. `pnpm models:check`
+requires prepared model files and runs real offline E5 inference, comparing query
+and passage vectors against reference pooling and embedding bounded English/Nepali
+chunks. It is not a retrieval-quality or Nepali-accuracy evaluation.
+`backend/tests/test_indexing.py` uses PostgreSQL for staged batch resume, duplicate/
+stale delivery, cancellation, access revocation, exclusions and explicit NONE mode.
+Those tests do not replace the real-model command; model batches in the DB suite
+are controlled test doubles. PostgreSQL/Compose/browser execution remains deferred
+while Docker is skipped. UI unit tests exercise index actions and partial-ready labels.
