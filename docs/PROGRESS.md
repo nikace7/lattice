@@ -22,8 +22,10 @@ account recovery and invitations. R2 is implemented with final Docker-dependent
 integration validation deferred by the user. R3 document formats, OCR/review,
 chunking and local embedding/index preparation are implemented, with database/worker
 integration gates still deferred and table/Markdown limitations recorded below.
-R4 scoped search is implemented with PostgreSQL/browser gates deferred; R5–R8 remain pending. The ingestion worker
-delivers recovery email and document extraction; generation remains future work.
+R4 scoped search is implemented with PostgreSQL/browser gates deferred. R5's
+generation/validation foundation is implemented; conversation jobs, answer delivery
+and live model verification are pending. R6–R8 remain pending. The ingestion worker
+delivers recovery email and document extraction; no private question endpoint exists yet.
 
 ## Verification
 
@@ -286,3 +288,38 @@ matching, revocation during embedding and source passage access; they collected
 but were not run. Migration application, database evaluation, live API/browser and
 Compose checks remain deferred at the user's request to skip Docker. R4 is not yet
 fully integration-validated. R5 adds real generation, evidence validation and citations.
+
+## R5 first slice: generation and evidence-validation foundation — 6 October 2026
+
+- Added a bounded local Qwen protocol: up to eight evidence records, 6,000-token
+  whole-passage packing, 10,000-token total inputs, six answer blocks and 1,500 words.
+  Empty evidence abstains without a model call. One malformed-draft repair is allowed;
+  a separate grounding pass must approve every block and the whole answer.
+- Exact canonically equivalent quotes resolve to original Unicode source offsets,
+  including multi-block references, decomposed/reordered marks and Hangul. Unknown
+  evidence IDs, model-supplied metadata, incomplete spans and unsupported/uncertain
+  verdicts cannot yield supported answer blocks. Citation metadata comes from the
+  server's evidence records; the protocol itself does not grant source access.
+- Added stdlib Ollama HTTP access with local origins only, prepared model digest
+  checks, non-thinking raw prompts, tokenizer-count checks, bounded response sizes
+  and wall deadlines. Usage remains recorded in memory after cancellation or failure;
+  ambiguous calls retain estimates and are not automatically retried.
+- Added explicit generation preparation/check commands. The pinned real Qwen
+  tokenizer downloaded and passed English/Nepali/control-token checks: 48 and 73
+  tokens for the respective synthetic test prompts. These are tokenizer results,
+  not model-quality measurements. Host artifacts remain ignored by Git.
+
+Validation: 49 database-free backend checks (including nine new protocol/adapter
+checks), Django system checks, Ruff lint/format, setup test and diff checks passed.
+The HTTP tests use a real loopback test server for redirects, response bounds and
+slow-drip deadlines; generated replies are clearly identified contract doubles.
+Manual review covered untrusted output, Unicode span boundaries, request limits,
+model drift and usage preservation. No frontend, schema or migration changed.
+
+Live preparation reached an unavailable Ollama runtime; no model digest or live
+generation result is claimed. Docker/PostgreSQL remain deferred. This completes
+only the R5 foundation slice: durable private conversations/turns, atomic quota
+reservations, worker leases and cancellation, current-access checks at dispatch/
+commit/replay, SSE, exact citation UI and real answer/abstention integration still
+remain. No public question endpoint or private-source generation path is exposed.
+Continue with those R5 integrations before moving to R6 lifecycle work.

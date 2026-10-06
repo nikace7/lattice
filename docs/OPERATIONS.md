@@ -208,7 +208,8 @@ source text and offsets remain unchanged. Exact cosine and keyword ranking each
 take 20 hits with chunk-ID tie breaks; equal RRF uses `1/(60+rank)`. Top 12 are
 deduplicated for identical or >=90% similar overlapping text within the same source,
 then up to 8 passages are selected, at most 3 per document when multiple documents
-remain. Generation-token budgeting will be added with R5's generator tokenizer.
+remain. R5's protocol additionally budgets whole passages with the generator tokenizer;
+the search endpoint itself continues returning the ranked passages.
 The APIs follow [Django full-text search](https://docs.djangoproject.com/en/5.2/ref/contrib/postgres/search/)
 and [pgvector's Django distance functions](https://github.com/pgvector/pgvector-python#django).
 
@@ -242,8 +243,60 @@ before the temporary DB transaction. The observed offline report is in
 `docs/evaluations/r4-embedding-development.json`; PostgreSQL results remain pending.
 
 Optional Ollama: `docker compose --profile local-models up -d ollama`. The service
-has no published host port and no preinstalled models. Generation/Qwen preparation
-remains future work. There is no automatic cloud or fixture fallback.
+has no published host port and no preinstalled models. Docker work is currently
+deferred. There is no automatic cloud or fixture fallback.
+
+### R5 generation foundation (operator commands only)
+
+The question API, durable conversations, quota reservation persistence, SSE and
+answer/source UI are not connected yet. The commands below use only public,
+synthetic evidence and do not exercise retrieval, authorization or database jobs.
+
+For host development, start a separately installed local Ollama runtime, explicitly
+run `ollama pull qwen3:4b`, then run `pnpm generation:prepare`. This downloads only
+the pinned Qwen tokenizer and license from Hugging Face and records the digest of
+the already-installed model. It never installs Ollama or pulls weights implicitly.
+The default `OLLAMA_BASE_URL` is `http://localhost:11434`; only loopback or the
+Compose `ollama` host is accepted, without URL credentials, paths or redirects.
+An optional `OLLAMA_MODEL_DIGEST` must match the prepared manifest. Pin changes
+require an explicit preparation run; runtime never silently accepts a new tag.
+Host model artifacts live in gitignored `.data/models/generation`, separate from
+the Compose model volume. No commands here change `.env` or `RAG_MODE`.
+
+```sh
+# Works without Ollama; downloads only the pinned tokenizer, not generation weights.
+pnpm generation:prepare --tokenizer-only
+pnpm generation:check --tokenizer-only
+# Requires the installed/running Ollama service and an explicitly pulled qwen3:4b.
+pnpm generation:prepare
+pnpm generation:check
+```
+
+Tokenizer revision: `Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c`.
+Files are checksummed and loaded locally with remote code disabled. The raw Qwen
+chat template is counted before dispatch, including the non-thinking prefix.
+Ollama uses a 16,384-token context, at most 10,000 input tokens per call and 3,000
+output tokens per draft/repair; the verifier has 1,000 output tokens. Evidence is
+at most 6,000 tokens, with whole omitted passages counted explicitly. Provider
+input counts must equal the prepared tokenizer count; mismatch withholds the answer.
+The API follows [Ollama's raw generation and JSON schema contract](https://docs.ollama.com/api/generate)
+and [structured output guidance](https://docs.ollama.com/capabilities/structured-outputs).
+
+At most one invalid-draft repair and one grounding pass are allowed. The total
+worst-case future job reservation is 37,000 tokens. The adapter records actual
+input/output usage when available and retains an uncertain estimate on ambiguous
+network failures; it does not retry those calls. These records are currently
+in-memory command data, not durable quota accounting. A generation request has a
+60-second wall deadline, model inspection 10 seconds, and a protocol instance a
+180-second deadline checked between calls. Closing a timed-out connection does
+not prove the server stopped computation. Cancellation/access callbacks run at
+call boundaries; durable worker cancellation is still pending.
+
+`generation:check` prints real results for an answerable and an unsupported synthetic
+question and exits unsuccessfully if they do not meet the expected statuses. It
+does not establish model quality, end-to-end permissions or the R5 completion gate.
+`--tokenizer-only` reports real token counts/control-token isolation and explicitly
+does not run generation. Keep these results separate from model evaluations.
 
 Dependency updates: use pnpm for JS and `uv add`/`uv lock` for Python, review both
 lockfiles, then run `pnpm verify` and `pnpm test:e2e`. The Next.js lint CLI is run

@@ -66,3 +66,14 @@ The host `evaluate_retrieval` management command uses real E5 and a versioned sm
 development corpus. Default mode compares all paths on temporary PostgreSQL records,
 then rolls them back. `--embedding-only` explicitly runs offline cosine ranking and
 does not validate the database. See `docs/OPERATIONS.md` for commands and limitations.
+
+R5 foundation: `backend/tests/test_grounding.py` and `test_generation.py` run without
+PostgreSQL. They exercise canonical Unicode quote offsets (including reordered
+marks, Hangul and astral characters), cross-block spans, unknown/forged citations,
+strict output limits, repair limits, uncertain grounding, empty-scope no-call and
+access-check failures. Adapter checks cover local-only URLs, redirects, oversized
+and slow-drip HTTP responses, digest/token drift, output limits and uncertain usage.
+Model replies in these tests are explicit contract doubles, not generated answers
+or a quality/permission integration result. `pnpm generation:check --tokenizer-only`
+uses the real pinned tokenizer; `pnpm generation:check` needs real Ollama/Qwen and
+tests two synthetic cases. Neither completes the future durable answer/SSE gate.
