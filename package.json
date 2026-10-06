@@ -8,6 +8,8 @@
     "pnpm": ">=10 <11"
   },
   "scripts": {
+    "generation:prepare": "uv run --project backend --extra local python backend/manage.py prepare_generation",
+    "generation:check": "uv run --project backend --extra local python backend/manage.py check_generation",
     "models:prepare": "uv run --project backend --extra local python backend/manage.py prepare_models",
     "models:check": "uv run --project backend --extra local python backend/manage.py check_models",
     "setup": "node scripts/project.mjs setup",

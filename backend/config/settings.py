@@ -135,6 +135,8 @@ FILE_UPLOAD_HANDLERS = [
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 ]
 MODEL_CACHE_ROOT = (REPO_ROOT / env("MODEL_CACHE_ROOT", default=".data/models")).resolve()
+OLLAMA_BASE_URL = env("OLLAMA_BASE_URL", default="http://localhost:11434")
+OLLAMA_MODEL_DIGEST = env("OLLAMA_MODEL_DIGEST", default="")
 if env("LOCAL_EMBED_MODEL_REVISION", default="") not in {"", REVISION}:
     raise ImproperlyConfigured("LOCAL_EMBED_MODEL_REVISION must match the pinned E5 revision.")
 RAG_MODE = env("RAG_MODE", default="RETRIEVAL_ONLY")

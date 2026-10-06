@@ -101,6 +101,27 @@ clear old excerpts; rendered document text remains inert. PostgreSQL race/access
 are provided but their execution remains deferred, so these are implementation
 boundaries rather than a claim of completed integration verification.
 
+R5's protocol is not an authorization layer or public question endpoint. Its caller
+must supply current authorized retrieval records, verify their source-block mappings,
+recheck the access/index snapshot before each provider call, and order final storage
+against revocation under the workspace lock. That durable worker integration remains
+pending. The only generation command currently uses public synthetic evidence.
+The protocol requires a caller check callback, never calls tools, escapes literal
+model role tokens in JSON data, and validates strict bounded output. Quotes must
+match canonically equivalent text and map to complete original Unicode offsets;
+titles, versions and locators come only from server-owned evidence. A second model
+pass must approve every block and overall coherence, otherwise the entire answer
+is withheld. Model verification remains fallible; contract doubles do not establish
+resistance to semantic prompt injection or factual accuracy. No raw model drafts or
+hidden reasoning are returned by the protocol.
+
+The local generation adapter checks the prepared model digest before and after
+each call, rejects token-count drift, and never downloads models during inference.
+Requests only reach the configured local runtime; no browser-supplied origin exists.
+No private documents are sent through this adapter by an application endpoint yet.
+General logs contain neither prompts nor raw runtime exceptions. Durable usage,
+retention, cancellation, history filtering and replay controls still need integration.
+
 Compose is a local development configuration. PostgreSQL, Redis, mail and proxy
 ports bind only to loopback. The backend and web run as non-root users in containers.
 Before deploying, configure HTTPS, production settings/hosts, proxy trust, HSTS,
