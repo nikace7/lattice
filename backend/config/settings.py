@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "modules.audit",
     "modules.documents",
     "modules.retrieval",
+    "modules.conversations",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -113,6 +114,7 @@ CELERY_TASK_ROUTES = {
 CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BEAT_SCHEDULE = {
+    "recover-answers": {"task": "modules.conversations.tasks.recover_answers", "schedule": 30.0},
     "recover-indexes": {
         "task": "modules.documents.indexing.recover_indexes",
         "schedule": 30.0,

@@ -13,6 +13,7 @@ import {
 import { CollectionAccess, Members } from "./workspace-access";
 import { Documents } from "./documents";
 import { Search } from "./search";
+import { Ask } from "./ask";
 import {
   ErrorNotice,
   Loading,
@@ -430,6 +431,7 @@ function WorkspaceRoom({
   const [drawer, setDrawer] = useState(false);
   const isMembers = view === "settings/members";
   const isSearch = view === "search";
+  const isAsk = view === "ask" || view.startsWith("c/");
   const isDocuments = view === "documents" || view.startsWith("documents/");
   return (
     <div className="room">
@@ -464,7 +466,7 @@ function WorkspaceRoom({
           <nav aria-label="Workspace">
             <Link
               href={`/w/${id}/collections`}
-              aria-current={!isMembers && !isDocuments && !isSearch ? "page" : undefined}
+              aria-current={!isMembers && !isDocuments && !isSearch && !isAsk ? "page" : undefined}
               onClick={() => setDrawer(false)}
             >
               <span aria-hidden="true">▤</span> Collections
@@ -474,6 +476,9 @@ function WorkspaceRoom({
             </Link>
             <Link href={`/w/${id}/search`} aria-current={isSearch ? "page" : undefined} onClick={() => setDrawer(false)}>
               <span aria-hidden="true">⌕</span> Search
+            </Link>
+            <Link href={`/w/${id}/ask`} aria-current={isAsk ? "page" : undefined} onClick={() => setDrawer(false)}>
+              <span aria-hidden="true">?</span> Ask
             </Link>
             {workspace.data?.role === "OWNER" && (
               <Link
@@ -490,7 +495,7 @@ function WorkspaceRoom({
             foundation<p>Careful reading starts with the right access.</p>
           </div>
         </aside>
-        <main id="main" tabIndex={-1} className={`room-main ${isDocuments || isSearch ? "document-main" : ""}`}>
+        <main id="main" tabIndex={-1} className={`room-main ${isDocuments || isSearch || isAsk ? "document-main" : ""}`}>
           <ErrorNotice error={workspace.error} retry={workspace.reload} />
           {!workspace.data && !workspace.error && <Loading />}
           {workspace.data &&
@@ -500,6 +505,8 @@ function WorkspaceRoom({
               <Documents key={view} workspace={workspace.data} documentId={view.split("/")[1]} chunkId={view.split("/")[3]} />
             ) : isSearch ? (
               <Search key={id} workspace={workspace.data} />
+            ) : isAsk ? (
+              <Ask key={`${id}:${view}`} workspace={workspace.data} conversationId={view.startsWith("c/") ? view.split("/")[1] : undefined} />
             ) : (
               <CollectionList
                 key={`${id}:${listVersion}`}
@@ -508,7 +515,7 @@ function WorkspaceRoom({
               />
             ))}
         </main>
-        {!isMembers && !isDocuments && !isSearch && workspace.data && (
+        {!isMembers && !isDocuments && !isSearch && !isAsk && workspace.data && (
           <aside className="inspector" aria-label="Collection details">
             {selected ? (
               <CollectionAccess

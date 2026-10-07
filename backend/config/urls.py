@@ -1,6 +1,16 @@
 from django.urls import path
 
 from config import schema  # noqa: F401 -- registers our session authentication schema
+from modules.conversations.api import (
+    CancelTurnView,
+    CapabilitiesView,
+    CitationView,
+    ConversationsView,
+    ConversationTurnsView,
+    QuestionsView,
+    TurnEventsView,
+    TurnView,
+)
 from modules.documents.api import (
     AcceptReviewView,
     BlocksView,
@@ -36,6 +46,17 @@ from modules.workspaces.api import (
 from .health import live, ready
 
 urlpatterns = [
+    path("api/v1/workspaces/<uuid:workspace_id>/answer-capabilities", CapabilitiesView.as_view()),
+    path("api/v1/workspaces/<uuid:workspace_id>/conversations", ConversationsView.as_view()),
+    path("api/v1/workspaces/<uuid:workspace_id>/questions", QuestionsView.as_view()),
+    path("api/v1/conversations/<uuid:conversation_id>/turns", ConversationTurnsView.as_view()),
+    path("api/v1/turns/<uuid:turn_id>", TurnView.as_view()),
+    path("api/v1/turns/<uuid:turn_id>/cancel", CancelTurnView.as_view()),
+    path("api/v1/turns/<uuid:turn_id>/events", TurnEventsView.as_view()),
+    path(
+        "api/v1/turns/<uuid:turn_id>/citations/<int:block_index>/<int:citation_index>",
+        CitationView.as_view(),
+    ),
     path("api/v1/workspaces/<uuid:workspace_id>/search", SearchView.as_view()),
     path("api/v1/workspaces/<uuid:workspace_id>/documents", DocumentsView.as_view()),
     path("api/v1/collections/<uuid:collection_id>/documents", UploadView.as_view()),

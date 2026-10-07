@@ -104,6 +104,10 @@ services:
     volumes: ["./.data/parser:/spool"]
   answer-worker:
     <<: *backend
+    build:
+      context: .
+      dockerfile: infra/backend.Dockerfile
+      target: ingestion
     command: ["celery", "-A", "config", "worker", "--loglevel=info", "--queues=answers", "--concurrency=1"]
     depends_on:
       migrate: { condition: service_completed_successfully }

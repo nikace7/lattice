@@ -724,6 +724,21 @@ small {
 .invitation-list span { min-width: 0; overflow-wrap: anywhere; }
 .invitation-list small { display: block; }
 .document-main { grid-column: 2 / -1; min-width: 0; }
+.question-composer { margin: 24px 0; max-width: 760px; }
+.question-composer fieldset { border: 1px solid var(--color-border); padding: 20px; border-radius: 8px; display: grid; gap: 12px; }
+.question-composer textarea { min-height: 120px; resize: vertical; }
+.question-composer legend { font-weight: 600; padding: 0 8px; }
+.conversation-list { padding-left: 20px; }
+.conversation-list li { margin: 16px 0; overflow-wrap: anywhere; }
+.answer-turn { margin: 24px 0; border-bottom: 1px solid var(--color-border); padding-bottom: 24px; min-width: 0; }
+.answer-body, .citation-reader { min-width: 0; overflow-wrap: anywhere; }
+.answer-block > p, .citation-context p { white-space: pre-wrap; font-family: var(--font-reading); font-size: 18px; line-height: 1.7; max-width: 68ch; }
+.citation-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.citation-buttons button { white-space: normal; text-align: left; max-width: 100%; }
+.citation-reader { margin-top: 24px; padding: 20px; border: 1px solid var(--color-control-border); background: var(--color-surface); border-radius: 8px; }
+.citation-reader mark { background: var(--color-evidence); color: var(--color-evidence-ink); outline: 1px solid var(--color-evidence-ink); }
+@media (min-width: 1100px) { .answer-turn.has-citation { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 40%); gap: 24px; align-items: start; } .citation-reader { margin-top: 0; } }
+@media (max-width: 1099px) { .answer-turn.has-citation > .answer-body { display: none; } }
 .search-results { list-style: none; padding: 0; max-width: 900px; }
 .search-results li { padding: 24px 0; border-bottom: 1px solid var(--color-border); overflow-wrap: anywhere; }
 .search-results h2 { font-size: 22px; }

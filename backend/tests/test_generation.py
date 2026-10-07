@@ -59,6 +59,12 @@ def test_http_boundary_is_local_bounded_and_does_not_follow_redirects():
             generation.request(origin, "/large")
         with pytest.raises(generation.GenerationTimeout):
             generation.request(origin, "/slow", timeout=0.1)
+
+        def revoked():
+            raise PermissionError("Access changed")
+
+        with pytest.raises(PermissionError, match="Access changed"):
+            generation.request(origin, "/slow", timeout=3, check=revoked)
         for bad in [
             "https://example.invalid",
             "http://127.0.0.1@evil.invalid",

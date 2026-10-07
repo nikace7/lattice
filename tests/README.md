@@ -76,4 +76,18 @@ and slow-drip HTTP responses, digest/token drift, output limits and uncertain us
 Model replies in these tests are explicit contract doubles, not generated answers
 or a quality/permission integration result. `pnpm generation:check --tokenizer-only`
 uses the real pinned tokenizer; `pnpm generation:check` needs real Ollama/Qwen and
-tests two synthetic cases. Neither completes the future durable answer/SSE gate.
+tests two synthetic cases. Neither completes the durable answer/SSE integration gate.
+
+R5 conversations: `test_turn_protocol.py` checks bounded event cursors, uncertain
+usage and source-block mapping without a database. The HTTP adapter suite also
+checks cancellation during a real loopback slow-drip response. Seven PostgreSQL
+tests in `test_conversations.py` cover private/idempotent turns, scoped retrieval,
+exact citations, access revocation (including uncited dependencies), cancellation,
+attempt recovery, empty scope and concurrent quota reservations. They use explicit
+model contract doubles and numerical retrieval vectors; collected tests are not a
+live Qwen or database execution result. PostgreSQL execution remains deferred.
+
+Five Ask UI tests cover IME composition, retry idempotency and preserved input,
+disabled generation with readable history, SSE refresh without new generation,
+whole-answer removal on citation denial, and Unicode highlights with inert markup.
+They run in jsdom, not against the live API, worker or model.

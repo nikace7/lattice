@@ -307,6 +307,39 @@ paths:
               schema:
                 $ref: '#/components/schemas/CollectionData'
           description: ''
+  /api/v1/conversations/{conversation_id}/turns:
+    get:
+      operationId: api_v1_conversations_turns_list
+      parameters:
+      - in: path
+        name: conversation_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - name: pageSize
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTurnDataList'
+          description: ''
   /api/v1/documents/{document_id}:
     get:
       operationId: api_v1_documents_retrieve
@@ -635,6 +668,104 @@ paths:
                 type: string
                 format: binary
           description: ''
+  /api/v1/turns/{turn_id}:
+    get:
+      operationId: api_v1_turns_retrieve
+      parameters:
+      - in: path
+        name: turn_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TurnData'
+          description: ''
+  /api/v1/turns/{turn_id}/cancel:
+    post:
+      operationId: api_v1_turns_cancel_create
+      parameters:
+      - in: path
+        name: turn_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TurnData'
+          description: ''
+  /api/v1/turns/{turn_id}/citations/{block_index}/{citation_index}:
+    get:
+      operationId: api_v1_turns_citations_retrieve
+      parameters:
+      - in: path
+        name: block_index
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: citation_index
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: turn_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceQuoteData'
+          description: ''
+  /api/v1/turns/{turn_id}/events:
+    get:
+      operationId: api_v1_turns_events_retrieve
+      parameters:
+      - in: header
+        name: Last-Event-ID
+        schema:
+          type: string
+      - in: path
+        name: turn_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            text/event-stream:
+              schema:
+                type: string
+          description: ''
   /api/v1/workspaces:
     get:
       operationId: api_v1_workspaces_list
@@ -739,6 +870,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/WorkspaceData'
           description: ''
+  /api/v1/workspaces/{workspace_id}/answer-capabilities:
+    get:
+      operationId: api_v1_workspaces_answer_capabilities_retrieve
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnswerCapabilityData'
+          description: ''
   /api/v1/workspaces/{workspace_id}/collections:
     get:
       operationId: api_v1_workspaces_collections_list
@@ -803,6 +955,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CollectionData'
+          description: ''
+  /api/v1/workspaces/{workspace_id}/conversations:
+    get:
+      operationId: api_v1_workspaces_conversations_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - name: pageSize
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedConversationDataList'
           description: ''
   /api/v1/workspaces/{workspace_id}/documents:
     get:
@@ -967,6 +1152,39 @@ paths:
               schema:
                 $ref: '#/components/schemas/MembershipData'
           description: ''
+  /api/v1/workspaces/{workspace_id}/questions:
+    post:
+      operationId: api_v1_workspaces_questions_create
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuestionInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuestionInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TurnData'
+          description: ''
   /api/v1/workspaces/{workspace_id}/search:
     post:
       operationId: api_v1_workspaces_search_create
@@ -1040,6 +1258,46 @@ components:
       description: |-
         * `WORKSPACE` - Everyone in this workspace
         * `RESTRICTED` - Selected people
+    AnswerBlockData:
+      type: object
+      properties:
+        text:
+          type: string
+        citations:
+          type: array
+          items:
+            $ref: '#/components/schemas/CitationData'
+      required:
+      - citations
+      - text
+    AnswerCapabilityData:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        message:
+          type: string
+      required:
+      - enabled
+      - message
+    AnswerData:
+      type: object
+      properties:
+        status:
+          type: string
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnswerBlockData'
+        repaired:
+          type: boolean
+        omittedPassages:
+          type: integer
+      required:
+      - blocks
+      - omittedPassages
+      - repaired
+      - status
     BlockData:
       type: object
       properties:
@@ -1065,6 +1323,65 @@ components:
       - position
       - spanMap
       - text
+    CitationData:
+      type: object
+      properties:
+        evidenceId:
+          type: string
+        chunkId:
+          type: string
+          format: uuid
+        documentId:
+          type: string
+          format: uuid
+        sourceId:
+          type: string
+          format: uuid
+        indexId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        partial:
+          type: boolean
+        quote:
+          type: string
+        chunkStart:
+          type: integer
+        chunkEnd:
+          type: integer
+        spans:
+          type: array
+          items:
+            $ref: '#/components/schemas/CitationSpanData'
+      required:
+      - chunkEnd
+      - chunkId
+      - chunkStart
+      - documentId
+      - evidenceId
+      - indexId
+      - partial
+      - quote
+      - sourceId
+      - spans
+      - title
+    CitationSpanData:
+      type: object
+      properties:
+        blockId:
+          type: string
+          format: uuid
+        start:
+          type: integer
+        end:
+          type: integer
+        location: {}
+      required:
+      - blockId
+      - end
+      - location
+      - start
     CollectionCreateRequest:
       type: object
       properties:
@@ -1103,6 +1420,23 @@ components:
       - canWrite
       - id
       - revision
+      - title
+    ConversationData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 80
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - createdAt
+      - id
       - title
     CredentialsRequest:
       type: object
@@ -1436,6 +1770,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CollectionData'
+    PaginatedConversationDataList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConversationData'
     PaginatedDocumentDataList:
       type: object
       required:
@@ -1493,6 +1846,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MembershipData'
+    PaginatedTurnDataList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TurnData'
     PaginatedWorkspaceDataList:
       type: object
       required:
@@ -1544,6 +1916,32 @@ components:
           type: string
           minLength: 1
           maxLength: 120
+    QuestionInputRequest:
+      type: object
+      properties:
+        conversationId:
+          type: string
+          format: uuid
+        idempotencyKey:
+          type: string
+          format: uuid
+        question:
+          type: string
+          minLength: 1
+          maxLength: 4000
+        collectionIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 100
+        replacesTurnId:
+          type: string
+          format: uuid
+      required:
+      - conversationId
+      - idempotencyKey
+      - question
     RankedHitData:
       type: object
       properties:
@@ -1809,6 +2207,71 @@ components:
       required:
       - csrfToken
       - user
+    SourceQuoteData:
+      type: object
+      properties:
+        evidenceId:
+          type: string
+        chunkId:
+          type: string
+          format: uuid
+        documentId:
+          type: string
+          format: uuid
+        sourceId:
+          type: string
+          format: uuid
+        indexId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        partial:
+          type: boolean
+        quote:
+          type: string
+        chunkStart:
+          type: integer
+        chunkEnd:
+          type: integer
+        spans:
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceQuoteSpanData'
+        kind:
+          type: string
+      required:
+      - chunkEnd
+      - chunkId
+      - chunkStart
+      - documentId
+      - evidenceId
+      - indexId
+      - kind
+      - partial
+      - quote
+      - sourceId
+      - spans
+      - title
+    SourceQuoteSpanData:
+      type: object
+      properties:
+        blockId:
+          type: string
+          format: uuid
+        start:
+          type: integer
+        end:
+          type: integer
+        location: {}
+        text:
+          type: string
+      required:
+      - blockId
+      - end
+      - location
+      - start
+      - text
     StateEnum:
       enum:
       - QUEUED
@@ -1835,6 +2298,48 @@ components:
           maxLength: 128
       required:
       - token
+    TurnData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        conversationId:
+          type: string
+          format: uuid
+        question:
+          type: string
+        state:
+          type: string
+        sequence:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        answer:
+          allOf:
+          - $ref: '#/components/schemas/AnswerData'
+          nullable: true
+        unavailable:
+          type: boolean
+        error:
+          type: string
+        collectionIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - answer
+      - collectionIds
+      - conversationId
+      - createdAt
+      - error
+      - id
+      - question
+      - sequence
+      - state
+      - unavailable
     UploadInputRequest:
       type: object
       properties:
