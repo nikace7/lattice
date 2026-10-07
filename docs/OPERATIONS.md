@@ -246,11 +246,34 @@ Optional Ollama: `docker compose --profile local-models up -d ollama`. The servi
 has no published host port and no preinstalled models. Docker work is currently
 deferred. There is no automatic cloud or fixture fallback.
 
-### R5 generation foundation (operator commands only)
+### R5 conversations and local generation
 
-The question API, durable conversations, quota reservation persistence, SSE and
-answer/source UI are not connected yet. The commands below use only public,
-synthetic evidence and do not exercise retrieval, authorization or database jobs.
+The Ask screen creates owner-private conversations and durable answer jobs. Each
+question retrieves fresh evidence; earlier answers are not model context. Generation
+requires `RAG_MODE=LOCAL`, prepared E5 and Qwen artifacts, PostgreSQL migrations,
+Redis, the answers worker and beat. VIEWER and retrieval-only users can read their
+own existing conversations but cannot generate. The current host `.env` remains
+retrieval-only. Docker and live model integration have not been validated for R5.
+
+After Docker work resumes, apply migrations through the normal Compose startup or
+`pnpm migrate` for host services. The answers worker uses the ingestion image target
+for local model dependencies. Prepare models in the worker's mounted model storage;
+host `.data/models` preparation does not populate the separate Compose model volume.
+The commands below use public synthetic evidence and do not exercise private API
+authorization, real retrieval or durable database jobs.
+
+SSE publishes phase events and a reference to the committed, validated answer.
+Reconnects replay events without rerunning generation; the client fetches the answer
+through an authorized status read. Run the API under ASGI and disable proxy buffering.
+Cancellation fences publication and interrupts the local HTTP request. Expired queued
+jobs may be requeued three times; claimed model work is never automatically retried.
+Use Ask again to create an explicitly linked new turn after a failure.
+
+Limits are 10 questions per user per minute, 100 per workspace per UTC day, two active
+jobs per workspace and one active turn per conversation. Token reservations and usage
+are serialized under workspace locks. The citation reader uses the retained original
+version; text highlights are exact Unicode spans, while PDF outlines show the containing
+source block. Revoked source access withholds the whole stored answer.
 
 For host development, start a separately installed local Ollama runtime, explicitly
 run `ollama pull qwen3:4b`, then run `pnpm generation:prepare`. This downloads only
@@ -283,14 +306,16 @@ The API follows [Ollama's raw generation and JSON schema contract](https://docs.
 and [structured output guidance](https://docs.ollama.com/capabilities/structured-outputs).
 
 At most one invalid-draft repair and one grounding pass are allowed. The total
-worst-case future job reservation is 37,000 tokens. The adapter records actual
+worst-case job reservation is 37,000 tokens. The adapter records actual
 input/output usage when available and retains an uncertain estimate on ambiguous
-network failures; it does not retry those calls. These records are currently
-in-memory command data, not durable quota accounting. A generation request has a
+network failures; it does not retry those calls. Workers persist usage before dispatch
+and reconcile the reservation on completion or lease recovery. The default daily
+workspace token limit is 100,000 (`MAX_DAILY_ANSWER_TOKENS`). A generation request has a
 60-second wall deadline, model inspection 10 seconds, and a protocol instance a
 180-second deadline checked between calls. Closing a timed-out connection does
-not prove the server stopped computation. Cancellation/access callbacks run at
-call boundaries; durable worker cancellation is still pending.
+not prove the server stopped computation. Cancellation/access checks run at call
+boundaries and during HTTP requests; lease heartbeats and final publication also
+recheck the frozen access/index snapshot under the workspace lock.
 
 `generation:check` prints real results for an answerable and an unsupported synthetic
 question and exits unsuccessfully if they do not meet the expected statuses. It

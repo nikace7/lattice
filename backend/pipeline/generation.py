@@ -7,7 +7,7 @@ import re
 import socket
 import time
 from pathlib import Path
-from threading import Event, Timer
+from threading import Event, Thread, Timer
 from urllib.parse import urlsplit
 
 from .grounding import INPUT_LIMIT, AnswerBudgetExceeded
@@ -59,12 +59,13 @@ def local_origin(origin):
     return url, port
 
 
-def request(origin, path, payload=None, *, timeout=10):
+def request(origin, path, payload=None, *, timeout=10, check=None):
     url, port = local_origin(origin)
     connection = (
         http.client.HTTPSConnection if url.scheme == "https" else http.client.HTTPConnection
     )(url.hostname, port, timeout=timeout)
     started, expired, timer = time.monotonic(), Event(), None
+    stop, cancelled, monitor = Event(), [], None
     try:
         connection.connect()
         transport = connection.sock
@@ -83,6 +84,19 @@ def request(origin, path, payload=None, *, timeout=10):
         timer = Timer(remaining, abort)
         timer.daemon = True
         timer.start()
+        if check is not None:
+
+            def watch():
+                while not stop.wait(0.5):
+                    try:
+                        check()
+                    except Exception as error:
+                        cancelled.append(error)
+                        abort()
+                        return
+
+            monitor = Thread(target=watch, daemon=True)
+            monitor.start()
         body = json.dumps(payload).encode() if payload is not None else None
         connection.request(
             "POST" if body is not None else "GET", path, body, {"Content-Type": "application/json"}
@@ -91,6 +105,8 @@ def request(origin, path, payload=None, *, timeout=10):
             # No redirect following, environment proxy or unbounded body.
             raw = response.read(1024 * 1024 + 1)
             status = response.status
+        if cancelled:
+            raise cancelled[0]
         if expired.is_set():
             raise TimeoutError
         if status != 200 or len(raw) > 1024 * 1024:
@@ -102,8 +118,12 @@ def request(origin, path, payload=None, *, timeout=10):
             raise ValueError
         return result
     except TimeoutError as error:
+        if cancelled:
+            raise cancelled[0] from error
         raise GenerationTimeout("Local generation timed out. No answer was published.") from error
     except (OSError, ValueError, RecursionError, http.client.HTTPException) as error:
+        if cancelled:
+            raise cancelled[0] from error
         if expired.is_set():
             raise GenerationTimeout(
                 "Local generation timed out. No answer was published."
@@ -112,9 +132,12 @@ def request(origin, path, payload=None, *, timeout=10):
             "Local generation is unavailable. Check the Ollama runtime."
         ) from error
     finally:
+        stop.set()
         if timer is not None:
             timer.cancel()
         connection.close()
+        if monitor is not None:
+            monitor.join(timeout=12)
 
 
 def installed_digest(origin):
@@ -184,7 +207,7 @@ def pin_model(root, origin):
 
 
 class LocalGenerator:
-    def __init__(self, root, origin, expected_digest=""):
+    def __init__(self, root, origin, expected_digest="", *, record_usage=None):
         local_origin(origin)
         self.origin = origin
         self.tokenizer = generation_tokenizer(root)
@@ -204,6 +227,7 @@ class LocalGenerator:
                 "Generation model pin missing or mismatched. Run pnpm generation:prepare."
             ) from error
         self.usage = []
+        self.record_usage = record_usage
         self.deadline = time.monotonic() + 180
 
     def count(self, text):
@@ -234,6 +258,8 @@ class LocalGenerator:
         check()
         usage = {"reserved": count + limit, "input": None, "output": None, "uncertain": True}
         self.usage.append(usage)
+        if self.record_usage is not None:
+            self.record_usage(self.usage, starting=True)
         # Do not retry ambiguous failures: computation may already have been incurred.
         result = request(
             self.origin,
@@ -249,6 +275,7 @@ class LocalGenerator:
                 "options": {"temperature": 0, "num_ctx": PROFILE["context"], "num_predict": limit},
             },
             timeout=min(60, remaining),
+            check=check,
         )
         input_count, output_count = result.get("prompt_eval_count"), result.get("eval_count")
         if (
@@ -259,6 +286,8 @@ class LocalGenerator:
         ):
             raise GenerationUnavailable("The runtime did not report valid generation usage.")
         usage.update(input=input_count, output=output_count, uncertain=False)
+        if self.record_usage is not None:
+            self.record_usage(self.usage)
         check()
         if time.monotonic() > self.deadline:
             raise GenerationTimeout("The answer deadline expired.")

@@ -8,6 +8,10 @@ export type Grant = components["schemas"]["GrantData"];
 export type DocumentSource = components["schemas"]["DocumentData"];
 export type SourceBlock = components["schemas"]["BlockData"];
 export type SearchResult = components["schemas"]["SearchData"];
+export type Conversation = components["schemas"]["ConversationData"];
+export type Turn = components["schemas"]["TurnData"];
+export type SourceQuote = components["schemas"]["SourceQuoteData"];
+export type AnswerCapability = components["schemas"]["AnswerCapabilityData"];
 export type Page<T> = {
   results: T[];
   next: string | null;

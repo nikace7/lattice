@@ -9,7 +9,7 @@ export default async function WorkspacePage({
   const { workspaceId, view } = await params;
   const route = view.join("/");
   if (
-    (!["documents", "collections", "search", "settings/members"].includes(route) && !/^documents\/[0-9a-f-]{36}(\/passages\/[0-9a-f-]{36})?$/i.test(route)) ||
+    (!["documents", "collections", "search", "ask", "settings/members"].includes(route) && !/^c\/[0-9a-f-]{36}$/i.test(route) && !/^documents\/[0-9a-f-]{36}(\/passages\/[0-9a-f-]{36})?$/i.test(route)) ||
     !/^[0-9a-f-]{36}$/i.test(workspaceId)
   )
     notFound();

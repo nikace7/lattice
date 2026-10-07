@@ -22,10 +22,11 @@ account recovery and invitations. R2 is implemented with final Docker-dependent
 integration validation deferred by the user. R3 document formats, OCR/review,
 chunking and local embedding/index preparation are implemented, with database/worker
 integration gates still deferred and table/Markdown limitations recorded below.
-R4 scoped search is implemented with PostgreSQL/browser gates deferred. R5's
-generation/validation foundation is implemented; conversation jobs, answer delivery
-and live model verification are pending. R6–R8 remain pending. The ingestion worker
-delivers recovery email and document extraction; no private question endpoint exists yet.
+R4 scoped search is implemented with PostgreSQL/browser gates deferred. R5's local
+generation, private conversations, durable jobs, validated answer delivery and citation
+reader are implemented; PostgreSQL/worker/browser and live model verification remain
+pending. R6–R8 remain pending. The ingestion worker handles recovery email and document
+extraction; the answers queue handles private questions in LOCAL mode.
 
 ## Verification
 
@@ -323,3 +324,39 @@ reservations, worker leases and cancellation, current-access checks at dispatch/
 commit/replay, SSE, exact citation UI and real answer/abstention integration still
 remain. No public question endpoint or private-source generation path is exposed.
 Continue with those R5 integrations before moving to R6 lifecycle work.
+
+## R5 private conversations and answer delivery — 7 October 2026
+
+- Added private conversation/turn APIs and an unapplied initial migration, with
+  idempotent submission, one active turn per conversation, atomic workspace token
+  reservations and user/workspace question limits. Generated API contracts include
+  the implemented endpoints; question creation is `POST /workspaces/:id/questions`
+  with a client-generated conversation UUID rather than a separate empty-chat POST.
+- Connected scoped retrieval and exact source-block verification to durable Celery
+  answer jobs. Workers fence attempts, renew leases, check current authorization at
+  dispatch and publication, persist usage before model calls and retain uncertain
+  costs. Recovery retries queued delivery only; interrupted model work requires an
+  explicit new turn. Cancellation also interrupts a pending local HTTP response.
+- Added authenticated SSE progress/replay, status reads and current-access history
+  filtering. Events contain phase metadata; only committed validated answers reach
+  the client. Access to all selected retrieval dependencies, including uncited ones,
+  is required to read a stored answer. Each question retrieves fresh sources.
+- Added the Ask screen, paginated private history, IME-safe submission, stable retry
+  intent keys, Stop/Ask again actions and an exact-version citation reader. Unicode
+  text highlights are exact; PDF page outlines identify the containing block.
+  Restricted sources withhold the whole answer instead of leaving cached excerpts.
+- Updated the answers worker image target to include existing local model dependencies.
+  No dependencies were added and the host `.env` remains retrieval-only.
+
+Validation: 52 database-free backend tests, 18 web unit tests, the setup test, Ruff
+lint/format, ESLint, Django checks and the production Next.js/TypeScript build passed.
+OpenAPI regeneration passed without warnings. Offline migration-state comparison and
+Celery task discovery passed without contacting PostgreSQL. Seven new PostgreSQL
+integration tests were collected, not executed. They cover ownership, idempotency,
+actual retrieval SQL with numerical vectors, citations, revocation, cancellation,
+recovery and concurrent quota reservations; model outputs are contract doubles.
+
+Docker, migration application, PostgreSQL tests and live API/worker/browser execution
+remain deferred at the user's request. No Qwen weights, live answer/abstention result,
+latency measurement or model-quality result is claimed. R5 implementation is present,
+but its real end-to-end acceptance gate remains open. R6–R8 remain pending.

@@ -278,7 +278,7 @@ def supported(value, blocks):
     return approved
 
 
-def grounded_answer(question, hits, generator, *, check):
+def grounded_answer(question, hits, generator, *, check, on_validating=None):
     """Return validated blocks only. check MUST raise on lost access, lease or cancellation.
 
     This pure protocol does not establish authorization. The worker must retrieve current
@@ -335,6 +335,8 @@ def grounded_answer(question, hits, generator, *, check):
                 + json_data(ANSWER_SCHEMA)
             )
     if answer["blocks"]:
+        if on_validating is not None:
+            on_validating()
         checks = [
             {
                 "index": i,

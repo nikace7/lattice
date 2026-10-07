@@ -6,11 +6,11 @@ are implemented, along with private PDF/DOCX/TXT/Markdown uploads and source ins
 Low-text PDF pages support English/Nepali OCR with explicit extraction review and page exclusions.
 Accepted sources can now produce resumable keyword-only or real local E5 indexes.
 Scoped keyword, semantic and hybrid search now include source links and curator
-ranking details. R5's local generation adapter and citation/grounding protocol are
-implemented as a foundation with operator check commands; question APIs, conversation jobs,
-streaming and answer UI are still pending. Live Qwen generation is not yet verified.
-R4 database/browser
-integration validation remains deferred while Docker is unavailable.
+ranking details. R5 adds private conversations, durable answer jobs, validated answer
+delivery, cancellation and a citation reader. Generation requires explicitly prepared
+local Qwen models and `RAG_MODE=LOCAL`; the default remains retrieval-only.
+Live Qwen generation and R2–R5 database/worker/browser integration validation remain
+deferred while Docker is skipped.
 The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
 observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).
 

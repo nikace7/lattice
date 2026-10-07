@@ -164,6 +164,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/conversations/{conversation_id}/turns": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_conversations_turns_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/documents/{document_id}": {
         parameters: {
             query?: never;
@@ -340,6 +356,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/turns/{turn_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_turns_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/turns/{turn_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_turns_cancel_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/turns/{turn_id}/citations/{block_index}/{citation_index}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_turns_citations_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/turns/{turn_id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_turns_events_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/workspaces": {
         parameters: {
             query?: never;
@@ -372,6 +452,22 @@ export interface paths {
         patch: operations["api_v1_workspaces_partial_update"];
         trace?: never;
     };
+    "/api/v1/workspaces/{workspace_id}/answer-capabilities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_workspaces_answer_capabilities_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/workspaces/{workspace_id}/collections": {
         parameters: {
             query?: never;
@@ -382,6 +478,22 @@ export interface paths {
         get: operations["api_v1_workspaces_collections_list"];
         put?: never;
         post: operations["api_v1_workspaces_collections_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspace_id}/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_workspaces_conversations_list"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -430,6 +542,22 @@ export interface paths {
         get: operations["api_v1_workspaces_memberships_list"];
         put?: never;
         post: operations["api_v1_workspaces_memberships_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspace_id}/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_workspaces_questions_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -494,6 +622,20 @@ export interface components {
          * @enum {string}
          */
         AccessEnum: "WORKSPACE" | "RESTRICTED";
+        AnswerBlockData: {
+            text: string;
+            citations: components["schemas"]["CitationData"][];
+        };
+        AnswerCapabilityData: {
+            enabled: boolean;
+            message: string;
+        };
+        AnswerData: {
+            status: string;
+            blocks: components["schemas"]["AnswerBlockData"][];
+            repaired: boolean;
+            omittedPassages: number;
+        };
         BlockData: {
             /** Format: uuid */
             readonly id: string;
@@ -502,6 +644,30 @@ export interface components {
             originalText: string;
             readonly locator: unknown;
             spanMap: unknown;
+        };
+        CitationData: {
+            evidenceId: string;
+            /** Format: uuid */
+            chunkId: string;
+            /** Format: uuid */
+            documentId: string;
+            /** Format: uuid */
+            sourceId: string;
+            /** Format: uuid */
+            indexId: string;
+            title: string;
+            partial: boolean;
+            quote: string;
+            chunkStart: number;
+            chunkEnd: number;
+            spans: components["schemas"]["CitationSpanData"][];
+        };
+        CitationSpanData: {
+            /** Format: uuid */
+            blockId: string;
+            start: number;
+            end: number;
+            location: unknown;
         };
         CollectionCreateRequest: {
             title: string;
@@ -515,6 +681,13 @@ export interface components {
             readonly access: components["schemas"]["AccessEnum"];
             readonly revision: number;
             readonly canWrite: boolean;
+        };
+        ConversationData: {
+            /** Format: uuid */
+            readonly id: string;
+            title: string;
+            /** Format: date-time */
+            createdAt: string;
         };
         CredentialsRequest: {
             username: string;
@@ -654,6 +827,19 @@ export interface components {
             previous?: string | null;
             results: components["schemas"]["CollectionData"][];
         };
+        PaginatedConversationDataList: {
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+             */
+            previous?: string | null;
+            results: components["schemas"]["ConversationData"][];
+        };
         PaginatedDocumentDataList: {
             /**
              * Format: uri
@@ -693,6 +879,19 @@ export interface components {
             previous?: string | null;
             results: components["schemas"]["MembershipData"][];
         };
+        PaginatedTurnDataList: {
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+             */
+            previous?: string | null;
+            results: components["schemas"]["TurnData"][];
+        };
         PaginatedWorkspaceDataList: {
             /**
              * Format: uri
@@ -719,6 +918,16 @@ export interface components {
         PatchedWorkspaceEditRequest: {
             expectedRevision?: number;
             name?: string;
+        };
+        QuestionInputRequest: {
+            /** Format: uuid */
+            conversationId: string;
+            /** Format: uuid */
+            idempotencyKey: string;
+            question: string;
+            collectionIds?: string[];
+            /** Format: uuid */
+            replacesTurnId?: string;
         };
         RankedHitData: {
             /** Format: uuid */
@@ -816,6 +1025,32 @@ export interface components {
             user: components["schemas"]["UserData"] | null;
             csrfToken: string;
         };
+        SourceQuoteData: {
+            evidenceId: string;
+            /** Format: uuid */
+            chunkId: string;
+            /** Format: uuid */
+            documentId: string;
+            /** Format: uuid */
+            sourceId: string;
+            /** Format: uuid */
+            indexId: string;
+            title: string;
+            partial: boolean;
+            quote: string;
+            chunkStart: number;
+            chunkEnd: number;
+            spans: components["schemas"]["SourceQuoteSpanData"][];
+            kind: string;
+        };
+        SourceQuoteSpanData: {
+            /** Format: uuid */
+            blockId: string;
+            start: number;
+            end: number;
+            location: unknown;
+            text: string;
+        };
         /**
          * @description * `QUEUED` - Queued
          *     * `CHUNKING` - Chunking
@@ -828,6 +1063,21 @@ export interface components {
         StateEnum: "QUEUED" | "CHUNKING" | "EMBEDDING" | "READY" | "FAILED" | "CANCELLED";
         TokenInputRequest: {
             token: string;
+        };
+        TurnData: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            conversationId: string;
+            question: string;
+            state: string;
+            sequence: number;
+            /** Format: date-time */
+            createdAt: string;
+            answer: components["schemas"]["AnswerData"] | null;
+            unavailable: boolean;
+            error: string;
+            collectionIds: string[];
         };
         UploadInputRequest: {
             /** Format: uuid */
@@ -1154,6 +1404,32 @@ export interface operations {
             };
         };
     };
+    api_v1_conversations_turns_list: {
+        parameters: {
+            query?: {
+                /** @description The pagination cursor value. */
+                cursor?: string;
+                /** @description Number of results to return per page. */
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                conversation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedTurnDataList"];
+                };
+            };
+        };
+    };
     api_v1_documents_retrieve: {
         parameters: {
             query?: never;
@@ -1430,6 +1706,94 @@ export interface operations {
             };
         };
     };
+    api_v1_turns_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                turn_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TurnData"];
+                };
+            };
+        };
+    };
+    api_v1_turns_cancel_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                turn_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TurnData"];
+                };
+            };
+        };
+    };
+    api_v1_turns_citations_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                block_index: number;
+                citation_index: number;
+                turn_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SourceQuoteData"];
+                };
+            };
+        };
+    };
+    api_v1_turns_events_retrieve: {
+        parameters: {
+            query?: never;
+            header?: {
+                "Last-Event-ID"?: string;
+            };
+            path: {
+                turn_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": string;
+                };
+            };
+        };
+    };
     api_v1_workspaces_list: {
         parameters: {
             query?: {
@@ -1527,6 +1891,27 @@ export interface operations {
             };
         };
     };
+    api_v1_workspaces_answer_capabilities_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerCapabilityData"];
+                };
+            };
+        };
+    };
     api_v1_workspaces_collections_list: {
         parameters: {
             query?: {
@@ -1576,6 +1961,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CollectionData"];
+                };
+            };
+        };
+    };
+    api_v1_workspaces_conversations_list: {
+        parameters: {
+            query?: {
+                /** @description The pagination cursor value. */
+                cursor?: string;
+                /** @description Number of results to return per page. */
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedConversationDataList"];
                 };
             };
         };
@@ -1708,6 +2119,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MembershipData"];
+                };
+            };
+        };
+    };
+    api_v1_workspaces_questions_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuestionInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["QuestionInputRequest"];
+                "multipart/form-data": components["schemas"]["QuestionInputRequest"];
+            };
+        };
+        responses: {
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TurnData"];
                 };
             };
         };
