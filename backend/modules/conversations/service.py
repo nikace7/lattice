@@ -175,7 +175,7 @@ def create_turn(user, workspace_id, data):
     )
     if (
         owned.count() >= 10
-        or today.count() >= 100
+        or today.count() >= member.workspace.daily_answers
         or workspace_turns.filter(state__in=ACTIVE).count() >= 2
     ):
         raise Throttled(
@@ -220,6 +220,8 @@ def create_turn(user, workspace_id, data):
 
 
 def answer_available(turn, user):
+    if turn.answer_purged:
+        return False
     if turn.answer is None:
         return True
     citations = [c for b in turn.answer["blocks"] for c in b["citations"]]
@@ -234,6 +236,8 @@ def answer_available(turn, user):
         for c in Chunk.objects.filter(
             pk__in=ids,
             index__state="READY",
+            index__extraction__source__document__deleted_at__isnull=True,
+            index__extraction__source__purge_requested_at__isnull=True,
             index__extraction__source__document__collection__in=readable_collections(user).filter(
                 workspace_id=turn.conversation.workspace_id
             ),

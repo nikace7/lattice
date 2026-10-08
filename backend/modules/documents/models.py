@@ -15,16 +15,28 @@ class Document(models.Model):
     title = models.CharField(max_length=200)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     revision = models.PositiveIntegerField(default=1)
+    deleted_at = models.DateTimeField(null=True)
+    purged_at = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
 
+    @property
+    def source(self):
+        return (
+            self._source
+            if hasattr(self, "_source")
+            else self.versions.select_related("job", "extraction").latest("number")
+        )
+
 
 class SourceVersion(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    # R2 has one immutable source per document; replacement/version selection is R6.
-    document = models.OneToOneField(Document, on_delete=models.CASCADE, related_name="source")
+    document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name="versions")
+    number = models.PositiveIntegerField(default=1)
+    purge_requested_at = models.DateTimeField(null=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.PROTECT)
     filename = models.CharField(max_length=200)
     kind = models.CharField(
         max_length=4,
@@ -38,6 +50,11 @@ class SourceVersion(models.Model):
         choices=[("eng", "English"), ("nep", "Nepali"), ("eng+nep", "English + Nepali")],
     )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["document", "number"], name="unique_source_number")
+        ]
 
     def __str__(self):
         return str(self.pk)
@@ -100,6 +117,10 @@ class ExtractionVersion(models.Model):
     def __str__(self):
         return str(self.pk)
 
+    @property
+    def index(self):
+        return self.indexes.order_by("-created_at", "-id").first()
+
 
 class SourceBlock(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -123,10 +144,13 @@ class SourceBlock(models.Model):
 
 class IndexVersion(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    # R3 has one immutable profile per extraction; shadow profile migration belongs to R6.
-    extraction = models.OneToOneField(
-        ExtractionVersion, on_delete=models.CASCADE, related_name="index"
+    extraction = models.ForeignKey(
+        ExtractionVersion, on_delete=models.CASCADE, related_name="indexes"
     )
+    reindex = models.ForeignKey(
+        "Reindex", null=True, on_delete=models.SET_NULL, related_name="indexes"
+    )
+    created_at = models.DateTimeField(default=timezone.now)
     requested_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     profile = models.JSONField()
     chunker = models.CharField(max_length=80)
@@ -194,3 +218,39 @@ class Embedding384(models.Model):
 
     def __str__(self):
         return str(self.chunk_id)
+
+
+class Reindex(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    workspace = models.ForeignKey("workspaces.Workspace", on_delete=models.CASCADE)
+    profile = models.JSONField()
+    source_ids = models.JSONField()
+    previous_indexes = models.JSONField()
+    state = models.CharField(
+        max_length=12,
+        default="BUILDING",
+        choices=[(s, s.title()) for s in ["BUILDING", "READY", "FAILED", "CANCELLED"]],
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["workspace"],
+                condition=models.Q(state="BUILDING"),
+                name="one_workspace_reindex",
+            )
+        ]
+
+    def __str__(self):
+        return str(self.pk)
+
+
+class EmbeddingUsage(models.Model):
+    workspace = models.ForeignKey("workspaces.Workspace", on_delete=models.CASCADE)
+    index = models.ForeignKey(IndexVersion, null=True, on_delete=models.SET_NULL)
+    tokens = models.PositiveIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.pk)

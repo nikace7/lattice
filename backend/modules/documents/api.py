@@ -1,6 +1,7 @@
 import hashlib
+import os
 import uuid
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 
 from django.conf import settings
 from django.db import IntegrityError, transaction
@@ -10,7 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import generics
-from rest_framework.exceptions import NotFound, PermissionDenied, ValidationError
+from rest_framework.exceptions import NotFound, PermissionDenied, Throttled, ValidationError
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -38,15 +39,16 @@ from .tasks import enqueue
 
 
 def readable_documents(user):
-    return Document.objects.filter(collection__in=readable_collections(user)).select_related(
-        "collection", "source", "source__job", "source__extraction", "source__extraction__index"
-    )
+    return Document.objects.filter(
+        collection__in=readable_collections(user), deleted_at__isnull=True
+    ).select_related("collection")
 
 
 def readable_source(user, source_id):
     return get_object_or_404(
         SourceVersion.objects.select_related("document", "extraction"),
         pk=source_id,
+        purge_requested_at__isnull=True,
         document__in=readable_documents(user),
     )
 
@@ -72,15 +74,24 @@ class UploadView(APIView):
     parser_classes = [MultiPartParser]
 
     @extend_schema(request=UploadInput, responses={201: DocumentData, 200: DocumentData})
-    def post(self, request, collection_id):
+    def post(self, request, collection_id=None, document_id=None):
         # Check contribution rights before persisting the source in private storage.
+        replacement = (
+            get_object_or_404(readable_documents(request.user), pk=document_id)
+            if document_id
+            else None
+        )
+        if replacement:
+            collection_id = replacement.collection_id
         collection = get_object_or_404(readable_collections(request.user), pk=collection_id)
         if not can_write(collection, membership_for(request.user, collection.workspace_id)):
             raise PermissionDenied("You need contribution access to upload here.")
         raw_data = request.data
         if getattr(request._request, "upload_too_large", False):
             raise ValidationError("The upload exceeds 25 MiB.")
-        data = UploadInput(data=raw_data)
+        from .serializers import ReplacementInput
+
+        data = (ReplacementInput if replacement else UploadInput)(data=raw_data)
         data.is_valid(raise_exception=True)
         upload = data.validated_data["file"]
         filename = PurePosixPath(upload.name.replace("\\", "/")).name
@@ -102,14 +113,44 @@ class UploadView(APIView):
                 member, collection = locked_collection(request.user, collection_id)
                 if not can_write(collection, member):
                     raise PermissionDenied("Contribution access changed. Refresh and try again.")
-                existing = Document.objects.filter(pk=data.validated_data["uploadId"]).first()
-                if existing:
+                if replacement:
+                    replacement = get_object_or_404(
+                        readable_documents(request.user), pk=document_id
+                    )
+                    prior = SourceVersion.objects.filter(pk=data.validated_data["uploadId"]).first()
+                    if prior:
+                        if (
+                            prior.document_id != replacement.pk
+                            or (prior.created_by_id or replacement.created_by_id) != request.user.pk
+                            or prior.sha256 != digest
+                            or prior.filename != filename
+                            or prior.ocr_language != data.validated_data["ocrLanguage"]
+                        ):
+                            raise Conflict(
+                                "This replacement identifier already belongs to a different file."
+                            )
+                        return Response(
+                            DocumentData(replacement, context={"request": request}).data
+                        )
+                    if replacement.revision != data.validated_data["expectedRevision"]:
+                        raise Conflict()
                     if (
-                        existing.collection_id != collection.pk
+                        Path(settings.STORAGE_ROOT)
+                        / "tombstones"
+                        / f"source-{data.validated_data['uploadId']}.json"
+                    ).exists():
+                        raise Conflict("This replacement identifier belongs to a purged version.")
+                existing = Document.objects.filter(pk=data.validated_data["uploadId"]).first()
+                if existing and not replacement:
+                    original = existing.versions.filter(number=1).first()
+                    if (
+                        existing.deleted_at is not None
+                        or original is None
+                        or existing.collection_id != collection.pk
                         or existing.created_by_id != request.user.pk
-                        or existing.source.sha256 != digest
-                        or existing.source.filename != filename
-                        or existing.source.ocr_language != data.validated_data["ocrLanguage"]
+                        or original.sha256 != digest
+                        or original.filename != filename
+                        or original.ocr_language != data.validated_data["ocrLanguage"]
                     ):
                         raise Conflict(
                             "This upload identifier was already used for a different file."
@@ -120,20 +161,34 @@ class UploadView(APIView):
                 )
                 total = sources.aggregate(total=Sum("byte_size"))["total"] or 0
                 if (
-                    sources.count() >= 500
-                    or total + len(content) > settings.MAX_WORKSPACE_STORAGE_BYTES
+                    not replacement
+                    and Document.objects.filter(
+                        collection__workspace=member.workspace, deleted_at__isnull=True
+                    ).count()
+                    >= member.workspace.document_limit
+                ) or total + len(content) > min(
+                    settings.MAX_WORKSPACE_STORAGE_BYTES, member.workspace.storage_bytes
                 ):
-                    raise ValidationError(
-                        "This workspace has reached its document or storage limit."
+                    raise Throttled(
+                        detail="This workspace has reached its document or storage limit."
                     )
-                document = Document.objects.create(
+                document = replacement or Document.objects.create(
                     id=data.validated_data["uploadId"],
                     collection=collection,
                     title=filename,
                     created_by=request.user,
                 )
                 source = SourceVersion.objects.create(
+                    **(
+                        {
+                            "id": data.validated_data["uploadId"],
+                            "number": document.source.number + 1,
+                        }
+                        if replacement
+                        else {}
+                    ),
                     document=document,
+                    created_by=request.user,
                     filename=filename,
                     kind=kind,
                     byte_size=len(content),
@@ -141,10 +196,18 @@ class UploadView(APIView):
                     ocr_language=data.validated_data["ocrLanguage"],
                 )
                 job = ExtractionJob.objects.create(source=source)
+                if replacement:
+                    from .lifecycle import cancel_pending
+
+                    cancel_pending(document, except_source=source.pk)
+                    document.revision += 1
+                    document.save(update_fields=["revision"])
                 source_directory(source).mkdir(parents=True, exist_ok=False)
                 saved_path = source_path(source)
                 with saved_path.open("xb") as output:
                     output.write(content)
+                    output.flush()
+                    os.fsync(output.fileno())
                 audit(member.workspace, request.user, "document.uploaded", document)
                 transaction.on_commit(lambda: enqueue(str(source.pk), str(job.attempt)))
         except Exception as error:
@@ -167,6 +230,27 @@ class DocumentView(generics.RetrieveAPIView):
     def get_queryset(self):
         return readable_documents(self.request.user)
 
+    def get_object(self):
+        document = super().get_object()
+        source_id = self.request.query_params.get("sourceId")
+        chunk_id = self.request.query_params.get("chunkId")
+        try:
+            if chunk_id:
+                chunk = get_object_or_404(
+                    Chunk,
+                    pk=uuid.UUID(chunk_id),
+                    index__active=True,
+                    index__extraction__source__document=document,
+                )
+                source_id = str(chunk.index.extraction.source_id)
+            if source_id:
+                document._source = get_object_or_404(
+                    document.versions, pk=uuid.UUID(source_id), purge_requested_at__isnull=True
+                )
+        except ValueError as error:
+            raise ValidationError("Choose a valid source or passage.") from error
+        return document
+
 
 class RetryView(APIView):
     @extend_schema(request=RevisionInput, responses=DocumentData)
@@ -176,11 +260,11 @@ class RetryView(APIView):
         member, collection = locked_collection(request.user, document.collection_id)
         if not can_write(collection, member):
             raise PermissionDenied("You need contribution access to retry extraction.")
-        document.refresh_from_db()
+        document = get_object_or_404(readable_documents(request.user), pk=document_id)
         data = validated(RevisionInput, request)
         if data["expectedRevision"] != document.revision:
             raise Conflict()
-        job = ExtractionJob.objects.select_for_update().get(source__document=document)
+        job = ExtractionJob.objects.select_for_update().get(source=document.source)
         if not job.can_retry:
             raise Conflict(
                 "Extraction is active or cannot be retried. Upload a corrected file if needed."
@@ -208,10 +292,10 @@ class CancelView(APIView):
         if not can_write(collection, member):
             raise PermissionDenied("You need contribution access to cancel extraction.")
         data = validated(RevisionInput, request)
-        document.refresh_from_db()
+        document = get_object_or_404(readable_documents(request.user), pk=document_id)
         if data["expectedRevision"] != document.revision:
             raise Conflict()
-        job = ExtractionJob.objects.select_for_update().get(source__document=document)
+        job = ExtractionJob.objects.select_for_update().get(source=document.source)
         if job.state not in {"QUEUED", "EXTRACTING"}:
             raise Conflict("Only queued or extracting documents can be cancelled.")
         job.state, job.error, job.retryable = "CANCELLED", "", False
@@ -245,10 +329,10 @@ class AcceptReviewView(APIView):
         if not can_write(collection, member):
             raise PermissionDenied("You need contribution access to accept extraction.")
         data = validated(ReviewInput, request)
-        document.refresh_from_db()
+        document = get_object_or_404(readable_documents(request.user), pk=document_id)
         if data["expectedRevision"] != document.revision:
             raise Conflict()
-        job = ExtractionJob.objects.select_for_update().get(source__document=document)
+        job = ExtractionJob.objects.select_for_update().get(source=document.source)
         if document.source.kind not in {"PDF", "DOCX"} or job.state != "NEEDS_REVIEW":
             raise Conflict("This extraction is not awaiting review.")
         extraction = ExtractionVersion.objects.select_for_update().get(source=document.source)
@@ -287,7 +371,7 @@ class IndexView(APIView):
         if not can_write(collection, member):
             raise PermissionDenied("You need contribution access to prepare an index.")
         data = validated(RevisionInput, request)
-        document.refresh_from_db()
+        document = get_object_or_404(readable_documents(request.user), pk=document_id)
         if data["expectedRevision"] != document.revision:
             raise Conflict()
         if document.source.job.state not in {"EXTRACTED", "REVIEWED"}:
@@ -296,17 +380,25 @@ class IndexView(APIView):
         if extraction.warnings and not extraction.accepted_at:
             raise Conflict("Accept extraction warnings before indexing.")
         try:
-            profile = configured_profile()
+            profile = member.workspace.index_profile or configured_profile()
         except ValueError as error:
             raise ValidationError(str(error)) from error
-        index = IndexVersion.objects.select_for_update().filter(extraction=extraction).first()
+        from .models import Reindex
+
+        if Reindex.objects.filter(workspace=member.workspace, state="BUILDING").exists():
+            raise Conflict("Wait for the workspace reindex to finish or cancel it first.")
+        index = (
+            IndexVersion.objects.select_for_update()
+            .filter(extraction=extraction, reindex__isnull=True)
+            .order_by("-created_at")
+            .first()
+        )
         if index:
             if not index.can_retry:
                 raise Conflict("This index is already ready or still processing.")
             if index.profile != profile or index.chunker != VERSION:
-                raise Conflict(
-                    "Profile migration is not available yet. Restore the original profile."
-                )
+                index = None
+        if index:
             index.state, index.error, index.attempt = "QUEUED", "", uuid.uuid4()
             index.recoveries, index.requested_by = 0, request.user
             index.save()
@@ -337,11 +429,14 @@ class CancelIndexView(APIView):
         if not can_write(collection, member):
             raise PermissionDenied("You need contribution access to cancel indexing.")
         data = validated(RevisionInput, request)
-        document.refresh_from_db()
+        document = get_object_or_404(readable_documents(request.user), pk=document_id)
         if data["expectedRevision"] != document.revision:
             raise Conflict()
         index = get_object_or_404(
-            IndexVersion.objects.select_for_update(), extraction__source__document=document
+            IndexVersion.objects.select_for_update(),
+            extraction__source=document.source,
+            reindex__isnull=True,
+            state__in=RUNNING,
         )
         if index.state not in RUNNING:
             raise Conflict("Only active indexing jobs can be cancelled.")

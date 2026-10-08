@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { api, type Collection, type DocumentSource, type Page, type SourceBlock, type Workspace } from "@/lib/api";
 import { ErrorNotice, Loading, Pagination, useAction, useResource } from "./resource";
+import { DocumentLifecycle, WorkspaceLifecycle } from "./lifecycle";
 
 const states: Record<string, string> = {
   QUEUED: "Queued for extraction", EXTRACTING: "Extracting text",
@@ -37,6 +38,7 @@ function DocumentList({ workspace }: { workspace: Workspace }) {
     <p className="muted">Upload PDF, Word, Markdown or plain text, then prepare an index to search the original evidence.</p>
     <ErrorNotice error={collections.error} retry={collections.reload} />
     {writable.length > 0 && <UploadForm collections={writable} workspace={workspace} />}
+    {workspace.role === "OWNER" && <WorkspaceLifecycle workspace={workspace} />}
     {collections.data && <>
       <label htmlFor="document-filter">Filter by collection</label>
       <select id="document-filter" value={collectionId} onChange={(event) => setCollectionId(event.target.value)}>
@@ -51,7 +53,7 @@ function DocumentList({ workspace }: { workspace: Workspace }) {
       {documents.data.results.length ? <div className="document-list">
         {documents.data.results.map((document) => <Link className="workspace-row" key={document.id} href={`/w/${workspace.id}/documents/${document.id}`}>
           <span className="access-badge">{document.kind}</span>
-          <span><strong>{document.title}</strong><small>{states[document.state]} · {document.index?.active ? "Index ready" : "Not indexed"} · source version 1 · {Math.ceil(document.byteSize / 1024)} KiB</small></span>
+          <span><strong>{document.title}</strong><small>{states[document.state]} · {document.currentSourceId ? "Searchable version available" : "Not indexed"} · source version {document.sourceNumber} · {Math.ceil(document.byteSize / 1024)} KiB</small></span>
           <span aria-hidden="true">↗</span>
         </Link>)}
       </div> : <div className="empty-library"><h2>No documents here yet.</h2><p>{writable.length ? "Add your first source using the form above." : "Ask a curator to add documents, or create a collection if you are an owner."}</p><Link href={`/w/${workspace.id}/collections`}>View collections</Link></div>}
@@ -60,7 +62,7 @@ function DocumentList({ workspace }: { workspace: Workspace }) {
   </section>;
 }
 
-function UploadForm({ collections, workspace }: { collections: Collection[]; workspace: Workspace }) {
+function UploadForm({ collections, workspace, replacement, onComplete }: { collections: Collection[]; workspace: Workspace; replacement?: DocumentSource; onComplete?: () => void }) {
   const action = useAction();
   const uploadId = useRef<string | null>(null);
   const router = useRouter();
@@ -71,17 +73,19 @@ function UploadForm({ collections, workspace }: { collections: Collection[]; wor
     values.set("uploadId", uploadId.current);
     const collection = values.get("collection");
     values.delete("collection");
+    if (replacement) values.set("expectedRevision", String(replacement.revision));
     void action.run(async () => {
-      const document = await api<DocumentSource>(`/collections/${collection}/documents`, "POST", values);
-      router.push(`/w/${workspace.id}/documents/${document.id}`);
+      const document = await api<DocumentSource>(replacement ? `/documents/${replacement.id}/replace` : `/collections/${collection}/documents`, "POST", values);
+      if (onComplete) onComplete(); else router.push(`/w/${workspace.id}/documents/${document.id}`);
     });
   }
-  return <form className="upload-form" onSubmit={submit} aria-label="Upload a document">
-    <h2>Add a source</h2>
-    <label htmlFor="upload-collection">Destination collection</label>
+  return <form className="upload-form" onSubmit={submit} aria-label={replacement ? "Replace document" : "Upload a document"}>
+    <h2>{replacement ? "Upload replacement" : "Add a source"}</h2>
+    {replacement && <p>The searchable version stays available while you extract, review and index this replacement.</p>}
+    {!replacement && <><label htmlFor="upload-collection">Destination collection</label>
     <select id="upload-collection" name="collection" disabled={action.busy} onChange={() => { uploadId.current = null; }}>
       {collections.map((collection) => <option key={collection.id} value={collection.id}>{collection.title}</option>)}
-    </select>
+    </select></>}
     <label htmlFor="source-file">Document file</label>
     <input id="source-file" name="file" type="file" accept=".pdf,.docx,.txt,.md" required disabled={action.busy} onChange={() => { uploadId.current = null; }} aria-describedby="upload-limits" />
     <p id="upload-limits" className="field-note">PDF, DOCX, TXT or Markdown. Up to 25 MiB, 100 PDF pages. Text files must use UTF-8. Files stay private to this collection.</p>
@@ -91,28 +95,35 @@ function UploadForm({ collections, workspace }: { collections: Collection[]; wor
     </select>
     <p className="field-note">Pages with little native text use OCR and require review. Other file types ignore this setting.</p>
     <ErrorNotice error={action.error} />
-    <button className="primary-button" disabled={action.busy}>{action.busy ? "Uploading and queuing…" : "Upload document"}</button>
+    <button className="primary-button" disabled={action.busy}>{action.busy ? "Uploading and queuing…" : replacement ? "Upload replacement" : "Upload document"}</button>
   </form>;
 }
 
 function SourceViewer({ workspace, id, chunkId }: { workspace: Workspace; id: string; chunkId?: string }) {
-  const document = useResource<DocumentSource>(`/documents/${id}`);
+  const [sourceId, setSourceId] = useState("");
+  const [replacing, setReplacing] = useState(false);
+  const document = useResource<DocumentSource>(`/documents/${id}${sourceId ? `?sourceId=${sourceId}` : chunkId ? `?chunkId=${chunkId}` : ""}`);
   const action = useAction();
   const state = document.data?.state;
   const indexState = document.data?.index?.state;
   useEffect(() => {
+    if (replacing) return;
     if (!["QUEUED", "EXTRACTING"].includes(state ?? "") && !["QUEUED", "CHUNKING", "EMBEDDING"].includes(indexState ?? "")) return;
     const timer = setTimeout(document.reload, 2500);
     return () => clearTimeout(timer);
-  }, [state, indexState, document.data, document.reload]);
+  }, [state, indexState, document.data, document.reload, replacing]);
   return <section>
     <Link href={`/w/${workspace.id}/documents`}>← All documents</Link>
     <ErrorNotice error={document.error} retry={document.reload} />
     {!document.data && !document.error && <Loading>Opening the source…</Loading>}
     {document.data && <>
-      <p className="eyebrow">SOURCE VERSION 1</p>
+      <p className="eyebrow">SOURCE VERSION {document.data.sourceNumber}</p>
       <h1 className="source-title">{document.data.title}</h1>
       <p className="source-status" role="status">{states[document.data.state]}</p>
+      {document.data.currentSourceId && document.data.currentSourceId !== document.data.sourceId && <p className="source-warnings">A different version is currently searchable. <button onClick={() => setSourceId(document.data!.currentSourceId!)}>Open current searchable version</button></p>}
+      <DocumentLifecycle key={`lifecycle:${document.data.sourceId}`} document={document.data} workspace={workspace} selectSource={(value) => { setReplacing(false); setSourceId(value); }} reload={document.reload} />
+      {document.data.canWrite && <button onClick={() => setReplacing(!replacing)}>{replacing ? "Close replacement form" : "Replace source"}</button>}
+      {document.data.canWrite && replacing && <UploadForm collections={[]} workspace={workspace} replacement={document.data} onComplete={() => { setReplacing(false); setSourceId(""); document.reload(); }} />}
       {["EXTRACTED", "REVIEWED"].includes(document.data.state) && <IndexStatus document={document.data} reload={document.reload} />}
       <div className="source-actions">
         <a href={`/api/v1/sources/${document.data.sourceId}/original`} download>Download original</a>
@@ -133,7 +144,7 @@ function SourceViewer({ workspace, id, chunkId }: { workspace: Workspace; id: st
       {document.data.canWrite && ["PDF", "DOCX"].includes(document.data.kind) && document.data.state === "NEEDS_REVIEW" && <ReviewForm key={document.data.revision} document={document.data} onAccepted={document.reload} />}
       {["QUEUED", "EXTRACTING"].includes(document.data.state) && <p>Extraction runs in the background. This page refreshes automatically. Interrupted jobs recover automatically up to three times; retry becomes available after 90 seconds without an update.</p>}
       {document.data.state === "CANCELLED" && <p>Extraction was cancelled. The original file is preserved; retry to start a new attempt.</p>}
-      {["EXTRACTED", "NEEDS_REVIEW", "REVIEWED"].includes(document.data.state) && <SourceContent document={document.data} chunkId={chunkId} fullDocumentHref={`/w/${workspace.id}/documents/${id}`} />}
+      {["EXTRACTED", "NEEDS_REVIEW", "REVIEWED"].includes(document.data.state) && <SourceContent key={`content:${document.data.sourceId}`} document={document.data} chunkId={sourceId ? undefined : chunkId} fullDocumentHref={`/w/${workspace.id}/documents/${id}`} />}
     </>}
   </section>;
 }

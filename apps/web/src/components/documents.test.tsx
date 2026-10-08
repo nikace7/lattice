@@ -15,10 +15,10 @@ function openSource(kind: string, locator: SourceBlock["locator"], text: string,
     kind, byteSize: 10, sha256: "hash", state: "EXTRACTED", error: "", retryable: false,
     pageCount: 0, warnings: [], canWrite: true, createdAt: "2026-10-02T00:00:00Z",
     ocrLanguage: "eng", pageReports: [], excludedPages: [], reviewReason: "",
-    index: null,
+    index: null, sourceNumber: 1, currentSourceId: null,
     ...overrides,
   };
-  vi.mocked(api).mockImplementation(async (path) => path === "/documents/document" ? document : {
+  vi.mocked(api).mockImplementation(async (path) => path === "/documents/document/versions" ? { results: [], next: null, previous: null } : path.startsWith("/documents/document") ? document : {
     results: [{ id: "block", position: 0, text, originalText: text, locator, spanMap: [[0, text.length, 0, text.length]] }],
     next: null, previous: null,
   });
@@ -31,6 +31,32 @@ test("search passage opens only its source blocks and the matching physical PDF 
   expect(api).toHaveBeenCalledWith("/sources/source/blocks?chunkId=chunk", "GET", undefined, expect.any(AbortSignal));
   expect(screen.getByRole("img", { name: /Original page 3/ })).toHaveAttribute("src", "/api/v1/sources/source/pages/3");
   expect(screen.getByRole("link", { name: "Open the full document" })).toHaveAttribute("href", "/w/workspace/documents/document");
+});
+
+test("deletion requires a separate confirmation and uses the displayed revision", async () => {
+  openSource("TXT", { line: 1 }, "Retained text", { revision: 4 });
+  fireEvent.click(await screen.findByRole("button", { name: "Delete document" }));
+  expect(api).not.toHaveBeenCalledWith("/documents/document/delete", "POST", expect.anything());
+  fireEvent.click(screen.getByRole("button", { name: "Confirm permanent deletion" }));
+  await waitFor(() => expect(api).toHaveBeenCalledWith("/documents/document/delete", "POST", { expectedRevision: 4 }));
+});
+
+test("replacement preserves its submission identifier after a network failure", async () => {
+  openSource("TXT", { line: 1 }, "Old searchable text");
+  fireEvent.click(await screen.findByRole("button", { name: "Replace source" }));
+  fireEvent.change(screen.getByLabelText("Document file"), { target: { files: [new File(["New text"], "new.txt")] } });
+  const original = vi.mocked(api).getMockImplementation()!;
+  const submissions: FormData[] = [];
+  vi.mocked(api).mockImplementation(async (path, method, body, signal) => {
+    if (path.endsWith("/replace")) { submissions.push(body as FormData); throw new Error("Connection lost"); }
+    return original(path, method, body, signal);
+  });
+  fireEvent.submit(screen.getByRole("form", { name: "Replace document" }));
+  await screen.findByText("Connection lost");
+  fireEvent.submit(screen.getByRole("form", { name: "Replace document" }));
+  await waitFor(() => expect(submissions).toHaveLength(2));
+  expect(submissions[0].get("uploadId")).toBe(submissions[1].get("uploadId"));
+  expect(submissions[0].get("expectedRevision")).toBe("1");
 });
 
 test("Word source selection shows paragraph and cell references without page numbers", async () => {

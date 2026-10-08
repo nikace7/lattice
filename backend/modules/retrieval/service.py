@@ -14,11 +14,12 @@ from django.db.models import Case, F, Func, OuterRef, Q, Subquery, TextField, UU
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
 from django.db.models.functions import Cast, Coalesce
 from pgvector.django import CosineDistance
-from rest_framework.exceptions import APIException, PermissionDenied, ValidationError
+from rest_framework.exceptions import APIException, PermissionDenied, Throttled, ValidationError
 
 from config.api import Conflict
 from modules.documents.models import Chunk, IndexVersion, SourceBlock
 from modules.workspaces.access import locked_membership, readable_collections
+from modules.workspaces.models import Workspace
 from pipeline.chunking import InvalidIndex
 from pipeline.embedding import PROFILE, LocalEmbedder, model_directory, validate_vectors
 from pipeline.ranking import rank_hits
@@ -39,14 +40,25 @@ def query_model(root):
     return LocalEmbedder(model_directory(root))
 
 
-def embed_query(query):
+def embed_query(query, workspace_id):
     # ponytail: one CPU inference per API process; a dedicated model service if load warrants it.
     if not model_lock.acquire(blocking=False):
         raise SearchUnavailable("Semantic search is busy. Please retry shortly.")
     try:
-        vector = query_model(settings.MODEL_CACHE_ROOT).embed([query], query=True)
+        from modules.documents.lifecycle import reserve_embeddings
+
+        model = query_model(settings.MODEL_CACHE_ROOT)
+        tokens = len(model.tokenizer("query: " + query, add_special_tokens=True)["input_ids"])
+        if tokens > 512:
+            raise InvalidIndex("The search query exceeds 512 embedding tokens. Shorten it.")
+        with transaction.atomic():
+            workspace = Workspace.objects.select_for_update().get(pk=workspace_id)
+            reserve_embeddings(workspace, tokens)
+        vector = model.embed([query], query=True)
         validate_vectors(vector, 1)
         return vector[0]
+    except Throttled:
+        raise
     except InvalidIndex as error:
         raise ValidationError(str(error)) from error
     except Exception as error:
@@ -71,6 +83,8 @@ def corpus(user, workspace_id, data):
     indexes = IndexVersion.objects.filter(
         active=True,
         state="READY",
+        extraction__source__document__deleted_at__isnull=True,
+        extraction__source__purge_requested_at__isnull=True,
         extraction__source__document__collection_id__in=scope,
     )
     rows = list(indexes.order_by("id").values("id", "profile", "chunker", "chunk_count"))
@@ -155,7 +169,9 @@ def search(user, workspace_id, data):
     with transaction.atomic():
         member, scope, indexes = corpus(user, workspace_id, data)
         snapshot = digest([member.workspace.access_epoch, scope, indexes])
-    vector = embed_query(data["query"]) if indexes and data["mode"] != "KEYWORD" else None
+    vector = (
+        embed_query(data["query"], workspace_id) if indexes and data["mode"] != "KEYWORD" else None
+    )
     with transaction.atomic():
         member, scope, indexes = corpus(user, workspace_id, data)
         if digest([member.workspace.access_epoch, scope, indexes]) != snapshot:
@@ -167,7 +183,7 @@ def search(user, workspace_id, data):
         locations = {
             str(block.pk): block.locator
             for block in SourceBlock.objects.filter(
-                pk__in=block_ids, extraction__index__id__in=[row["id"] for row in indexes]
+                pk__in=block_ids, extraction__indexes__id__in=[row["id"] for row in indexes]
             )
         }
         for row in selected:

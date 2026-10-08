@@ -91,3 +91,14 @@ Five Ask UI tests cover IME composition, retry idempotency and preserved input,
 disabled generation with readable history, SSE refresh without new generation,
 whole-answer removal on citation denial, and Unicode highlights with inert markup.
 They run in jsdom, not against the live API, worker or model.
+
+
+R6: `test_purge_storage.py` runs without a database and checks journal replay,
+conflict rejection, bounded file removal and path escape refusal. Document UI tests
+also check explicit deletion confirmation/revision and replacement UUID retention
+after a network failure. Nine PostgreSQL tests in `test_document_lifecycle.py`
+cover replacement replay/supersession, old-version retention, all-at-once shadow
+activation, cancelled/failed batches, deletion denial, dependent answer scrubbing,
+tombstone restore replay, concurrent embedding reservations and interrupted purge.
+These tests are collected but not executed while Docker/PostgreSQL is deferred.
+Model/tokenizer doubles in integration tests establish contracts, not model quality.

@@ -52,10 +52,11 @@ On Linux, grant the host user and container UID 10001 access to the private spoo
 directory; do not expose it through the web server or make it world-writable.
 
 Uploads allow PDF, DOCX or UTF-8 TXT/Markdown, 25 MiB/file, 100 PDF pages, 2 million extracted
-characters and 20,000 blocks. Workspaces allow 500 sources and default to 2 GiB of
+characters and 20,000 blocks. Workspaces allow 500 documents and default to 2 GiB of
 original files (`MAX_WORKSPACE_STORAGE_BYTES`); previews and failed-attempt artifacts
 are additional disk usage. Encrypted PDFs are rejected. Scans/low-text pages need
-review. Each document has one immutable source; indexing remains pending.
+review. Documents retain immutable numbered sources; only one source/index is active
+for new searches. Retained originals count toward the storage quota.
 
 The first R3 slice adds `.docx` and `.md`. DOCX ZIP metadata is capped at 100 MiB
 expanded/10,000 entries; each parsed XML part is capped at 16 MiB. DTD/entities,
@@ -150,11 +151,12 @@ revision; another value fails configuration validation. Runtime checks the manif
 and file checksums, loads local safetensors with remote code disabled, and never
 downloads missing files or falls back to another provider.
 
-Open an extracted/reviewed source and select **Prepare search index**. In R3, one
-immutable index/profile belongs to each extraction. Choose LOCAL before initial
-indexing if semantic search is wanted: switching an existing index to another
-profile requires the R6 shadow-reindex feature. No existing environment mode is
-changed by setup. Ready indexes are available in Search. Generation remains future work.
+Open an extracted/reviewed source and select **Prepare search index**. Each index
+retains its immutable profile and extraction. Initial indexing chooses the configured
+mode; subsequent documents use the established workspace profile. Owners can change
+that profile through the R6 workspace reindex control. Setup preserves the environment
+mode. Ready indexes are available in Search; generation additionally requires LOCAL
+mode and prepared Qwen models.
 
 Chunks target 320 and cap at 384 E5 tokens, with up to 40 tokens of overlap within
 the same section. PDF pages and DOCX headings separate sections; TXT blank lines
@@ -184,7 +186,9 @@ most 100 expired jobs per run with fresh attempts, up to three recoveries. Manua
 retry resets that budget. Processing has a 20-minute cooperative deadline and a
 21-minute Celery hard limit on supported worker platforms. Use Linux workers for
 production process limits. Cancelled, completed and failed jobs are not auto-requeued.
-Partial artifact retention/cleanup remains part of R6.
+R6 purge removes all artifacts for tombstoned sources; orphan source/spool directories
+older than one hour are cleaned. Failed-attempt artifacts under a retained source
+remain until that source is purged.
 
 ### R4 search
 
@@ -222,7 +226,7 @@ must justify stored search vectors/GIN or filtered ANN indexes later.
 
 SearchRun retains only authorized IDs, ranks, scores, hashes, timing and effective
 scope, without questions or excerpts. There is no historical-results endpoint.
-Retention/purge of this metadata is future R6 work. Curator diagnostics are scoped
+This metadata remains as text-free audit evidence after source purge. Curator diagnostics are scoped
 to their readable collections; the role does not grant access to restricted sources.
 
 Development evaluation (run from the host repository root):
@@ -327,3 +331,60 @@ Dependency updates: use pnpm for JS and `uv add`/`uv lock` for Python, review bo
 lockfiles, then run `pnpm verify` and `pnpm test:e2e`. The Next.js lint CLI is run
 separately because [Next.js 16 builds do not run lint](https://nextjs.org/docs/app/api-reference/config/eslint).
 Python container dependencies use [uv's locked sync](https://docs.astral.sh/uv/concepts/projects/sync/).
+
+
+## R6 source lifecycle and restore procedure
+
+Apply the new workspace, document and conversation migrations only when resuming
+PostgreSQL validation. Restart API, ingestion/answer workers and beat together;
+old workers do not understand versioned source/index relations. Migration preserves
+an existing uniform active workspace profile. For legacy mixed profiles, use the
+owner workspace reindex control before semantic use.
+
+Document replacement is `POST /api/v1/documents/:id/replace` (multipart file,
+`uploadId`, `expectedRevision`, `ocrLanguage`). Extract, accept any warnings and
+prepare the new index through existing controls. The old active source stays
+searchable throughout. `GET /documents/:id/versions` is paginated;
+`GET /documents/:id?sourceId=...` inspects a retained version with current access.
+Search passage links resolve their active chunk's exact source, not the latest upload.
+
+Owner `POST /workspaces/:id/reindex` accepts `profile: E5` or `NONE`; GET reads its
+latest state and DELETE cancels a building batch. Every current searchable source
+is included. Finish pending replacements first. Concurrent initial indexing may
+change the active set and fail the batch safely; start a new batch after that work
+finishes. Failure retains the working profile. Previous indexes remain retained
+indefinitely; there is no automatic rollback-window expiry or index-only cleanup.
+Owner `PUT /workspaces/:id/quotas` sets lower limits using the four fields returned
+by GET. Storage measures original bytes across retained versions, not derived
+preview/vector disk usage. Monitor the storage volume separately. Embedding calls
+charge exact input counts (including prefix/special tokens) before dispatch;
+uncertain outcomes retain those counts. Daily accounting uses UTC.
+
+`POST /documents/:id/delete` requires current contribution rights and revision.
+`POST /documents/:id/versions/:sourceId/purge` requires an owner and accepts only
+inactive, non-latest versions. UI confirmation is explicit. Source access and
+stored dependent answers become unavailable immediately; a five-minute beat task
+purges at most 100 sources per batch. Retry failures and monitor oldest pending
+`purge_requested_at`; 24 hours is the operational target, not a verified SLA.
+Commands (not executed during Docker deferral):
+
+```sh
+uv run --project backend python backend/manage.py reconcile_jobs
+uv run --project backend python backend/manage.py purge_documents
+uv run --project backend python backend/manage.py purge_documents --reapply-tombstones
+```
+
+Deletion journals live in `STORAGE_ROOT/tombstones` and contain UUIDs only. Keep the
+current journal independently backed up; never replace it with an older snapshot.
+Take consistent database/source-storage backups with writes and workers stopped.
+Recommended deployment backup retention is 30 days; no backup job or retention
+policy is currently deployed, so operators must configure and verify expiry.
+For a restore, keep API/workers stopped, restore into empty database/storage,
+overlay the current tombstone journal, apply migrations, run
+`purge_documents --reapply-tombstones` repeatedly until the pending-source count is
+zero, then verify original checksums, citation resolution, active profiles and
+access restrictions before reopening traffic. A restored source that was purged
+while current in the older backup causes that restored document to be tombstoned.
+Never restore a backup without the current journal. Old backups and already
+exported/downloaded files may retain deleted text until their own retention expires.
+This procedure remains unexecuted; successful restore consistency is still an R6 gate.

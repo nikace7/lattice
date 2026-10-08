@@ -9,6 +9,11 @@ class Workspace(models.Model):
     name = models.CharField(max_length=120)
     access_epoch = models.PositiveIntegerField(default=1)
     revision = models.PositiveIntegerField(default=1)
+    index_profile = models.JSONField(default=dict)
+    daily_answers = models.PositiveIntegerField(default=100)
+    daily_embedding_tokens = models.PositiveIntegerField(default=500000)
+    storage_bytes = models.PositiveBigIntegerField(default=2147483648)
+    document_limit = models.PositiveIntegerField(default=500)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

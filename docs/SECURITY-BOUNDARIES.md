@@ -127,8 +127,8 @@ In LOCAL mode the private question worker sends authorized passages to that runt
 General logs contain neither prompts nor raw runtime exceptions. Durable reservations,
 usage, attempt fencing and cancellation prevent duplicate publication; ambiguous model
 calls retain estimated usage and are not automatically retried. Closing a connection
-does not guarantee that the runtime stopped computation. Retention/purge controls are
-R6 work. These R5 database boundaries have tests awaiting real PostgreSQL execution;
+does not guarantee that the runtime stopped computation. R6 retention/purge controls
+are implemented with integration verification deferred. These database boundaries have tests awaiting real PostgreSQL execution;
 live runtime and browser integration remain unverified while Docker is deferred.
 
 Compose is a local development configuration. PostgreSQL, Redis, mail and proxy
@@ -137,3 +137,24 @@ Before deploying, configure HTTPS, production settings/hosts, proxy trust, HSTS,
 CSP, database least privilege, authentication rate policy, upload isolation/limits,
 backups and retention. These controls depend on product and deployment work; the
 starter is not a production-ready multi-tenant RAG service.
+
+
+R6 replacements are immutable, revision-checked and attributed to their uploader;
+replays cannot recreate a journaled purged source ID. Workspace-serialized worker
+publication checks the latest desired source, current contributor rights, attempt
+and lease. Shadow profile activation additionally requires current owner rights
+and an unchanged active-index set. Old nondeleted sources remain permission-checked.
+
+Deletion journals are flushed before the database tombstone commits. If database
+commit fails afterward, restore replay deliberately fails closed. Purge file paths
+must resolve directly beneath the dedicated source root; symlink roots for a source
+are rejected. Parser artifact writes hold the same workspace lock and validate the
+attempt, preventing a cancelled parser result from recreating purged artifacts.
+Stale spool/orphan UUID directories are removed after one hour. Source tombstones
+and current permission checks hide dependent answers before the asynchronous scrub;
+answer bodies and citation quotes are removed together. User-authored questions,
+conversation titles, usage totals and minimal audit IDs remain. Independent copies
+of deleted text in user questions or other documents are not automatically detected.
+Current journals must accompany restores; backup retention and real restore testing
+remain operator responsibilities. These boundaries have not yet passed PostgreSQL
+or live browser/worker integration tests.
