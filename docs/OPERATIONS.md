@@ -421,3 +421,23 @@ while current in the older backup causes that restored document to be tombstoned
 Never restore a backup without the current journal. Old backups and already
 exported/downloaded files may retain deleted text until their own retention expires.
 This procedure remains unexecuted; successful restore consistency is still an R6 gate.
+
+## Disposable demo commands
+
+Follow [the demo guide](DEMO.md) to prepare ignored `.env.demo`, a separate
+`lattice-demo` Compose project and the reserved `lattice_demo` database. Host
+`pnpm demo:seed` imports only frozen fictional originals; Retry/review/index in
+the application later. There is no default account password and no automatic
+provider, email or extraction dispatch. Repeated seed preserves existing data.
+
+Stop API, workers, beat and parser before `pnpm demo:reset --confirm lattice_demo`.
+The command requires matching database/storage markers and refuses unrelated
+accounts/workspaces, running jobs, a nonempty spool and links/junctions. It removes
+only the marked demo's application data and dedicated source-storage content;
+the database itself, installation marker, model cache and Redis remain. Never
+use the demo for real documents. Interrupted operations keep a recovery state;
+fix the failure and repeat guarded reset before reseeding. Do not remove/forge a
+marker to bypass a refusal. A new seed uses new resource IDs.
+
+The new workspace migration is generated and drift-checked but unapplied. Demo
+PostgreSQL and container execution remain deferred alongside the full R8 gate.

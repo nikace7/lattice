@@ -131,3 +131,19 @@ The validation command uses no database/model. API tests check R8 gold excerpts
 and denominators; UI tests distinguish unmeasured abstention from retrieval misses.
 Generated contracts make `fullEvidence` nullable and include per-report definitions.
 The PostgreSQL owner test now also covers the R8 artifact; it remains unexecuted.
+
+R8 demo tooling: `test_demo_tools.py` has 14 DB-free checks for disabled mode,
+explicit target, password validation, database configuration, dedicated paths,
+matching markers, pending spool and link-safe cleanup preserving other storage.
+Ten PostgreSQL cases cover seed/reset/reseed, real collection grants, nonempty
+database, unmarked/mismatched targets, unrelated accounts/workspaces, active jobs
+and interrupted marker/seed/storage cleanup recovery. They replace only the
+environment guard's database-name query and use real ORM/SQL for data behavior.
+These ten cases are collected, not executed during Docker deferral.
+
+```sh
+uv run --project backend pytest backend -m "not django_db" -q
+```
+
+Compose demo configuration can be merged/checked without starting its engine.
+Configuration checks do not prove live mount isolation or ingestion behavior.

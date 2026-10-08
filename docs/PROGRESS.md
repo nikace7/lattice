@@ -28,7 +28,8 @@ reader are implemented; PostgreSQL/worker/browser and live model verification re
 pending. R6 lifecycle implementation is present with its PostgreSQL, worker, browser
 and restore acceptance gates deferred. R7 responsive reader and owner diagnostics
 are implemented. R8 frozen corpus, offline evaluation evidence and demo handoff are
-present; full-stack acceptance and remaining demo/database harness tooling stay open.
+present. Guarded demo tooling is implemented but unexecuted on PostgreSQL;
+full-stack acceptance and the database evaluation harness stay open.
 The ingestion worker handles recovery email and document
 extraction; the answers queue handles private questions in LOCAL mode.
 
@@ -488,5 +489,51 @@ parser/worker/OCR integration, live Qwen answers/citations/abstention/conflicts,
 human answer annotations, prior lifecycle/restore gates and fresh full-stack setup
 remain pending under Docker deferral. A database-backed frozen evaluation runner,
 guarded demo seed/reset and live recording still need implementation/verification.
+
+## 8 October 2026 — R8 guarded demo tooling
+
+Implemented on `codex/r8-demo-tools` after the offline evidence merge:
+
+- Added host `seed_demo` and `reset_demo`, exposed by `pnpm demo:seed` and
+  `pnpm demo:reset --confirm lattice_demo` using ignored `.env.demo`.
+- Added a private singleton installation marker with matching storage marker,
+  actual local database identity and fixed demo paths. First seed requires empty
+  application data/storage. Passwords are operator-supplied, validated and hashed;
+  fictional accounts use `.invalid` addresses and seeding dispatches no external work.
+- Imports 24 frozen fictional documents / 25 original source versions, four accounts,
+  two workspaces and the intended restricted grants. No canonical fixture extraction,
+  OCR reference, index or generated answer is imported as live evidence. Jobs are
+  cancelled and can be retried through the existing UI after workers are available.
+- Reset refuses mismatched markers, unrelated accounts/workspaces, active jobs,
+  pending parser requests and storage links/junctions. It retains the database and
+  installation marker, removes only disposable demo data/storage, and supports
+  interrupted operations. Fresh seed IDs fence messages from a previous demo run.
+- Added a Compose demo overlay with distinct project instructions and replacement
+  source-storage/parser mounts. Updated demo, operations, security and test guides.
+  Original blueprint, frozen labels/report, dependencies, `.env` and API contracts
+  are unchanged.
+
+Observed verification:
+
+- **89 DB-free backend tests + 1 Node setup test passed**. This includes 14 new
+  demo guard/filesystem cases. **171 backend tests collect**; ten new PostgreSQL
+  demo cases are unexecuted, along with the existing deferred database tests.
+- Ruff check and format, Django system check and Git whitespace checks passed.
+  Migration generation/drift check reports no model drift; database history check
+  timed out because the engine remains deferred. No migration was applied.
+- Docker Compose CLI configuration merge was validated without an engine, using
+  public `.env.example` and no env-file resolution. It selects `lattice_demo` and
+  replaces normal source/parser mounts with demo binds in all five backend services.
+  This is configuration evidence, not a running-container test.
+- Python reviewer findings about interrupted initial marker recovery and retained
+  normal parser mounts were fixed and re-reviewed with no remaining findings.
+
+Full R8 acceptance remains open. Real seeding/reset/cascades/recovery, live demo
+mounts, ingestion and PostgreSQL grants have not been exercised. API/workers/beat/
+parser must be stopped during reset, and all content inside marked demo workspaces
+and storage is disposable. Database-backed frozen keyword/vector/hybrid evaluation,
+human answer quality/citation/abstention/conflict evidence, lifecycle/restore gates,
+fresh setup and live recording still remain. Docker stays deferred at the user's
+request; the new tooling does not establish production erasure or full-stack success.
 Offline exact-span coverage does not establish generated citation validity, answer
 quality or production isolation. The authored short corpus is not a blind benchmark.
