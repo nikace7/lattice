@@ -21,6 +21,7 @@ def test_recorded_diagnostics_require_current_owner_membership(library):
     path = f"/api/v1/workspaces/{collection.workspace_id}/evaluations"
     assert client.get(path).status_code == 200
     assert client.get(path + "/r4-embedding-development").status_code == 200
+    assert client.get(path + "/r8-offline-semantic").status_code == 200
     assert client.get(path + "/unknown").status_code == 404
     client.force_login(reader)
     assert client.get(path).status_code == 403

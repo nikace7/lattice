@@ -1895,6 +1895,7 @@ components:
           type: string
         fullEvidence:
           type: boolean
+          nullable: true
         expected:
           type: array
           items:
@@ -1928,6 +1929,8 @@ components:
           format: double
         description:
           type: string
+        metricDefinition:
+          type: string
         rows:
           type: array
           items:
@@ -1942,6 +1945,7 @@ components:
       - description
       - elapsedSeconds
       - id
+      - metricDefinition
       - profile
       - rows
       - suite

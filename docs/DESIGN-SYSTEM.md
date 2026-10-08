@@ -30,6 +30,11 @@ to its citation button. Retained earlier sources carry an Older version label.
 
 Owner evaluations use comparison tables with definitions and denominators, then
 expected/retrieved evidence and the actual-answer state. Missing measurements stay
-explicitly unmeasured. Synthetic development diagnostics are separate from current
+explicitly unmeasured. Synthetic development/frozen diagnostics are separate from current
 workspace data. Browser checks with mocked API responses cover 360/768/1200/1440px,
 navigation, focus return, overflow and axe rules; this is not live backend acceptance.
+
+Each report supplies its own metric definitions: R4 uses document groups, R8 exact
+canonical spans/versions. Cases without permitted gold show Abstention not measured
+and do not appear in the incomplete-evidence filter. Demo screenshots identify their
+mocked answers/comparison data and are preserved in `docs/assets/r8`.

@@ -27,6 +27,22 @@ def test_report_id_is_an_allowlist_not_a_file_path():
         evaluation("../../.env")
 
 
+def test_frozen_report_resolves_exact_gold_and_excludes_unknown_abstention_from_rates():
+    report = evaluation("r8-offline-semantic")
+    assert len(report["cases"]) == 80
+    row = next(
+        row
+        for row in report["rows"]
+        if row["mode"] == "SEMANTIC / held-out" and row["language"] == "en"
+    )
+    assert row["questions"] == 30 and row["goldGroups"] == 38
+    assert "exact" in report["metricDefinition"]
+    case = report["cases"][0]
+    assert "six working days" in case["expected"][0]["text"]
+    assert "v2" in case["expected"][0]["title"]
+    assert report["cases"][25]["fullEvidence"] is None
+
+
 def test_mismatched_corpus_is_withheld():
     import json
     from pathlib import Path

@@ -1,0 +1,3 @@
+Cedar Studio encrypted backups are retained for eighteen days.
+Backup restoration tests happen on the second Tuesday of each month.
+Encrypted backups start at 02:30 each night.

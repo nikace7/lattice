@@ -256,13 +256,22 @@ evidence is canonical synthetic document text; the labels are document groups,
 not exact answer spans. Citation validity, human grounding, abstention, question
 latency and usage remain unmeasured. Total run duration includes model setup.
 
-The current reader ships one recorded offline semantic report; it is not a general
-report importer or the frozen R8 benchmark. To update it, deliberately rerun the
-above host command, review its JSON output and matching versioned corpus, then
-commit the artifact. The backend image copies only the synthetic evaluation folder
-from docs, plus the evaluation fixtures. Rebuild that image after changing the
-artifact; an existing image will retain its recorded report. Docker image builds
-remain unverified while Docker is deferred.
+R8 adds `/w/:workspaceId/evaluations/r8-offline-semantic`, a second fixed artifact
+with frozen source checksums and exact-span coverage. The reader distinguishes
+development/held-out splits, versioned gold quotes and ranked chunks. Questions
+without gold are labelled abstention unmeasured and excluded from the incomplete
+evidence filter and answerable-rate denominators. The API validates every returned
+chunk's text/span/version provenance and fixture scope, and recomputes recorded
+metrics. This simulation does not validate the application's permission resolver.
+See [R8 evidence](evaluations/R8.md) for reproduction, observed counts and limits.
+
+These are fixed committed artifacts, not a general report importer or run launcher.
+To update one, deliberately rerun its host command, review JSON and its versioned
+corpus, then commit the new evidence. The backend image copies only the synthetic
+evaluation folder from docs, evaluation fixtures and the frozen R8 source files.
+Rebuild after artifact changes; existing images retain their prior report. Docker
+image builds remain unverified while Docker is deferred. Demo seeding/reset and the
+database-backed frozen evaluation harness still need implementation/verification.
 
 `GET /api/v1/workspaces/:id/document-status` counts only currently readable,
 nondeleted documents. Searchable and processing counts can overlap while a

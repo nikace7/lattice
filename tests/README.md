@@ -120,3 +120,14 @@ pnpm --filter @lattice/web exec playwright test --config playwright.reader.confi
 
 This config starts only Next.js on port 4413; API/model/backend behavior is mocked.
 The normal `pnpm test:e2e` still requires the real PostgreSQL test server.
+
+R8: `test_frozen_evaluation.py` validates the frozen 24-document / 80-case suite,
+source checksums, gold quotes/versions/scopes and split boundaries. It reproduces
+all 24 native file text/locators and checks that the scanned PDF has a raster and
+no native text; it does not invoke Tesseract. Span scoring rejects partial/wrong
+versions and excludes no-gold questions from answerable metrics. Checked-in E5
+results must recompute exactly; changed metrics/out-of-scope hits are rejected.
+The validation command uses no database/model. API tests check R8 gold excerpts
+and denominators; UI tests distinguish unmeasured abstention from retrieval misses.
+Generated contracts make `fullEvidence` nullable and include per-report definitions.
+The PostgreSQL owner test now also covers the R8 artifact; it remains unexecuted.
