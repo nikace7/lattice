@@ -13,7 +13,7 @@ Focus is a 3px green outline with white separation. No animation is needed yet.
 The workspace follows a quiet reading-room direction: collection navigation on
 the left, the working list in the center, details and permissions on the right.
 Sign-in and the workspace chooser share the same typography and restrained colors.
-Small screens use a collapsible navigation rail and stack collection details.
+Small screens use a native modal navigation drawer and stack collection details.
 
 Forms have visible labels, native controls, error announcements and preserved input
 on failure. Loading and empty states distinguish missing data from errors. Controls
@@ -21,5 +21,15 @@ have visible keyboard focus and 44px targets. Playwright checks overflow and axe
 rules at 360/768/1440px. The R2 source reader pairs extracted passages with physical
 PDF page images and evidence-colored location highlights. Below 1100px, native
 buttons switch between text and source; returning restores the selected passage's
-focus. TXT passages preserve Unicode and original line numbers. Citation navigation
-from answers and an IME-aware composer remain future work.
+focus. TXT passages preserve Unicode and original line numbers. Answers support an
+IME-aware composer and exact source citations. At 1100px and above, an accessible
+range control adjusts the source panel width between 320 and 480px, clamped to
+available space; the browser remembers the preference when storage is available.
+Below 1100px, a citation opens a separate source view. Back/Escape restores focus
+to its citation button. Retained earlier sources carry an Older version label.
+
+Owner evaluations use comparison tables with definitions and denominators, then
+expected/retrieved evidence and the actual-answer state. Missing measurements stay
+explicitly unmeasured. Synthetic development diagnostics are separate from current
+workspace data. Browser checks with mocked API responses cover 360/768/1200/1440px,
+navigation, focus return, overflow and axe rules; this is not live backend acceptance.

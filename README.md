@@ -10,7 +10,9 @@ ranking details. R5 adds private conversations, durable answer jobs, validated a
 delivery, cancellation and a citation reader. Generation requires explicitly prepared
 local Qwen models and `RAG_MODE=LOCAL`; the default remains retrieval-only.
 R6 adds retained source versions, staged workspace reindexing, deletion/purge and
-owner-controlled quotas. Live Qwen generation and R2–R6 database/worker/browser integration validation remain
+owner-controlled quotas. R7 adds responsive reader controls, accessible mobile navigation,
+scoped document status and owner diagnostics for recorded synthetic evaluations.
+Live Qwen generation and R2–R7 database/worker/browser integration validation remain
 deferred while Docker is skipped.
 The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
 observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).

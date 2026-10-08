@@ -11,4 +11,5 @@
 .data
 **/test-results
 **/playwright-report
-docs
+docs/*
+!docs/evaluations

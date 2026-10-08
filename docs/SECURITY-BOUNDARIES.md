@@ -158,3 +158,17 @@ of deleted text in user questions or other documents are not automatically detec
 Current journals must accompany restores; backup retention and real restore testing
 remain operator responsibilities. These boundaries have not yet passed PostgreSQL
 or live browser/worker integration tests.
+## R7 diagnostics boundary
+
+Recorded evaluations require active owner membership and use a fixed artifact ID,
+not a caller-provided filesystem path. Only checked-in synthetic corpus/report data
+is exposed; the view neither exports workspace documents nor invokes a provider.
+The report must match the versioned corpus hash. Failure inspection renders text
+as inert React content. Scoped document status reuses the source API’s readable
+document resolver, so inaccessible collections contribute no counts.
+
+Source citation reads retain R5/R6 access checks and add server-derived source
+number/older-version metadata. Browser preference storage contains only panel
+width. Frontend Chromium/axe checks use mocked APIs and do not establish live
+authorization, database isolation or model-grounding correctness. The new real
+membership/status tests are collected but remain unexecuted without PostgreSQL.

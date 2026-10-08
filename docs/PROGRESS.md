@@ -403,3 +403,41 @@ migration drift, relation SQL compilation and Celery task discovery passed. All
 R6 is not acceptance-complete: migrations have not been applied, and the PostgreSQL race,
 restore and real worker/browser checks remain deferred with Docker. No real model
 quality or production-erasure guarantee is claimed.
+
+## 8 October 2026 — R7 reader and recorded evaluation implementation
+
+- Completed the responsive answer/source reader with an accessible width control,
+  bounded panel layout and optional browser preference. Below 1100px the source
+  replaces the answer view; Back/Escape restores focus to the invoking citation.
+  Citation reads now include server-derived version numbers and Older version
+  labels. Existing exact Unicode highlights, PDF outlines and access denial remain.
+- Replaced the mobile rail toggle with a native modal drawer, including focus
+  containment/return and Escape. Added owner evaluation navigation and validated
+  list/detail routes. Removed outdated pre-answer capability copy and made empty
+  collection actions appropriate to the caller’s role.
+- Added a scoped document-status query for Ask, counting accessible/searchable
+  documents and newest-source processing. Searchable and processing may overlap
+  for replacements; the screen shows an opening/retry snapshot.
+- Added owner-only recorded evaluation comparison and case inspection. The existing
+  R4 synthetic report is matched to its corpus hash; metrics are recomputed from
+  recorded cases, with definitions/denominators and model/backend versions. Failures
+  show expected and ranked retrieved canonical document text. Answer, citation,
+  human-grounding, abstention, question latency and token measurements stay explicitly
+  unmeasured. No new model-quality result or workspace evaluation is claimed.
+- Included synthetic artifacts in the backend image context and updated generated
+  API contracts. No dependencies, migration or `.env` changes were introduced.
+  Optional cloud adapters/provider settings remain unimplemented; R7 uses the local
+  profile. Docker image rebuilds have not been run.
+
+Verified locally: 59 database-free backend tests, 24 web tests, one setup test and
+four Chromium browser cases (88 total), plus production build, TypeScript, ESLint,
+Ruff lint/format, Django checks and warning-free OpenAPI generation. Browser cases
+use mocked APIs and cover 360/768/1200/1440px: citation highlights, focus return,
+modal navigation, remembered panel size, evaluation list/detail/failure selection,
+overflow and axe rules. Screenshots are local test artifacts. All 133 backend tests
+collect, including two new unexecuted PostgreSQL membership/status tests.
+
+R7 implementation is present; local API/worker/model end-to-end acceptance remains
+open along with prior database/migration/restore gates. Docker/PostgreSQL remain
+deferred at the user’s request. R8 frozen evaluation, actual end-to-end evidence,
+fresh setup and portfolio handoff remain pending.

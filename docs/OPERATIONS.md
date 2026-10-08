@@ -246,6 +246,30 @@ keyword/semantic/hybrid over the same temporary corpus. All model inference happ
 before the temporary DB transaction. The observed offline report is in
 `docs/evaluations/r4-embedding-development.json`; PostgreSQL results remain pending.
 
+R7 exposes this recorded synthetic development artifact to workspace owners at
+`/w/:workspaceId/evaluations` and `/w/:workspaceId/evaluations/r4-embedding-development`.
+The authenticated API uses the corresponding `/api/v1/workspaces/:id/evaluations`
+routes. It checks active owner membership before reading fixed allowlisted files,
+verifies the corpus/suite hash and recomputes comparisons from the recorded cases.
+It does not read workspace documents or start inference. Expected and retrieved
+evidence is canonical synthetic document text; the labels are document groups,
+not exact answer spans. Citation validity, human grounding, abstention, question
+latency and usage remain unmeasured. Total run duration includes model setup.
+
+The current reader ships one recorded offline semantic report; it is not a general
+report importer or the frozen R8 benchmark. To update it, deliberately rerun the
+above host command, review its JSON output and matching versioned corpus, then
+commit the artifact. The backend image copies only the synthetic evaluation folder
+from docs, plus the evaluation fixtures. Rebuild that image after changing the
+artifact; an existing image will retain its recorded report. Docker image builds
+remain unverified while Docker is deferred.
+
+`GET /api/v1/workspaces/:id/document-status` counts only currently readable,
+nondeleted documents. Searchable and processing counts can overlap while a
+replacement keeps its old active index. Processing concerns the newest source’s
+queued extraction or running index. The Ask screen refreshes these counts when
+opened or retried; they are a snapshot, not a live processing monitor.
+
 Optional Ollama: `docker compose --profile local-models up -d ollama`. The service
 has no published host port and no preinstalled models. Docker work is currently
 deferred. There is no automatic cloud or fixture fallback.

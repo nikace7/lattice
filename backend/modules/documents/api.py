@@ -5,7 +5,7 @@ from pathlib import Path, PurePosixPath
 
 from django.conf import settings
 from django.db import IntegrityError, transaction
-from django.db.models import Sum
+from django.db.models import Count, Exists, OuterRef, Q, Subquery, Sum
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -33,7 +33,7 @@ from .models import (
     SourceBlock,
     SourceVersion,
 )
-from .serializers import BlockData, DocumentData, ReviewInput, UploadInput
+from .serializers import BlockData, DocumentData, DocumentStatusData, ReviewInput, UploadInput
 from .storage import source_directory, source_path
 from .tasks import enqueue
 
@@ -68,6 +68,37 @@ class DocumentsView(generics.ListAPIView):
             except ValueError as error:
                 raise ValidationError("Choose a valid collection.") from error
         return queryset
+
+
+class DocumentStatusView(APIView):
+    @extend_schema(responses=DocumentStatusData)
+    def get(self, request, workspace_id):
+        membership_for(request.user, workspace_id)
+        documents = readable_documents(request.user).filter(collection__workspace_id=workspace_id)
+        latest = SourceVersion.objects.filter(document_id=OuterRef("pk")).order_by("-number")
+        indexes = IndexVersion.objects.filter(extraction__source__document_id=OuterRef("pk"))
+        documents = documents.annotate(
+            current_source=Subquery(latest.values("pk")[:1]),
+            searchable=Exists(indexes.filter(active=True, state="READY")),
+        ).annotate(
+            processing=Exists(
+                ExtractionJob.objects.filter(
+                    source_id=OuterRef("current_source"), state__in=["QUEUED", "EXTRACTING"]
+                )
+            )
+            | Exists(
+                indexes.filter(extraction__source_id=OuterRef("current_source"), state__in=RUNNING)
+            )
+        )
+        return Response(
+            DocumentStatusData(
+                documents.aggregate(
+                    total=Count("pk"),
+                    ready=Count("pk", filter=Q(searchable=True)),
+                    processing=Count("pk", filter=Q(processing=True)),
+                )
+            ).data
+        )
 
 
 class UploadView(APIView):

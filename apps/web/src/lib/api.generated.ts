@@ -564,6 +564,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{workspace_id}/document-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_workspaces_document_status_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/workspaces/{workspace_id}/documents": {
         parameters: {
             query?: never;
@@ -572,6 +588,38 @@ export interface paths {
             cookie?: never;
         };
         get: operations["api_v1_workspaces_documents_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspace_id}/evaluations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_workspaces_evaluations_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspace_id}/evaluations/{report_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_workspaces_evaluations_retrieve"];
         put?: never;
         post?: never;
         delete?: never;
@@ -819,9 +867,53 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
         };
+        DocumentStatusData: {
+            total: number;
+            ready: number;
+            processing: number;
+        };
         EmailInputRequest: {
             /** Format: email */
             email: string;
+        };
+        EvaluationCaseData: {
+            id: string;
+            mode: string;
+            language: string;
+            query: string;
+            fullEvidence: boolean;
+            expected: components["schemas"]["EvaluationDocumentData"][];
+            retrieved: components["schemas"]["EvaluationDocumentData"][];
+        };
+        EvaluationData: {
+            id: string;
+            suite: string;
+            suiteHash: string;
+            profile: unknown;
+            backend: string;
+            /** Format: double */
+            elapsedSeconds: number;
+            description: string;
+            rows: components["schemas"]["EvaluationRowData"][];
+            cases: components["schemas"]["EvaluationCaseData"][];
+        };
+        EvaluationDocumentData: {
+            id: string;
+            title: string;
+            text: string;
+        };
+        EvaluationRowData: {
+            mode: string;
+            language: string;
+            questions: number;
+            goldGroupsFound: number;
+            goldGroups: number;
+            /** Format: double */
+            evidenceRecallAt8: number;
+            anyHitQuestions: number;
+            fullEvidenceQuestions: number;
+            /** Format: double */
+            meanReciprocalRank: number;
         };
         GrantData: {
             /** Format: uuid */
@@ -1196,6 +1288,8 @@ export interface components {
             chunkEnd: number;
             spans: components["schemas"]["SourceQuoteSpanData"][];
             kind: string;
+            sourceNumber: number;
+            olderVersion: boolean;
         };
         SourceQuoteSpanData: {
             /** Format: uuid */
@@ -2250,6 +2344,27 @@ export interface operations {
             };
         };
     };
+    api_v1_workspaces_document_status_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentStatusData"];
+                };
+            };
+        };
+    };
     api_v1_workspaces_documents_list: {
         parameters: {
             query?: {
@@ -2272,6 +2387,49 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PaginatedDocumentDataList"];
+                };
+            };
+        };
+    };
+    api_v1_workspaces_evaluations_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvaluationData"][];
+                };
+            };
+        };
+    };
+    api_v1_workspaces_evaluations_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                report_id: string;
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvaluationData"];
                 };
             };
         };

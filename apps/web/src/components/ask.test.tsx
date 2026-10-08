@@ -20,6 +20,7 @@ test("question retry preserves the intent and draft, and Nepali composition does
       return completed;
     }
     if (path.endsWith("answer-capabilities")) return { enabled: true, message: "Fresh sources" };
+    if (path.endsWith("document-status")) return { total: 0, ready: 0, processing: 0 };
     return { results: [], next: null, previous: null };
   });
   render(<Ask workspace={workspace} />);
@@ -40,11 +41,13 @@ test("question retry preserves the intent and draft, and Nepali composition does
 });
 
 test("retrieval-only mode disables generation without hiding conversation access", async () => {
-  vi.mocked(api).mockImplementation(async (path) => path.endsWith("answer-capabilities") ? { enabled: false, message: "Generation unavailable" } : { results: [], next: null, previous: null });
+  vi.mocked(api).mockImplementation(async (path) => path.endsWith("answer-capabilities") ? { enabled: false, message: "Generation unavailable" } : path.endsWith("document-status") ? { total: 0, ready: 0, processing: 0 } : { results: [], next: null, previous: null });
   render(<Ask workspace={{ ...workspace, role: "VIEWER" }} />);
   await screen.findByText("Generation unavailable");
   expect(screen.getByRole("button", { name: "Ask question" })).toBeDisabled();
   expect(screen.getByRole("region", { name: "Your private conversations" })).toBeInTheDocument();
+  expect(await screen.findByRole("link", { name: "Choose a collection" })).toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: "Add documents" })).not.toBeInTheDocument();
 });
 
 test("SSE attaches with GETs and only displays a validated completed answer", async () => {
@@ -74,7 +77,7 @@ test("source denial removes the whole displayed answer", async () => {
 });
 
 test("citation text uses Unicode code-point offsets and keeps source HTML inert", async () => {
-  const source: SourceQuote = { ...citation, kind: "TXT", quote: "cafe\u0301", spans: [{ blockId: "block", text: "😀 cafe\u0301 नेपाली <script>no</script>", start: 2, end: 7, location: { line: 2 } }] };
+  const source: SourceQuote = { ...citation, sourceNumber: 1, olderVersion: false, kind: "TXT", quote: "cafe\u0301", spans: [{ blockId: "block", text: "😀 cafe\u0301 नेपाली <script>no</script>", start: 2, end: 7, location: { line: 2 } }] };
   vi.mocked(api).mockResolvedValue(source);
   const close = vi.fn();
   const { container } = render(<CitationReader turnId="turn" block={0} index={0} close={close} unavailable={vi.fn()} />);
@@ -83,4 +86,14 @@ test("citation text uses Unicode code-point offsets and keeps source HTML inert"
   expect(container.querySelector("script")).toBeNull();
   fireEvent.keyDown(screen.getByRole("complementary", { name: "Cited source" }), { key: "Escape" });
   expect(close).toHaveBeenCalled();
+});
+
+test("older-version citation is labelled and closing restores its invoking button", async () => {
+  vi.mocked(api).mockResolvedValue({ ...citation, sourceNumber: 1, olderVersion: true, kind: "TXT", spans: [{ blockId: "block", text: "five days", start: 0, end: 9, location: { line: 1 } }] });
+  render(<TurnCard initial={completed} workspace={workspace} enabled={false} onSettled={vi.fn()} />);
+  const button = screen.getByRole("button", { name: "Inspect source 1.1: Leave policy" });
+  fireEvent.click(button);
+  await screen.findByText("Older version");
+  fireEvent.click(screen.getByRole("button", { name: "Back to answer" }));
+  await waitFor(() => expect(button).toHaveFocus());
 });

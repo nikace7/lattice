@@ -24,7 +24,7 @@ test("sign-in presents available capabilities honestly and preserves input on fa
     await screen.findByRole("heading", { name: "Welcome back" }),
   ).toBeInTheDocument();
   expect(
-    screen.getByText(/Search indexed documents.*Cited answers are coming next/),
+    screen.getByText(/Search indexed documents.*Ask questions with verified source passages/),
   ).toBeInTheDocument();
   fireEvent.change(screen.getByLabelText("Username"), {
     target: { value: "reader" },

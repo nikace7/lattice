@@ -318,4 +318,11 @@ def citation_data(user, turn_id, block_index, citation_index):
                     "location": block.locator,
                 }
             )
-        return {**cite, "kind": chunk.index.extraction.source.kind, "spans": spans}
+        source = chunk.index.extraction.source
+        return {
+            **cite,
+            "kind": source.kind,
+            "sourceNumber": source.number,
+            "olderVersion": source.document.versions.filter(number__gt=source.number).exists(),
+            "spans": spans,
+        }

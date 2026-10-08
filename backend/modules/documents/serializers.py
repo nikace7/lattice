@@ -6,6 +6,12 @@ from modules.workspaces.access import can_write, membership_for
 from .models import Document, IndexVersion, SourceBlock
 
 
+class DocumentStatusData(serializers.Serializer):
+    total = serializers.IntegerField()
+    ready = serializers.IntegerField()
+    processing = serializers.IntegerField()
+
+
 class IndexData(serializers.ModelSerializer):
     chunkCount = serializers.IntegerField(source="chunk_count")
     canRetry = serializers.BooleanField(source="can_retry")
