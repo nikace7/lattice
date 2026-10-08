@@ -460,6 +460,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/DocumentData'
           description: ''
+  /api/v1/documents/{document_id}/delete:
+    post:
+      operationId: api_v1_documents_delete_create
+      parameters:
+      - in: path
+        name: document_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevisionInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RevisionInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RevisionInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/documents/{document_id}/index:
     post:
       operationId: api_v1_documents_index_create
@@ -487,6 +516,39 @@ paths:
       security:
       - cookieAuth: []
       responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentData'
+          description: ''
+  /api/v1/documents/{document_id}/replace:
+    post:
+      operationId: api_v1_documents_replace_create
+      parameters:
+      - in: path
+        name: document_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReplacementInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentData'
+          description: ''
         '200':
           content:
             application/json:
@@ -526,6 +588,62 @@ paths:
               schema:
                 $ref: '#/components/schemas/DocumentData'
           description: ''
+  /api/v1/documents/{document_id}/versions:
+    get:
+      operationId: api_v1_documents_versions_retrieve
+      parameters:
+      - in: path
+        name: document_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionData'
+          description: ''
+  /api/v1/documents/{document_id}/versions/{source_id}/purge:
+    post:
+      operationId: api_v1_documents_versions_purge_create
+      parameters:
+      - in: path
+        name: document_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: source_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevisionInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RevisionInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RevisionInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/invitations/{invitation_id}:
     delete:
       operationId: api_v1_invitations_destroy
@@ -1185,6 +1303,128 @@ paths:
               schema:
                 $ref: '#/components/schemas/TurnData'
           description: ''
+  /api/v1/workspaces/{workspace_id}/quotas:
+    get:
+      operationId: api_v1_workspaces_quotas_retrieve
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quotas'
+          description: ''
+    put:
+      operationId: api_v1_workspaces_quotas_update
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuotasRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuotasRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuotasRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quotas'
+          description: ''
+  /api/v1/workspaces/{workspace_id}/reindex:
+    get:
+      operationId: api_v1_workspaces_reindex_retrieve
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReindexData'
+          description: ''
+    post:
+      operationId: api_v1_workspaces_reindex_create
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReindexInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReindexInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReindexInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReindexData'
+          description: ''
+    delete:
+      operationId: api_v1_workspaces_reindex_destroy
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/workspaces/{workspace_id}/search:
     post:
       operationId: api_v1_workspaces_search_create
@@ -1457,6 +1697,12 @@ components:
     DocumentData:
       type: object
       properties:
+        sourceNumber:
+          type: integer
+        currentSourceId:
+          type: string
+          nullable: true
+          readOnly: true
         index:
           allOf:
           - $ref: '#/components/schemas/IndexData'
@@ -1525,6 +1771,7 @@ components:
       - canWrite
       - collectionId
       - createdAt
+      - currentSourceId
       - error
       - excludedPages
       - id
@@ -1538,6 +1785,7 @@ components:
       - revision
       - sha256
       - sourceId
+      - sourceNumber
       - state
       - title
       - warnings
@@ -1597,7 +1845,7 @@ components:
       properties:
         state:
           allOf:
-          - $ref: '#/components/schemas/StateEnum'
+          - $ref: '#/components/schemas/IndexDataStateEnum'
           readOnly: true
         active:
           type: boolean
@@ -1619,6 +1867,22 @@ components:
       - error
       - semantic
       - state
+    IndexDataStateEnum:
+      enum:
+      - QUEUED
+      - CHUNKING
+      - EMBEDDING
+      - READY
+      - FAILED
+      - CANCELLED
+      type: string
+      description: |-
+        * `QUEUED` - Queued
+        * `CHUNKING` - Chunking
+        * `EMBEDDING` - Embedding
+        * `READY` - Ready
+        * `FAILED` - Failed
+        * `CANCELLED` - Cancelled
     InvitationData:
       type: object
       properties:
@@ -1916,6 +2180,14 @@ components:
           type: string
           minLength: 1
           maxLength: 120
+    ProfileEnum:
+      enum:
+      - E5
+      - NONE
+      type: string
+      description: |-
+        * `E5` - E5
+        * `NONE` - NONE
     QuestionInputRequest:
       type: object
       properties:
@@ -1942,6 +2214,56 @@ components:
       - conversationId
       - idempotencyKey
       - question
+    Quotas:
+      type: object
+      properties:
+        daily_answers:
+          type: integer
+          maximum: 100
+          minimum: 0
+        daily_embedding_tokens:
+          type: integer
+          maximum: 500000
+          minimum: 0
+        storage_bytes:
+          type: integer
+          maximum: 2147483648
+          minimum: 0
+          format: int64
+        document_limit:
+          type: integer
+          maximum: 500
+          minimum: 0
+      required:
+      - daily_answers
+      - daily_embedding_tokens
+      - document_limit
+      - storage_bytes
+    QuotasRequest:
+      type: object
+      properties:
+        daily_answers:
+          type: integer
+          maximum: 100
+          minimum: 0
+        daily_embedding_tokens:
+          type: integer
+          maximum: 500000
+          minimum: 0
+        storage_bytes:
+          type: integer
+          maximum: 2147483648
+          minimum: 0
+          format: int64
+        document_limit:
+          type: integer
+          maximum: 500
+          minimum: 0
+      required:
+      - daily_answers
+      - daily_embedding_tokens
+      - document_limit
+      - storage_bytes
     RankedHitData:
       type: object
       properties:
@@ -2014,6 +2336,62 @@ components:
       - email
       - password
       - username
+    ReindexData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        state:
+          allOf:
+          - $ref: '#/components/schemas/ReindexDataStateEnum'
+          readOnly: true
+        profile:
+          readOnly: true
+      required:
+      - id
+      - profile
+      - state
+    ReindexDataStateEnum:
+      enum:
+      - BUILDING
+      - READY
+      - FAILED
+      - CANCELLED
+      type: string
+      description: |-
+        * `BUILDING` - Building
+        * `READY` - Ready
+        * `FAILED` - Failed
+        * `CANCELLED` - Cancelled
+    ReindexInputRequest:
+      type: object
+      properties:
+        profile:
+          $ref: '#/components/schemas/ProfileEnum'
+      required:
+      - profile
+    ReplacementInputRequest:
+      type: object
+      properties:
+        uploadId:
+          type: string
+          format: uuid
+        file:
+          type: string
+          format: binary
+        ocrLanguage:
+          allOf:
+          - $ref: '#/components/schemas/OcrLanguageEnum'
+          default: eng
+        expectedRevision:
+          type: integer
+          minimum: 1
+      required:
+      - expectedRevision
+      - file
+      - uploadId
     ResetInputRequest:
       type: object
       properties:
@@ -2272,22 +2650,6 @@ components:
       - location
       - start
       - text
-    StateEnum:
-      enum:
-      - QUEUED
-      - CHUNKING
-      - EMBEDDING
-      - READY
-      - FAILED
-      - CANCELLED
-      type: string
-      description: |-
-        * `QUEUED` - Queued
-        * `CHUNKING` - Chunking
-        * `EMBEDDING` - Embedding
-        * `READY` - Ready
-        * `FAILED` - Failed
-        * `CANCELLED` - Cancelled
     TokenInputRequest:
       type: object
       properties:
@@ -2367,6 +2729,26 @@ components:
       required:
       - id
       - username
+    VersionData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: integer
+        filename:
+          type: string
+        current:
+          type: boolean
+        pending:
+          type: boolean
+      required:
+      - current
+      - filename
+      - id
+      - number
+      - pending
     WorkspaceCreateRequest:
       type: object
       properties:

@@ -60,18 +60,33 @@ def test_postgres_query_compilation_keeps_scope_and_parameters_before_top_k():
 
 
 def test_query_model_errors_release_capacity_and_reject_bad_vectors():
-    from rest_framework.exceptions import ValidationError
+    from contextlib import nullcontext
+
+    from rest_framework.exceptions import Throttled, ValidationError
 
     from modules.retrieval import service
 
-    with patch.object(service, "query_model") as model:
+    with (
+        patch.object(service, "query_model") as model,
+        patch.object(service.transaction, "atomic", return_value=nullcontext()),
+        patch.object(service.Workspace, "objects") as workspaces,
+        patch("modules.documents.lifecycle.reserve_embeddings") as reserve,
+    ):
+        model.return_value.tokenizer.return_value = {"input_ids": [1, 2, 3]}
         model.return_value.embed.return_value = [[1.0, 0.0]]
         with pytest.raises(ValidationError):
-            service.embed_query("question")
+            service.embed_query("question", "workspace")
         assert not service.model_lock.locked()
         model.return_value.embed.return_value = [[1.0] + [0.0] * 383]
-        assert len(service.embed_query("question")) == 384
+        assert len(service.embed_query("question", "workspace")) == 384
         model.return_value.embed.assert_called_with(["question"], query=True)
+        reserve.assert_called_with(workspaces.select_for_update.return_value.get.return_value, 3)
+        model.return_value.embed.reset_mock()
+        reserve.side_effect = Throttled(detail="Budget exhausted")
+        with pytest.raises(Throttled):
+            service.embed_query("question", "workspace")
+        assert not service.model_lock.locked()
+        model.return_value.embed.assert_not_called()
 
 
 def test_evaluation_counts_evidence_groups_and_missing_results():

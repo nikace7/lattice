@@ -26,6 +26,10 @@ class UploadInput(serializers.Serializer):
     ocrLanguage = serializers.ChoiceField(choices=["eng", "nep", "eng+nep"], default="eng")
 
 
+class ReplacementInput(UploadInput):
+    expectedRevision = serializers.IntegerField(min_value=1)
+
+
 class ReviewInput(serializers.Serializer):
     expectedRevision = serializers.IntegerField(min_value=1)
     excludedPages = serializers.ListField(
@@ -40,6 +44,8 @@ class ReviewInput(serializers.Serializer):
 
 
 class DocumentData(serializers.ModelSerializer):
+    sourceNumber = serializers.IntegerField(source="source.number")
+    currentSourceId = serializers.SerializerMethodField()
     index = serializers.SerializerMethodField()
     collectionId = serializers.UUIDField(source="collection_id")
     sourceId = serializers.UUIDField(source="source.id")
@@ -58,9 +64,15 @@ class DocumentData(serializers.ModelSerializer):
     canWrite = serializers.SerializerMethodField()
     createdAt = serializers.DateTimeField(source="created_at")
 
+    def to_representation(self, instance):
+        instance._source = instance.source
+        return super().to_representation(instance)
+
     class Meta:
         model = Document
         fields = [
+            "sourceNumber",
+            "currentSourceId",
             "index",
             "id",
             "title",
@@ -84,10 +96,21 @@ class DocumentData(serializers.ModelSerializer):
         ]
         read_only_fields = fields
 
+    def get_currentSourceId(self, obj) -> str | None:
+        index = IndexVersion.objects.filter(extraction__source__document=obj, active=True).first()
+        return str(index.extraction.source_id) if index else None
+
     @extend_schema_field(IndexData(allow_null=True))
     def get_index(self, obj):
         extraction = getattr(obj.source, "extraction", None)
-        index = getattr(extraction, "index", None)
+        index = (
+            (
+                extraction.indexes.filter(active=True).first()
+                or extraction.indexes.filter(reindex__isnull=True).order_by("-created_at").first()
+            )
+            if extraction
+            else None
+        )
         return IndexData(index).data if index else None
 
     def get_pageCount(self, obj) -> int:
@@ -106,7 +129,7 @@ class DocumentData(serializers.ModelSerializer):
         return obj.source.extraction.review_reason if hasattr(obj.source, "extraction") else ""
 
     def get_canWrite(self, obj) -> bool:
-        return can_write(
+        return obj.source.number == obj.versions.latest("number").number and can_write(
             obj.collection,
             membership_for(self.context["request"].user, obj.collection.workspace_id),
         )

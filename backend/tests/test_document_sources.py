@@ -135,7 +135,7 @@ def test_limits_queue_failure_retry_and_duplicate_task(
 
     client, _, collection = library
     settings.MAX_WORKSPACE_STORAGE_BYTES = 3
-    assert upload(client, collection).status_code == 400
+    assert upload(client, collection).status_code == 429
     settings.MAX_WORKSPACE_STORAGE_BYTES = 1000
     with (
         patch("modules.documents.tasks.extract_source.delay", side_effect=OperationalError),

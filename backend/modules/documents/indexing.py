@@ -13,6 +13,7 @@ from django.db import close_old_connections, transaction
 from django.db.models import F
 from django.utils import timezone
 from kombu.exceptions import OperationalError
+from rest_framework.exceptions import Throttled
 
 from modules.workspaces.access import can_write
 from modules.workspaces.models import Membership, Workspace
@@ -45,13 +46,21 @@ def configured_profile():
 
 def permitted(index):
     document = index.extraction.source.document
+    if document.deleted_at or index.extraction.source.purge_requested_at:
+        return False
+    if document.source.pk != index.extraction.source_id:
+        return False
     member = Membership.objects.filter(
         workspace_id=document.collection.workspace_id,
         user=index.requested_by,
         active=True,
         user__is_active=True,
     ).first()
-    return member and can_write(document.collection, member)
+    return (
+        member
+        and (not index.reindex_id or member.role == "OWNER")
+        and can_write(document.collection, member)
+    )
 
 
 def enqueue_index(index_id, attempt):
@@ -133,7 +142,20 @@ def locked_attempt(index_id, attempt):
             extraction.warnings and not extraction.accepted_at
         ):
             raise InvalidIndex("Accept extraction warnings before indexing.")
-        if index.profile != configured_profile() or index.chunker != VERSION:
+        from .models import Reindex
+
+        workspace = index.extraction.source.document.collection.workspace
+        batch = (
+            Reindex.objects.filter(pk=index.reindex_id, state="BUILDING").first()
+            if index.reindex_id
+            else None
+        )
+        expected = batch.profile if batch else workspace.index_profile or configured_profile()
+        if (
+            (index.reindex_id and not batch)
+            or index.profile != expected
+            or index.chunker != VERSION
+        ):
             raise InvalidIndex(
                 "Index profile changed. Restore the original profile before retrying."
             )
@@ -187,6 +209,16 @@ def build_index(index_id, attempt):
                     )
                     if not pending:
                         break
+                    from .lifecycle import reserve_embeddings
+
+                    tokens = sum(
+                        len(tokenizer("passage: " + c.text, add_special_tokens=True)["input_ids"])
+                        for c in pending
+                    )
+                    with locked_attempt(index_id, attempt) as current:
+                        reserve_embeddings(
+                            current.extraction.source.document.collection.workspace, tokens, current
+                        )
                     vectors = embedder.embed([c.text for c in pending])
                     validate_vectors(vectors, len(pending))
                     check()
@@ -208,18 +240,16 @@ def build_index(index_id, attempt):
                     )
                 ):
                     raise InvalidIndex("The index is incomplete and cannot be activated.")
-                index.active, index.state, index.error = True, "READY", ""
-                index.save(update_fields=["active", "state", "error", "updated_at"])
-                Document.objects.filter(pk=extraction.source.document_id).update(
-                    revision=F("revision") + 1
-                )
+                from .lifecycle import publish_index
+
+                publish_index(index)
     except IndexStopped:
         return
     except Exception as error:
         logger.error("Indexing failed index=%s error_type=%s", index_id, type(error).__name__)
         safe = (
             str(error)[:240]
-            if isinstance(error, InvalidIndex)
+            if isinstance(error, (InvalidIndex, Throttled))
             else "Local indexing unavailable. Check model setup and retry."
         )
         IndexVersion.objects.filter(pk=index_id, attempt=attempt, state__in=RUNNING).update(
@@ -228,6 +258,9 @@ def build_index(index_id, attempt):
             error=safe,
             updated_at=timezone.now(),
         )
+        from .lifecycle import fail_reindexes
+
+        fail_reindexes()
 
 
 @shared_task
@@ -265,3 +298,6 @@ def recover_indexes():
             Document.objects.filter(pk=index.extraction.source.document_id).update(
                 revision=F("revision") + 1
             )
+    from .lifecycle import fail_reindexes
+
+    fail_reindexes()

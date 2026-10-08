@@ -165,7 +165,7 @@ def test_profiles_empty_scope_and_revocation_during_embedding(library, settings)
 
     run_count = SearchRun.objects.count()
 
-    def revoke(_):
+    def revoke(_, workspace_id):
         grant.delete()
         return [1.0] + [0.0] * 383
 

@@ -244,6 +244,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/documents/{document_id}/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_documents_delete_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/documents/{document_id}/index": {
         parameters: {
             query?: never;
@@ -260,6 +276,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/documents/{document_id}/replace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_documents_replace_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/documents/{document_id}/retry": {
         parameters: {
             query?: never;
@@ -270,6 +302,38 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["api_v1_documents_retry_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_documents_versions_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/versions/{source_id}/purge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_documents_versions_purge_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -564,6 +628,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{workspace_id}/quotas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_workspaces_quotas_retrieve"];
+        put: operations["api_v1_workspaces_quotas_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{workspace_id}/reindex": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_workspaces_reindex_retrieve"];
+        put?: never;
+        post: operations["api_v1_workspaces_reindex_create"];
+        delete: operations["api_v1_workspaces_reindex_destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/workspaces/{workspace_id}/search": {
         parameters: {
             query?: never;
@@ -694,6 +790,8 @@ export interface components {
             password: string;
         };
         DocumentData: {
+            sourceNumber: number;
+            readonly currentSourceId: string | null;
             readonly index: components["schemas"]["IndexData"] | null;
             /** Format: uuid */
             readonly id: string;
@@ -742,13 +840,23 @@ export interface components {
             grants: components["schemas"]["GrantInputRequest"][];
         };
         IndexData: {
-            readonly state: components["schemas"]["StateEnum"];
+            readonly state: components["schemas"]["IndexDataStateEnum"];
             readonly active: boolean;
             chunkCount: number;
             readonly error: string;
             canRetry: boolean;
             readonly semantic: boolean;
         };
+        /**
+         * @description * `QUEUED` - Queued
+         *     * `CHUNKING` - Chunking
+         *     * `EMBEDDING` - Embedding
+         *     * `READY` - Ready
+         *     * `FAILED` - Failed
+         *     * `CANCELLED` - Cancelled
+         * @enum {string}
+         */
+        IndexDataStateEnum: "QUEUED" | "CHUNKING" | "EMBEDDING" | "READY" | "FAILED" | "CANCELLED";
         InvitationData: {
             /** Format: uuid */
             readonly id: string;
@@ -919,6 +1027,12 @@ export interface components {
             expectedRevision?: number;
             name?: string;
         };
+        /**
+         * @description * `E5` - E5
+         *     * `NONE` - NONE
+         * @enum {string}
+         */
+        ProfileEnum: "E5" | "NONE";
         QuestionInputRequest: {
             /** Format: uuid */
             conversationId: string;
@@ -928,6 +1042,20 @@ export interface components {
             collectionIds?: string[];
             /** Format: uuid */
             replacesTurnId?: string;
+        };
+        Quotas: {
+            daily_answers: number;
+            daily_embedding_tokens: number;
+            /** Format: int64 */
+            storage_bytes: number;
+            document_limit: number;
+        };
+        QuotasRequest: {
+            daily_answers: number;
+            daily_embedding_tokens: number;
+            /** Format: int64 */
+            storage_bytes: number;
+            document_limit: number;
         };
         RankedHitData: {
             /** Format: uuid */
@@ -958,6 +1086,32 @@ export interface components {
             password: string;
             /** Format: email */
             email: string;
+        };
+        ReindexData: {
+            /** Format: uuid */
+            readonly id: string;
+            readonly state: components["schemas"]["ReindexDataStateEnum"];
+            readonly profile: unknown;
+        };
+        /**
+         * @description * `BUILDING` - Building
+         *     * `READY` - Ready
+         *     * `FAILED` - Failed
+         *     * `CANCELLED` - Cancelled
+         * @enum {string}
+         */
+        ReindexDataStateEnum: "BUILDING" | "READY" | "FAILED" | "CANCELLED";
+        ReindexInputRequest: {
+            profile: components["schemas"]["ProfileEnum"];
+        };
+        ReplacementInputRequest: {
+            /** Format: uuid */
+            uploadId: string;
+            /** Format: binary */
+            file: string;
+            /** @default eng */
+            ocrLanguage: components["schemas"]["OcrLanguageEnum"];
+            expectedRevision: number;
         };
         ResetInputRequest: {
             token: string;
@@ -1051,16 +1205,6 @@ export interface components {
             location: unknown;
             text: string;
         };
-        /**
-         * @description * `QUEUED` - Queued
-         *     * `CHUNKING` - Chunking
-         *     * `EMBEDDING` - Embedding
-         *     * `READY` - Ready
-         *     * `FAILED` - Failed
-         *     * `CANCELLED` - Cancelled
-         * @enum {string}
-         */
-        StateEnum: "QUEUED" | "CHUNKING" | "EMBEDDING" | "READY" | "FAILED" | "CANCELLED";
         TokenInputRequest: {
             token: string;
         };
@@ -1091,6 +1235,14 @@ export interface components {
             /** Format: uuid */
             id: string;
             username: string;
+        };
+        VersionData: {
+            /** Format: uuid */
+            id: string;
+            number: number;
+            filename: string;
+            current: boolean;
+            pending: boolean;
         };
         WorkspaceCreateRequest: {
             name: string;
@@ -1532,6 +1684,32 @@ export interface operations {
             };
         };
     };
+    api_v1_documents_delete_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevisionInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["RevisionInputRequest"];
+                "multipart/form-data": components["schemas"]["RevisionInputRequest"];
+            };
+        };
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     api_v1_documents_index_create: {
         parameters: {
             query?: never;
@@ -1550,6 +1728,39 @@ export interface operations {
         };
         responses: {
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentData"];
+                };
+            };
+        };
+    };
+    api_v1_documents_replace_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["ReplacementInputRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentData"];
+                };
+            };
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1583,6 +1794,54 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["DocumentData"];
                 };
+            };
+        };
+    };
+    api_v1_documents_versions_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VersionData"];
+                };
+            };
+        };
+    };
+    api_v1_documents_versions_purge_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+                source_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevisionInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["RevisionInputRequest"];
+                "multipart/form-data": components["schemas"]["RevisionInputRequest"];
+            };
+        };
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -2147,6 +2406,122 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["TurnData"];
                 };
+            };
+        };
+    };
+    api_v1_workspaces_quotas_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Quotas"];
+                };
+            };
+        };
+    };
+    api_v1_workspaces_quotas_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuotasRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["QuotasRequest"];
+                "multipart/form-data": components["schemas"]["QuotasRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Quotas"];
+                };
+            };
+        };
+    };
+    api_v1_workspaces_reindex_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReindexData"];
+                };
+            };
+        };
+    };
+    api_v1_workspaces_reindex_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReindexInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["ReindexInputRequest"];
+                "multipart/form-data": components["schemas"]["ReindexInputRequest"];
+            };
+        };
+        responses: {
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReindexData"];
+                };
+            };
+        };
+    };
+    api_v1_workspaces_reindex_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

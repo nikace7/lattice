@@ -24,6 +24,14 @@ from modules.documents.api import (
     RetryView,
     UploadView,
 )
+from modules.documents.lifecycle_api import (
+    DeleteView,
+    PurgeVersionView,
+    QuotasView,
+    ReindexView,
+    ReplaceView,
+    VersionsView,
+)
 from modules.identity.actions import (
     AcceptInvitationView,
     InvitationsView,
@@ -46,6 +54,15 @@ from modules.workspaces.api import (
 from .health import live, ready
 
 urlpatterns = [
+    path("api/v1/documents/<uuid:document_id>/replace", ReplaceView.as_view()),
+    path("api/v1/documents/<uuid:document_id>/delete", DeleteView.as_view()),
+    path("api/v1/documents/<uuid:document_id>/versions", VersionsView.as_view()),
+    path(
+        "api/v1/documents/<uuid:document_id>/versions/<uuid:source_id>/purge",
+        PurgeVersionView.as_view(),
+    ),
+    path("api/v1/workspaces/<uuid:workspace_id>/reindex", ReindexView.as_view()),
+    path("api/v1/workspaces/<uuid:workspace_id>/quotas", QuotasView.as_view()),
     path("api/v1/workspaces/<uuid:workspace_id>/answer-capabilities", CapabilitiesView.as_view()),
     path("api/v1/workspaces/<uuid:workspace_id>/conversations", ConversationsView.as_view()),
     path("api/v1/workspaces/<uuid:workspace_id>/questions", QuestionsView.as_view()),

@@ -25,7 +25,8 @@ integration gates still deferred and table/Markdown limitations recorded below.
 R4 scoped search is implemented with PostgreSQL/browser gates deferred. R5's local
 generation, private conversations, durable jobs, validated answer delivery and citation
 reader are implemented; PostgreSQL/worker/browser and live model verification remain
-pending. R6–R8 remain pending. The ingestion worker handles recovery email and document
+pending. R6 lifecycle implementation is present with its PostgreSQL, worker, browser
+and restore acceptance gates deferred. R7–R8 remain pending. The ingestion worker handles recovery email and document
 extraction; the answers queue handles private questions in LOCAL mode.
 
 ## Verification
@@ -360,3 +361,45 @@ Docker, migration application, PostgreSQL tests and live API/worker/browser exec
 remain deferred at the user's request. No Qwen weights, live answer/abstention result,
 latency measurement or model-quality result is claimed. R5 implementation is present,
 but its real end-to-end acceptance gate remains open. R6–R8 remain pending.
+
+
+## 7 October 2026 — R6 lifecycle implementation
+
+- Replaced one-source/one-index constraints with immutable numbered source versions
+  and retained indexes. Replacement uploads reuse validated private upload handling,
+  require contribution access and a revision, and preserve an idempotent UUID. Newer
+  replacements cancel older pending work; only the latest source can activate.
+  Current searchable content remains active until its replacement is fully ready.
+- Owner workspace reindex builds every active source in the configured E5 or lexical
+  profile. The final worker checks the original active-index set and switches the
+  entire batch under the workspace lock. Failed/cancelled batches preserve old
+  indexes; replacements/deletion cancel in-flight batches. Old READY indexes remain
+  available for exact historical citations. Individual uploads/indexing use the
+  workspace's established profile, including after an environment-mode change.
+- Deletion tombstones the document, clears active indexes, fences pending workers
+  and increments the access epoch. Document/source/search/history reads deny deleted
+  or purge-requested content. Owner retention cleanup can remove inactive old source
+  versions. Physical purge removes original/preview files, extracted blocks, chunks,
+  vectors and dependent answer bodies, leaving unavailable markers and minimal IDs.
+- Durable storage tombstone journals can be reapplied before opening a restored
+  database. Purges retry after partial file removal; parser artifact publication is
+  serialized with deletion. Orphan UUID source/spool directories older than one hour
+  are cleaned during purge batches. The journal must be preserved independently of
+  older database backups; no actual backup/restore exercise has been run.
+- Owner limits cover documents, original source bytes, daily question intents and
+  daily embedding tokens. Ingestion and semantic query calls charge exact prefixed
+  tokenizer counts before dispatch under a workspace lock; uncertain calls keep
+  their charge. Existing R5 concurrency and answer-token reservations remain.
+- UI includes replacement upload, current searchable versus latest version labels,
+  paginated retained sources, explicit deletion confirmation, reindex controls and
+  quota forms. Generated API contracts and recovery/purge commands were updated.
+
+Verified locally: 54 database-free backend tests, 20 frontend tests and one setup
+test passed (75 total), plus Ruff lint/format, ESLint, Django system checks,
+TypeScript and production build. OpenAPI regeneration was warning-free; offline
+migration drift, relation SQL compilation and Celery task discovery passed. All
+126 backend tests collect, including nine new PostgreSQL lifecycle tests.
+
+R6 is not acceptance-complete: migrations have not been applied, and the PostgreSQL race,
+restore and real worker/browser checks remain deferred with Docker. No real model
+quality or production-erasure guarantee is claimed.

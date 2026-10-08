@@ -103,8 +103,9 @@ CELERY_BROKER_URL = REDIS_URL
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_TASK_IGNORE_RESULT = True
-CELERY_IMPORTS = ("modules.documents.indexing",)
+CELERY_IMPORTS = ("modules.documents.indexing", "modules.documents.lifecycle")
 CELERY_TASK_ROUTES = {
+    "modules.documents.lifecycle.*": {"queue": "ingestion"},
     "modules.documents.indexing.*": {"queue": "ingestion"},
     "modules.documents.tasks.*": {"queue": "ingestion"},
     "modules.identity.tasks.*": {"queue": "ingestion"},
@@ -114,6 +115,7 @@ CELERY_TASK_ROUTES = {
 CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BEAT_SCHEDULE = {
+    "purge-documents": {"task": "modules.documents.lifecycle.purge_documents", "schedule": 300.0},
     "recover-answers": {"task": "modules.conversations.tasks.recover_answers", "schedule": 30.0},
     "recover-indexes": {
         "task": "modules.documents.indexing.recover_indexes",

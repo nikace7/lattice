@@ -152,7 +152,7 @@ def generate_answer(turn_id, attempt):
                     blocks = {
                         str(b.pk): b
                         for b in SourceBlock.objects.filter(
-                            extraction__index__id=hit["indexId"],
+                            extraction__indexes__id=hit["indexId"],
                             pk__in=[s["block_id"] for s in hit["spans"]],
                         )
                     }

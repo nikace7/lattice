@@ -3,6 +3,7 @@ import logging
 import shutil
 import time
 import uuid
+from contextlib import contextmanager
 from functools import partial
 from pathlib import Path
 
@@ -71,11 +72,16 @@ def recover_extractions():
             document = job.source.document
             member = Membership.objects.filter(
                 workspace=workspace,
-                user=document.created_by,
+                user_id=job.source.created_by_id or document.created_by_id,
                 active=True,
                 user__is_active=True,
             ).first()
-            if not member or not can_write(document.collection, member):
+            if (
+                document.deleted_at
+                or document.source.pk != source_id
+                or not member
+                or not can_write(document.collection, member)
+            ):
                 job.state, job.retryable = "FAILED", False
                 job.error = (
                     "The uploader's contribution access changed. Ask an owner to upload again."
@@ -140,27 +146,36 @@ def parse_source(source):
         if "error" in result:
             raise InvalidSource(str(result["error"])[:240])
         validate_result(result, source.kind)
-        artifact = source_directory(source) / str(source.job.attempt)
-        artifact.mkdir(exist_ok=True)
-        preview_bytes = 0
-        for report in result["pageReports"]:
-            if not report["preview"]:
-                continue
-            page = report["page"]
-            image = directory / f"page-{page}.png"
-            if image.is_symlink() or image.stat().st_size > 16 * 1024**2:
-                raise InvalidSource("Invalid page preview.")
-            preview_bytes += image.stat().st_size
-            if preview_bytes > MAX_BYTES:
-                raise InvalidSource("The PDF exceeds the total preview size limit.")
-            with image.open("rb") as stream:
-                if stream.read(8) != b"\x89PNG\r\n\x1a\n":
+        with artifact_lease(source):
+            artifact = source_directory(source) / str(source.job.attempt)
+            artifact.mkdir(exist_ok=True)
+            preview_bytes = 0
+            for report in result["pageReports"]:
+                if not report["preview"]:
+                    continue
+                page = report["page"]
+                image = directory / f"page-{page}.png"
+                if image.is_symlink() or image.stat().st_size > 16 * 1024**2:
                     raise InvalidSource("Invalid page preview.")
-            shutil.copyfile(image, artifact / image.name)
+                preview_bytes += image.stat().st_size
+                if preview_bytes > MAX_BYTES:
+                    raise InvalidSource("The PDF exceeds the total preview size limit.")
+                with image.open("rb") as stream:
+                    if stream.read(8) != b"\x89PNG\r\n\x1a\n":
+                        raise InvalidSource("Invalid page preview.")
+                shutil.copyfile(image, artifact / image.name)
         return result
     finally:
         # directory is a fresh UUID, resolved and checked against the dedicated spool above.
         shutil.rmtree(directory, ignore_errors=True)
+
+
+@contextmanager
+def artifact_lease(source):
+    with transaction.atomic():
+        Workspace.objects.select_for_update().get(pk=source.document.collection.workspace_id)
+        maintain_lease(source.pk, source.job.attempt)
+        yield
 
 
 def validate_result(result, kind):
@@ -311,9 +326,12 @@ def extract_source(source_id, attempt):
             job = ExtractionJob.objects.select_for_update().get(source=source)
             if str(job.attempt) != attempt or job.state != "EXTRACTING" or job.lease_expired:
                 return
+            source.document.refresh_from_db()
+            if source.document.deleted_at or source.document.source.pk != source.pk:
+                raise ExtractionStopped
             member = Membership.objects.filter(
                 workspace=workspace,
-                user=source.document.created_by,
+                user_id=source.created_by_id or source.document.created_by_id,
                 active=True,
                 user__is_active=True,
             ).first()

@@ -9,7 +9,8 @@ Scoped keyword, semantic and hybrid search now include source links and curator
 ranking details. R5 adds private conversations, durable answer jobs, validated answer
 delivery, cancellation and a citation reader. Generation requires explicitly prepared
 local Qwen models and `RAG_MODE=LOCAL`; the default remains retrieval-only.
-Live Qwen generation and R2–R5 database/worker/browser integration validation remain
+R6 adds retained source versions, staged workspace reindexing, deletion/purge and
+owner-controlled quotas. Live Qwen generation and R2–R6 database/worker/browser integration validation remain
 deferred while Docker is skipped.
 The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
 observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).
