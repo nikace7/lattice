@@ -8,6 +8,8 @@
     "pnpm": ">=10 <11"
   },
   "scripts": {
+    "demo:seed": "uv run --project backend --env-file .env.demo python backend/manage.py seed_demo",
+    "demo:reset": "uv run --project backend --env-file .env.demo python backend/manage.py reset_demo",
     "generation:prepare": "uv run --project backend --extra local python backend/manage.py prepare_generation",
     "generation:check": "uv run --project backend --extra local python backend/manage.py check_generation",
     "models:prepare": "uv run --project backend --extra local python backend/manage.py prepare_models",

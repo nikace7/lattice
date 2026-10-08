@@ -40,23 +40,89 @@ their comparison as a test fixture. None establishes live backend behavior.
 ## Live walkthrough after infrastructure validation
 
 This is a **proposed script, not an observed successful run**. Start with a dedicated
-disposable demo database and storage root containing no real documents. Automated
-`seed_demo` and guarded `demo:reset` do not exist yet; do not substitute an unguarded
-database or storage deletion. Existing fixtures can be uploaded through the UI.
+disposable demo database and storage root containing no real documents. The new
+`seed_demo` and guarded `demo:reset` commands have passed host guard checks; their
+PostgreSQL integration and this Compose walkthrough remain unexecuted.
+
+### Prepare the isolated demo
+
+1. Copy your local `.env` to ignored `.env.demo`. Keep the normal `.env` unchanged.
+   In `.env.demo`, set `DEMO_MODE=true`, `POSTGRES_DB=lattice_demo`,
+   `STORAGE_ROOT=.data/demo-storage`, `PARSER_SPOOL_ROOT=.data/demo-parser`,
+   `RAG_MODE=RETRIEVAL_ONLY` and change the database URL's final database name to
+   `lattice_demo`. Keep the host address `127.0.0.1:5440`. Supply a strong
+   `LATTICE_DEMO_PASSWORD` (8–128 characters); there is no default password. Do not
+   commit this file or show its contents. The password is used for all four demo
+   accounts and is never printed. Keep optional cloud keys empty.
+2. Stop the normal stack to free its loopback ports. Use the distinct Compose
+   project `lattice-demo` for every demo command; it gets separate named volumes.
+   The overlay binds only the dedicated demo storage/parser directories for
+   application content. Compose merges volumes by container target and applies
+   the overlay's environment entries; see [Docker's merge rules](https://docs.docker.com/compose/how-tos/multiple-compose-files/merge/).
+3. When Docker validation resumes, run from the repository root:
+
+   ```sh
+   docker compose --env-file .env.demo -p lattice-demo -f compose.yaml -f compose.demo.yaml up -d --wait db-pgvector redis mailpit
+   uv run --project backend --env-file .env.demo python backend/manage.py migrate
+   pnpm demo:seed
+   docker compose --env-file .env.demo -p lattice-demo -f compose.yaml -f compose.demo.yaml up -d --build
+   ```
+
+   Run seed/reset on the **host**, where database identity and storage path checks
+   apply. Seed requires an empty application database and empty demo storage on
+   first use. A database marker and matching `.lattice-demo.json` bind it to that
+   storage root. No provider, email, Redis or parser call is made by seeding.
+4. Sign in as `demo-a-owner`, `demo-a-curator`, `demo-a-member` (VIEWER), or
+   `demo-b-owner`. Their emails use `@lattice.invalid`. There are two workspaces,
+   four collections, 24 documents and 25 source versions. Only the A curator gets
+   a restricted Projects grant; Finance is owner-only. Repeated seed is a no-op
+   and does not change accounts or passwords. Adding unrelated accounts or
+   workspaces makes the guarded reset refuse to proceed.
+
+### Reset only this demo
+
+Finish or cancel extraction, indexing, reindex and answer jobs in the UI. Stop
+API, ingestion/answer workers, beat and parser; leave the dedicated database up:
+
+```sh
+docker compose --env-file .env.demo -p lattice-demo -f compose.yaml -f compose.demo.yaml stop api ingestion-worker answer-worker beat parser
+pnpm demo:reset --confirm lattice_demo
+pnpm demo:seed
+```
+
+Reset refuses disabled demo mode, another database or storage path, absent or
+mismatched markers, links/junctions, unrelated accounts/workspaces, running jobs,
+and a nonempty parser spool. It deletes the two marked demo workspaces' data,
+their four accounts, demo database sessions, and dedicated source storage including
+demo deletion journals. It retains the installation marker. It never drops a
+database, flushes Redis, removes models or clears normal application storage.
+Do not put real content in this demo: anything added inside its marked workspaces
+and storage is disposable. This reset is not a production erasure procedure.
+
+Interrupted source writes leave `SEEDING`; interrupted storage cleanup leaves
+`RESETTING`. Fix the underlying problem and repeat the guarded reset before
+seeding. A fresh seed uses new resource IDs so old queued messages cannot address
+the new demo's documents. Missing/mismatched marker recovery requires operator
+investigation; do not forge or copy a marker to authorize deletion.
+
+### Exercise the live application
 
 1. Follow README setup, start Docker, apply migrations, rebuild API/workers/parser,
    and run real tests. Preserve the independent tombstone journal before any restore.
-2. Register fictional owner, curator and viewer accounts using local Mailpit. Create
-   Cedar Studio (workspace A) and Birch Studio (workspace B). The frozen `a-member`
+2. Use the seeded accounts in Cedar Studio (workspace A) and Birch Studio
+   (workspace B). The frozen `a-member`
    persona maps to the application's VIEWER role; fixture roles are scope labels,
    not an import of production grants.
-3. In A, create Handbook (workspace-readable), Projects (restricted, curator grant)
-   and Finance (restricted, owner-only). In B, create a separate Handbook. Follow
+3. Inspect A's Handbook (workspace-readable), Projects (restricted, curator grant)
+   and Finance (restricted, owner-only). B has its separate Handbook. Follow
    [the manifest](../fixtures/evals/r8-v1.json) when assigning documents; matching
    titles such as Leave requests must remain in different workspaces.
-4. Upload the 25 [source files](../fixtures/corpus/r8-v1) as 24 documents: upload
-   `leave-v1.txt` first, index it, then use Replace with `leave-v2.txt`. The other
-   files are initial versions. Extract/review and prepare indexes. Review the
+4. The 25 [source files](../fixtures/corpus/r8-v1) are imported as originals only;
+   extraction jobs are cancelled and available for Retry on each latest version.
+   Seed creates no extracted text, OCR references, indexes or generated answers.
+   As owner, Retry, extract/review and prepare indexes. Leave v1 is retained and
+   unprocessed; to demonstrate indexing followed by Replace, use a separate
+   document uploaded first as v1, index it, then replace with v2. Review the
    scanned `drill-v1.pdf` before acceptance; compare actual OCR to its manual reference.
 5. Use keyword search in retrieval-only mode. For semantic/hybrid and answers,
    explicitly prepare E5 and Qwen as described in operations, select local mode,

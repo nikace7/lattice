@@ -176,7 +176,31 @@ membership/status tests are collected but remain unexecuted without PostgreSQL.
 R8 adds a second fixed synthetic report ID. Its suite lock and source checksums,
 exact chunk provenance, fixture-scope checks and recomputed metrics must all match
 before serving data. Invalid artifacts return the existing safe 503, without paths
-or source snippets. Neither command nor diagnostics seeds or resets application
+or source snippets. Neither evaluation command nor diagnostics seeds or resets application
 data. Fixture `MEMBER` means viewer access and is not a production grant model.
 Offline scope simulation and UI mocks cannot establish real permission isolation;
 those PostgreSQL tests and live revocation/history checks remain pending.
+
+## Guarded disposable demo
+
+`seed_demo` / `reset_demo` are separate host operator commands, not API endpoints.
+They require `DEMO_MODE`, local PostgreSQL's actual `lattice_demo` identity and
+fixed `.data/demo-storage` / `.data/demo-parser` paths with no links/junctions.
+An installation row and matching private storage marker bind database and root.
+First seed requires empty application data/storage; the frozen corpus is checked
+before import. Passwords come from the ignored demo environment, pass normal
+validators, are hashed, and are never printed. Emails use `.invalid`; import
+does not dispatch email, model, parser or queue calls. Sources remain unprocessed.
+
+Reset requires a typed target, matching markers, no unrelated accounts/workspaces,
+no active jobs or parser requests, and no storage links. A PostgreSQL operator
+lock serializes demo commands; workspace locks serialize known worker publication.
+API/workers/beat/parser must be stopped throughout reset: locks do not prevent
+new application writes or arbitrary external filesystem changes. All content
+inside marked workspaces/storage is disposable, including their deletion journals
+and database sessions. Normal storage, models and Redis are outside this reset.
+Crash states prevent reseeding until cleanup succeeds; each reseed uses fresh IDs.
+The demo Compose overlay replaces normal storage/parser mounts by container target.
+These guards passed host tests/config checks, but PostgreSQL cascades, recovery
+and live container isolation remain unexecuted. Use the production tombstone/backup
+procedure for real erasure; a demo reset is not evidence of that procedure.

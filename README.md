@@ -160,7 +160,8 @@ docs/           Blueprint, progress, design and operating notes
   warnings. Markdown is displayed as literal source text with inactive HTML and embeds.
 - The optional `local-models` Compose profile starts Ollama only. It does not pull a
   model. Model preparation and reconciliation/purge commands are explicit. Automated
-  `seed_demo` and guarded `demo:reset` remain unimplemented; use the demo guide.
+  `seed_demo` and guarded `demo:reset` are implemented for the dedicated marked
+  demo only; PostgreSQL execution remains pending. Follow the demo guide.
 - Checked-in sources/results are original synthetic artifacts. Offline recall does
   not establish answer quality, production isolation or full-stack acceptance.
 

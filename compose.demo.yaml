@@ -1,0 +1,30 @@
+# Host-only seed/reset commands bind these directories to the demo containers.
+# Use with --env-file .env.demo -p lattice-demo -f compose.yaml -f compose.demo.yaml.
+x-demo-backend: &demo-backend
+  env_file: .env.demo
+  environment:
+    DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db-pgvector:5432/lattice_demo
+    STORAGE_ROOT: /data/storage
+    PARSER_SPOOL_ROOT: /data/parser
+    DEMO_MODE: "true"
+  volumes:
+    - ./.data/demo-storage:/data/storage
+    - ./.data/demo-parser:/data/parser
+
+services:
+  db-pgvector:
+    environment:
+      POSTGRES_DB: lattice_demo
+  migrate:
+    <<: *demo-backend
+  api:
+    <<: *demo-backend
+  ingestion-worker:
+    <<: *demo-backend
+  answer-worker:
+    <<: *demo-backend
+  beat:
+    <<: *demo-backend
+  parser:
+    volumes:
+      - ./.data/demo-parser:/spool
