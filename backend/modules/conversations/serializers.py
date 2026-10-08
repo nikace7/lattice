@@ -84,6 +84,8 @@ class SourceQuoteSpanData(CitationSpanData):
 
 class SourceQuoteData(CitationData):
     kind = serializers.CharField()
+    sourceNumber = serializers.IntegerField()
+    olderVersion = serializers.BooleanField()
     spans = SourceQuoteSpanData(many=True)
 
 

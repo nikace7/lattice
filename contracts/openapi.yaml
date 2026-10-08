@@ -1107,6 +1107,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedConversationDataList'
           description: ''
+  /api/v1/workspaces/{workspace_id}/document-status:
+    get:
+      operationId: api_v1_workspaces_document_status_retrieve
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentStatusData'
+          description: ''
   /api/v1/workspaces/{workspace_id}/documents:
     get:
       operationId: api_v1_workspaces_documents_list
@@ -1139,6 +1160,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedDocumentDataList'
+          description: ''
+  /api/v1/workspaces/{workspace_id}/evaluations:
+    get:
+      operationId: api_v1_workspaces_evaluations_list
+      parameters:
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EvaluationData'
+          description: ''
+  /api/v1/workspaces/{workspace_id}/evaluations/{report_id}:
+    get:
+      operationId: api_v1_workspaces_evaluations_retrieve
+      parameters:
+      - in: path
+        name: report_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: workspace_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluationData'
           description: ''
   /api/v1/workspaces/{workspace_id}/invitations:
     get:
@@ -1789,6 +1859,19 @@ components:
       - state
       - title
       - warnings
+    DocumentStatusData:
+      type: object
+      properties:
+        total:
+          type: integer
+        ready:
+          type: integer
+        processing:
+          type: integer
+      required:
+      - processing
+      - ready
+      - total
     EmailInputRequest:
       type: object
       properties:
@@ -1799,6 +1882,116 @@ components:
           maxLength: 254
       required:
       - email
+    EvaluationCaseData:
+      type: object
+      properties:
+        id:
+          type: string
+        mode:
+          type: string
+        language:
+          type: string
+        query:
+          type: string
+        fullEvidence:
+          type: boolean
+        expected:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluationDocumentData'
+        retrieved:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluationDocumentData'
+      required:
+      - expected
+      - fullEvidence
+      - id
+      - language
+      - mode
+      - query
+      - retrieved
+    EvaluationData:
+      type: object
+      properties:
+        id:
+          type: string
+        suite:
+          type: string
+        suiteHash:
+          type: string
+        profile: {}
+        backend:
+          type: string
+        elapsedSeconds:
+          type: number
+          format: double
+        description:
+          type: string
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluationRowData'
+        cases:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluationCaseData'
+      required:
+      - backend
+      - cases
+      - description
+      - elapsedSeconds
+      - id
+      - profile
+      - rows
+      - suite
+      - suiteHash
+    EvaluationDocumentData:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        text:
+          type: string
+      required:
+      - id
+      - text
+      - title
+    EvaluationRowData:
+      type: object
+      properties:
+        mode:
+          type: string
+        language:
+          type: string
+        questions:
+          type: integer
+        goldGroupsFound:
+          type: integer
+        goldGroups:
+          type: integer
+        evidenceRecallAt8:
+          type: number
+          format: double
+        anyHitQuestions:
+          type: integer
+        fullEvidenceQuestions:
+          type: integer
+        meanReciprocalRank:
+          type: number
+          format: double
+      required:
+      - anyHitQuestions
+      - evidenceRecallAt8
+      - fullEvidenceQuestions
+      - goldGroups
+      - goldGroupsFound
+      - language
+      - meanReciprocalRank
+      - mode
+      - questions
     GrantData:
       type: object
       properties:
@@ -2618,6 +2811,10 @@ components:
             $ref: '#/components/schemas/SourceQuoteSpanData'
         kind:
           type: string
+        sourceNumber:
+          type: integer
+        olderVersion:
+          type: boolean
       required:
       - chunkEnd
       - chunkId
@@ -2626,9 +2823,11 @@ components:
       - evidenceId
       - indexId
       - kind
+      - olderVersion
       - partial
       - quote
       - sourceId
+      - sourceNumber
       - spans
       - title
     SourceQuoteSpanData:

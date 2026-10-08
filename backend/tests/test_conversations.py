@@ -88,6 +88,7 @@ def test_private_idempotent_turn_quota_and_exact_citation(library, settings):
     ]
     source = client.get(f"/api/v1/turns/{turn.pk}/citations/0/0")
     assert source.status_code == 200
+    assert source.data["sourceNumber"] == 1 and not source.data["olderVersion"]
     span = source.data["spans"][0]
     assert span["text"][span["start"] : span["end"]] == "five working days"
     count = turn.events.count()

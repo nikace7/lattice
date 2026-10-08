@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   api,
   type Collection,
@@ -14,6 +14,7 @@ import { CollectionAccess, Members } from "./workspace-access";
 import { Documents } from "./documents";
 import { Search } from "./search";
 import { Ask } from "./ask";
+import { Evaluations } from "./evaluations";
 import {
   ErrorNotice,
   Loading,
@@ -134,7 +135,7 @@ export function Authentication({ onSuccess, invitation = false }: { onSuccess: (
           </p>
           <p className="release-note">
             Early access · Search indexed documents and inspect their sources.
-            Cited answers are coming next.
+            Ask questions with verified source passages when local generation is configured.
           </p>
         </div>
       </main>
@@ -406,8 +407,7 @@ function CollectionList({
       <div className="phase-note">
         <span aria-hidden="true">↳</span>
         <p>
-          <Link href={`/w/${workspace.id}/documents`}>Add documents</Link> to these
-          collections, prepare their indexes, then search the source text.
+          <Link href={`/w/${workspace.id}/${canCreate ? "documents" : "search"}`}>{canCreate ? "Add documents" : "Search your collections"}</Link> and read the source text.
         </p>
       </div>
     </section>
@@ -429,10 +429,29 @@ function WorkspaceRoom({
   const [selected, setSelected] = useState<string>();
   const [listVersion, setListVersion] = useState(0);
   const [drawer, setDrawer] = useState(false);
+  const menu = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    if (drawer) menu.current?.showModal();
+    else menu.current?.close();
+    function resized() { if (window.innerWidth >= 768) setDrawer(false); }
+    window.addEventListener("resize", resized);
+    return () => window.removeEventListener("resize", resized);
+  }, [drawer]);
   const isMembers = view === "settings/members";
   const isSearch = view === "search";
   const isAsk = view === "ask" || view.startsWith("c/");
   const isDocuments = view === "documents" || view.startsWith("documents/");
+  const isEvaluations = view === "evaluations" || view.startsWith("evaluations/");
+  const navigation = <nav aria-label="Workspace">
+    <Link href={`/w/${id}/collections`} aria-current={!isMembers && !isDocuments && !isSearch && !isAsk && !isEvaluations ? "page" : undefined} onClick={() => setDrawer(false)}><span aria-hidden="true">▤</span> Collections</Link>
+    <Link href={`/w/${id}/documents`} aria-current={isDocuments ? "page" : undefined} onClick={() => setDrawer(false)}><span aria-hidden="true">▱</span> Documents</Link>
+    <Link href={`/w/${id}/search`} aria-current={isSearch ? "page" : undefined} onClick={() => setDrawer(false)}><span aria-hidden="true">⌕</span> Search</Link>
+    <Link href={`/w/${id}/ask`} aria-current={isAsk ? "page" : undefined} onClick={() => setDrawer(false)}><span aria-hidden="true">?</span> Ask</Link>
+    {workspace.data?.role === "OWNER" && <>
+      <Link href={`/w/${id}/evaluations`} aria-current={isEvaluations ? "page" : undefined} onClick={() => setDrawer(false)}><span aria-hidden="true">≡</span> Evaluations</Link>
+      <Link href={`/w/${id}/settings/members`} aria-current={isMembers ? "page" : undefined} onClick={() => setDrawer(false)}><span aria-hidden="true">♧</span> People & access</Link>
+    </>}
+  </nav>;
   return (
     <div className="room">
       <header className="topbar">
@@ -440,16 +459,20 @@ function WorkspaceRoom({
         <button
           className="mobile-menu"
           aria-expanded={drawer}
-          aria-controls="workspace-nav"
+          aria-controls="workspace-menu"
           onClick={() => setDrawer(!drawer)}
         >
           Workspace menu
         </button>
         <SignOut username={user.username} onSignedOut={onSignedOut} />
       </header>
+      <dialog ref={menu} id="workspace-menu" className="workspace-menu" aria-label="Workspace menu" onClose={() => setDrawer(false)} onCancel={() => setDrawer(false)}>
+        <button onClick={() => setDrawer(false)}>Close menu</button>
+        <h2>{workspace.data?.name ?? "Workspace"}</h2>{navigation}
+      </dialog>
       <div className="room-grid">
         <aside
-          className={`rail ${drawer ? "rail-open" : ""}`}
+          className="rail"
           id="workspace-nav"
         >
           <Link className="back-link" href="/">
@@ -463,44 +486,20 @@ function WorkspaceRoom({
               {workspace.data.role.toLowerCase()}
             </span>
           )}
-          <nav aria-label="Workspace">
-            <Link
-              href={`/w/${id}/collections`}
-              aria-current={!isMembers && !isDocuments && !isSearch && !isAsk ? "page" : undefined}
-              onClick={() => setDrawer(false)}
-            >
-              <span aria-hidden="true">▤</span> Collections
-            </Link>
-            <Link href={`/w/${id}/documents`} aria-current={isDocuments ? "page" : undefined} onClick={() => setDrawer(false)}>
-              <span aria-hidden="true">▱</span> Documents
-            </Link>
-            <Link href={`/w/${id}/search`} aria-current={isSearch ? "page" : undefined} onClick={() => setDrawer(false)}>
-              <span aria-hidden="true">⌕</span> Search
-            </Link>
-            <Link href={`/w/${id}/ask`} aria-current={isAsk ? "page" : undefined} onClick={() => setDrawer(false)}>
-              <span aria-hidden="true">?</span> Ask
-            </Link>
-            {workspace.data?.role === "OWNER" && (
-              <Link
-                href={`/w/${id}/settings/members`}
-                aria-current={isMembers ? "page" : undefined}
-                onClick={() => setDrawer(false)}
-              >
-                <span aria-hidden="true">♧</span> People & access
-              </Link>
-            )}
-          </nav>
+          {navigation}
           <div className="rail-footer">
             <span className="small-dot" aria-hidden="true" /> Workspace
-            foundation<p>Careful reading starts with the right access.</p>
+            library<p>Careful reading starts with the right access.</p>
           </div>
         </aside>
-        <main id="main" tabIndex={-1} className={`room-main ${isDocuments || isSearch || isAsk ? "document-main" : ""}`}>
+        <main id="main" tabIndex={-1} className={`room-main ${isDocuments || isSearch || isAsk || isEvaluations ? "document-main" : ""}`}>
           <ErrorNotice error={workspace.error} retry={workspace.reload} />
           {!workspace.data && !workspace.error && <Loading />}
           {workspace.data &&
             (isMembers ? (
               <Members workspace={workspace.data} onChange={workspace.reload} />
+            ) : isEvaluations ? (
+              <Evaluations workspace={workspace.data} reportId={view.split("/")[1]} />
             ) : isDocuments ? (
               <Documents key={view} workspace={workspace.data} documentId={view.split("/")[1]} chunkId={view.split("/")[3]} />
             ) : isSearch ? (
@@ -515,7 +514,7 @@ function WorkspaceRoom({
               />
             ))}
         </main>
-        {!isMembers && !isDocuments && !isSearch && !isAsk && workspace.data && (
+        {!isMembers && !isDocuments && !isSearch && !isAsk && !isEvaluations && workspace.data && (
           <aside className="inspector" aria-label="Collection details">
             {selected ? (
               <CollectionAccess

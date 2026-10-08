@@ -102,3 +102,21 @@ activation, cancelled/failed batches, deletion denial, dependent answer scrubbin
 tombstone restore replay, concurrent embedding reservations and interrupted purge.
 These tests are collected but not executed while Docker/PostgreSQL is deferred.
 Model/tokenizer doubles in integration tests establish contracts, not model quality.
+
+R7: `test_evaluation_reports.py` verifies recorded corpus hash matching, expected
+evidence, report ID allowlisting, owner gating and status-query SQL compilation
+without a database. `test_reader_access.py` adds real membership and scoped status
+tests; these are collected but not run with PostgreSQL deferred. Citation integration
+assertions include source version metadata. Web tests cover incomplete-evidence
+inspection, owner-only diagnostics, retry, role-specific empty actions and source
+focus return. `reader.spec.ts` runs Chromium with mocked API responses and axe at
+360/768/1200/1440px, including modal navigation and remembered source widths.
+
+After `pnpm build`, run the frontend-only browser suite without Docker:
+
+```sh
+pnpm --filter @lattice/web exec playwright test --config playwright.reader.config.ts
+```
+
+This config starts only Next.js on port 4413; API/model/backend behavior is mocked.
+The normal `pnpm test:e2e` still requires the real PostgreSQL test server.

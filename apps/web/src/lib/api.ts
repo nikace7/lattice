@@ -12,6 +12,7 @@ export type Conversation = components["schemas"]["ConversationData"];
 export type Turn = components["schemas"]["TurnData"];
 export type SourceQuote = components["schemas"]["SourceQuoteData"];
 export type AnswerCapability = components["schemas"]["AnswerCapabilityData"];
+export type Evaluation = components["schemas"]["EvaluationData"];
 export type Page<T> = {
   results: T[];
   next: string | null;

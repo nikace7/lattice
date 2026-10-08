@@ -16,6 +16,7 @@ from modules.documents.api import (
     BlocksView,
     CancelIndexView,
     CancelView,
+    DocumentStatusView,
     DocumentsView,
     DocumentView,
     IndexView,
@@ -41,6 +42,7 @@ from modules.identity.actions import (
 )
 from modules.identity.api import LoginView, LogoutView, RegisterView, SessionView
 from modules.retrieval.api import SearchView
+from modules.retrieval.evaluations import EvaluationDetailView, EvaluationView
 from modules.workspaces.api import (
     CollectionsView,
     CollectionView,
@@ -75,6 +77,12 @@ urlpatterns = [
         CitationView.as_view(),
     ),
     path("api/v1/workspaces/<uuid:workspace_id>/search", SearchView.as_view()),
+    path("api/v1/workspaces/<uuid:workspace_id>/document-status", DocumentStatusView.as_view()),
+    path("api/v1/workspaces/<uuid:workspace_id>/evaluations", EvaluationView.as_view()),
+    path(
+        "api/v1/workspaces/<uuid:workspace_id>/evaluations/<slug:report_id>",
+        EvaluationDetailView.as_view(),
+    ),
     path("api/v1/workspaces/<uuid:workspace_id>/documents", DocumentsView.as_view()),
     path("api/v1/collections/<uuid:collection_id>/documents", UploadView.as_view()),
     path("api/v1/documents/<uuid:document_id>", DocumentView.as_view()),
