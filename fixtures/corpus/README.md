@@ -9,7 +9,20 @@ R2 includes three original synthetic PDF test fixtures:
   `fixture-only`. Regeneration is not needed to run tests, and ReportLab is not a
   project dependency.
 
-Later milestones will add a versioned evaluation corpus manifest here.
-Do not use real organizational secrets. The blueprint requires English/Nepali,
-confusable titles across tenants, restricted collections, source replacements,
-conflicts and an inert prompt-injection specimen. No evaluation corpus is seeded yet.
+`r8-v1/` contains the frozen original fictional corpus: 24 documents, 25 source files,
+three collections in workspace A and three confusable-title documents in workspace B.
+It covers TXT/Markdown, two native PDFs, one scanned PDF, two DOCX heading/table
+documents, English/Nepali, conflicting memos, restricted curator/owner collections,
+two leave-policy versions and an inert hostile-instruction specimen. All policy
+values and names are fictional. No corpus is seeded into application data yet.
+
+The [manifest and gold labels](../evals/r8-v1.json) pin files and exact canonical
+spans. All 24 native source files reproduce text/locators with the pinned host parser.
+`drill-v1.pdf` contains a raster and no native text; its canonical text is a **manual
+OCR reference**, not a verified Tesseract result. OCR/worker integration remains pending.
+The frozen files themselves are the reproducible source artifacts; they are checked
+in with binary/LF Git attributes and checked by SHA-256. No regeneration is needed.
+
+See [the demo walkthrough](../../docs/DEMO.md) for collection assignment and upload
+ordering. Source/block labels are fixture identities, not persisted production UUIDs;
+a future database runner must map actual extracted records and verify exact provenance.

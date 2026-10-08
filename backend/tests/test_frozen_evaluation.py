@@ -6,7 +6,39 @@ from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import CommandError
 
-from modules.retrieval.frozen import load_suite, score_cases, validate_suite
+from modules.retrieval.frozen import load_suite, recorded_report, score_cases, validate_suite
+
+
+def test_recorded_frozen_report_recomputes_metrics_and_preserves_unknown_abstention():
+    from modules.retrieval.service import digest
+
+    suite, report = recorded_report(settings.REPO_ROOT)
+    assert report["suiteHash"] == digest(suite)
+    assert report["metrics"]["held-out"]["en"]["goldGroupsFound"] == 38
+    assert sum(row["fullEvidence"] is None for row in report["cases"]) == 14
+    assert report["unmeasured"]["citationValidity"] is None
+
+
+@pytest.mark.parametrize("change", ["metrics", "scope"])
+def test_recorded_report_rejects_changed_metrics_or_out_of_scope_hit(monkeypatch, change):
+    from pathlib import Path
+
+    original = Path.read_text
+
+    def altered(path, *args, **kwargs):
+        value = original(path, *args, **kwargs)
+        if path.name == "r8-offline-semantic.json":
+            report = json.loads(value)
+            if change == "metrics":
+                report["metrics"]["held-out"]["en"]["goldGroupsFound"] = 39
+            else:
+                report["cases"][0]["retrieved"][0]["document"] = "b-leave"
+            return json.dumps(report)
+        return value
+
+    monkeypatch.setattr(Path, "read_text", altered)
+    with pytest.raises(ValueError):
+        recorded_report(settings.REPO_ROOT)
 
 
 def test_frozen_suite_has_separate_templates_exact_gold_and_verified_files():

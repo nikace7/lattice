@@ -881,7 +881,7 @@ export interface components {
             mode: string;
             language: string;
             query: string;
-            fullEvidence: boolean;
+            fullEvidence: boolean | null;
             expected: components["schemas"]["EvaluationDocumentData"][];
             retrieved: components["schemas"]["EvaluationDocumentData"][];
         };
@@ -894,6 +894,7 @@ export interface components {
             /** Format: double */
             elapsedSeconds: number;
             description: string;
+            metricDefinition: string;
             rows: components["schemas"]["EvaluationRowData"][];
             cases: components["schemas"]["EvaluationCaseData"][];
         };

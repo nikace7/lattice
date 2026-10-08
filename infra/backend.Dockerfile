@@ -6,6 +6,7 @@ COPY backend/pyproject.toml backend/uv.lock ./backend/
 RUN uv sync --project backend --locked --no-dev
 COPY backend ./backend
 COPY fixtures/evals ./fixtures/evals
+COPY fixtures/corpus/r8-v1 ./fixtures/corpus/r8-v1
 COPY docs/evaluations ./docs/evaluations
 RUN useradd --uid 10001 --create-home lattice \
     && mkdir -p /data/storage /data/models /data/beat \

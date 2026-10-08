@@ -172,3 +172,11 @@ number/older-version metadata. Browser preference storage contains only panel
 width. Frontend Chromium/axe checks use mocked APIs and do not establish live
 authorization, database isolation or model-grounding correctness. The new real
 membership/status tests are collected but remain unexecuted without PostgreSQL.
+
+R8 adds a second fixed synthetic report ID. Its suite lock and source checksums,
+exact chunk provenance, fixture-scope checks and recomputed metrics must all match
+before serving data. Invalid artifacts return the existing safe 503, without paths
+or source snippets. Neither command nor diagnostics seeds or resets application
+data. Fixture `MEMBER` means viewer access and is not a production grant model.
+Offline scope simulation and UI mocks cannot establish real permission isolation;
+those PostgreSQL tests and live revocation/history checks remain pending.

@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 const workspace = { id: "10000000-0000-4000-8000-000000000001", name: "Reading room", role: "OWNER", revision: 1, accessEpoch: 1 };
 const conversationId = "10000000-0000-4000-8000-000000000002";
 const cite = { evidenceId: "S1", title: "Retained policy", partial: false, sourceId: "source", sourceNumber: 1, olderVersion: true, kind: "TXT", spans: [{ blockId: "block", text: "😀 Ask five days ahead. <script>inert</script>", start: 6, end: 15, location: { line: 1 } }] };
-const report = { id: "recorded", suite: "synthetic-dev", suiteHash: "recorded-hash", profile: { model: "Recorded E5" }, backend: "offline cosine only", elapsedSeconds: 12.48, description: "Recorded synthetic development data", rows: [{ mode: "SEMANTIC", language: "en", questions: 1, goldGroupsFound: 0, goldGroups: 1, evidenceRecallAt8: 0, anyHitQuestions: 0, fullEvidenceQuestions: 0, meanReciprocalRank: 0 }], cases: [{ id: "case", mode: "SEMANTIC", language: "en", query: "When to ask?", fullEvidence: false, expected: [{ id: "gold", title: "Expected policy", text: "Five days ahead" }], retrieved: [{ id: "wrong", title: "Wrong policy", text: "Different evidence" }] }] };
+const report = { id: "recorded", suite: "synthetic-dev", suiteHash: "recorded-hash", profile: { model: "Recorded E5" }, backend: "offline cosine only", elapsedSeconds: 12.48, description: "UI test fixture: mocked comparison data, not a measured benchmark.", metricDefinition: "UI test fixture with a deliberately incomplete evidence case.", rows: [{ mode: "SEMANTIC", language: "en", questions: 1, goldGroupsFound: 0, goldGroups: 1, evidenceRecallAt8: 0, anyHitQuestions: 0, fullEvidenceQuestions: 0, meanReciprocalRank: 0 }], cases: [{ id: "case", mode: "SEMANTIC", language: "en", query: "When to ask?", fullEvidence: false, expected: [{ id: "gold", title: "Expected policy", text: "Five days ahead" }], retrieved: [{ id: "wrong", title: "Wrong policy", text: "Different evidence" }] }] };
 
 test.beforeEach(async ({ page }) => {
   await page.route("**/api/v1/**", (route) => {
@@ -40,6 +40,7 @@ for (const width of [360, 768, 1200, 1440]) {
       expect(await page.evaluate(() => localStorage.getItem("lattice-source-width"))).toBe("400");
     }
     expect((await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze()).violations).toEqual([]);
+    await page.evaluate(() => { const note = document.createElement("p"); note.className = "field-note"; note.textContent = "UI test demonstration · mocked API and answer · not live generation"; document.querySelector("main")?.prepend(note); });
     await page.screenshot({ path: test.info().outputPath(`reader-${width}.png`), fullPage: true });
     await page.getByRole("button", { name: "Back to answer" }).click();
     await expect(button).toBeFocused();

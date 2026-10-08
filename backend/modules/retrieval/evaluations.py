@@ -1,4 +1,4 @@
-"""Owner diagnostics for the checked-in synthetic development report."""
+"""Owner diagnostics for checked-in synthetic development and frozen reports."""
 
 import json
 
@@ -12,10 +12,12 @@ from rest_framework.views import APIView
 
 from modules.workspaces.access import membership_for, require_owner
 
+from .frozen import recorded_report
 from .management.commands.evaluate_retrieval import metrics
 from .service import digest
 
 REPORT_ID = "r4-embedding-development"
+FROZEN_REPORT_ID = "r8-offline-semantic"
 
 
 class EvaluationUnavailable(APIException):
@@ -26,6 +28,87 @@ class EvaluationUnavailable(APIException):
 
 
 def evaluation(report_id):
+    if report_id == FROZEN_REPORT_ID:
+        try:
+            suite, report = recorded_report(settings.REPO_ROOT)
+            documents = {doc["id"]: doc for doc in suite["documents"]}
+            versions = {
+                source["id"]: source["number"]
+                for doc in suite["documents"]
+                for source in doc["sources"]
+            }
+            return {
+                "id": report_id,
+                "suite": report["suite"],
+                "suiteHash": report["suiteHash"],
+                "profile": report["profile"],
+                "backend": report["backend"],
+                "elapsedSeconds": report["elapsedSeconds"],
+                "description": suite["description"]
+                + " Includes 40 development and 40 held-out questions. Fourteen questions have no "
+                "permitted gold; abstention was not measured.",
+                "metricDefinition": (
+                    "Evidence Recall@8 counts required exact gold spans fully covered by a "
+                    "retrieved chunk of the same document and source version. Any/full evidence "
+                    "and MRR use "
+                    "answerable questions only; questions without gold have unmeasured abstention. "
+                    "Scope is simulated from canonical fixture personas, not the production "
+                    "permission resolver."
+                ),
+                "rows": [
+                    {
+                        "mode": f"SEMANTIC / {split}",
+                        "language": language,
+                        "questions": values["answerableQuestions"],
+                        **{
+                            key: values[key]
+                            for key in (
+                                "goldGroupsFound",
+                                "goldGroups",
+                                "evidenceRecallAt8",
+                                "anyHitQuestions",
+                                "fullEvidenceQuestions",
+                                "meanReciprocalRank",
+                            )
+                        },
+                    }
+                    for split, group in report["metrics"].items()
+                    for language, values in group.items()
+                ],
+                "cases": [
+                    {
+                        "id": row["id"],
+                        "mode": f"SEMANTIC / {row['split']} / {row['persona']}",
+                        "language": row["language"],
+                        "query": row["query"],
+                        "fullEvidence": row["fullEvidence"],
+                        "expected": [
+                            {
+                                "id": gold["id"],
+                                "title": (
+                                    f"{documents[gold['document']]['title']} (v{gold['version']})"
+                                ),
+                                "text": gold["quote"],
+                            }
+                            for gold in row["gold"]
+                        ],
+                        "retrieved": [
+                            {
+                                "id": hit["chunk"],
+                                "title": (
+                                    f"{documents[hit['document']]['title']} "
+                                    f"(v{versions[hit['source']]})"
+                                ),
+                                "text": hit["text"],
+                            }
+                            for hit in row["retrieved"]
+                        ],
+                    }
+                    for row in report["cases"]
+                ],
+            }
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            raise EvaluationUnavailable() from error
     if report_id != REPORT_ID:
         raise Http404
     try:
@@ -72,6 +155,13 @@ def evaluation(report_id):
             "backend": report["backend"],
             "elapsedSeconds": report["elapsedSeconds"],
             "description": suite["description"],
+            "metricDefinition": (
+                "Evidence Recall@8 counts required gold document groups found in the first eight "
+                "results, divided by all required groups. Any evidence counts questions with at "
+                "least one gold group; full evidence requires every gold group. MRR averages the "
+                "reciprocal rank of the first gold hit. These development labels identify "
+                "documents, not exact answer spans."
+            ),
             "rows": rows,
             "cases": cases,
         }
@@ -90,7 +180,7 @@ class EvaluationCaseData(serializers.Serializer):
     mode = serializers.CharField()
     language = serializers.CharField()
     query = serializers.CharField()
-    fullEvidence = serializers.BooleanField()
+    fullEvidence = serializers.BooleanField(allow_null=True)
     expected = EvaluationDocumentData(many=True)
     retrieved = EvaluationDocumentData(many=True)
 
@@ -115,6 +205,7 @@ class EvaluationData(serializers.Serializer):
     backend = serializers.CharField()
     elapsedSeconds = serializers.FloatField()
     description = serializers.CharField()
+    metricDefinition = serializers.CharField()
     rows = EvaluationRowData(many=True)
     cases = EvaluationCaseData(many=True)
 
@@ -123,7 +214,9 @@ class EvaluationView(APIView):
     @extend_schema(responses=EvaluationData(many=True))
     def get(self, request, workspace_id):
         require_owner(membership_for(request.user, workspace_id))
-        return Response(EvaluationData([evaluation(REPORT_ID)], many=True).data)
+        return Response(
+            EvaluationData([evaluation(REPORT_ID), evaluation(FROZEN_REPORT_ID)], many=True).data
+        )
 
 
 class EvaluationDetailView(APIView):

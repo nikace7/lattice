@@ -142,6 +142,56 @@ def covers(hit, gold):
     )
 
 
+def recorded_report(root):
+    from pipeline.chunking import VERSION
+    from pipeline.embedding import PROFILE
+
+    suite = load_suite(root, "r8-v1")
+    report = json.loads(
+        (root / "docs/evaluations/r8-offline-semantic.json").read_text(encoding="utf-8")
+    )
+    if (
+        report["suiteHash"] != digest(suite)
+        or report["suite"] != suite["version"]
+        or report["profile"] != PROFILE
+        or report["chunker"] != VERSION
+        or report["mode"] != "SEMANTIC"
+        or report["split"] != "all"
+        or report["backend"] != "offline cosine only; canonical fixture scope simulation"
+    ):
+        raise ValueError("Recorded run does not match the frozen suite/profile/backend")
+    blocks = {
+        block["id"]: (doc, source, block)
+        for doc in suite["documents"]
+        for source in doc["sources"]
+        for block in source["blocks"]
+    }
+    for case, row in zip(suite["cases"], report["cases"], strict=True):
+        if any(row[key] != value for key, value in case.items()) or len(row["retrieved"]) > 8:
+            raise ValueError("Recorded case differs from the frozen labels")
+        allowed = {doc["id"] for doc in permitted_documents(suite, case)}
+        for hit in row["retrieved"]:
+            if hit["document"] not in allowed or not hit["spans"]:
+                raise ValueError("Recorded hit violates fixture scope or lacks provenance")
+            for span in hit["spans"]:
+                doc, source, block = blocks[span["block_id"]]
+                start, end = span["start"], span["end"]
+                left, right = span["chunk_start"], span["chunk_end"]
+                if (
+                    doc["id"] != hit["document"]
+                    or source["id"] != hit["source"]
+                    or source["id"] != doc["activeSource"]
+                    or not 0 <= start < end <= len(block["text"])
+                    or not 0 <= left < right <= len(hit["text"])
+                    or block["text"][start:end] != hit["text"][left:right]
+                ):
+                    raise ValueError("Recorded chunk has invalid text/version/span provenance")
+    computed = score_cases(suite["cases"], [row["retrieved"] for row in report["cases"]])
+    if any(report[key] != value for key, value in computed.items()):
+        raise ValueError("Recorded scores differ from recomputed span coverage")
+    return suite, report
+
+
 def score_cases(cases, retrieved):
     rows = []
     for case, hits in zip(cases, retrieved, strict=True):

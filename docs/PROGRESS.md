@@ -26,7 +26,10 @@ R4 scoped search is implemented with PostgreSQL/browser gates deferred. R5's loc
 generation, private conversations, durable jobs, validated answer delivery and citation
 reader are implemented; PostgreSQL/worker/browser and live model verification remain
 pending. R6 lifecycle implementation is present with its PostgreSQL, worker, browser
-and restore acceptance gates deferred. R7–R8 remain pending. The ingestion worker handles recovery email and document
+and restore acceptance gates deferred. R7 responsive reader and owner diagnostics
+are implemented. R8 frozen corpus, offline evaluation evidence and demo handoff are
+present; full-stack acceptance and remaining demo/database harness tooling stay open.
+The ingestion worker handles recovery email and document
 extraction; the answers queue handles private questions in LOCAL mode.
 
 ## Verification
@@ -441,3 +444,49 @@ R7 implementation is present; local API/worker/model end-to-end acceptance remai
 open along with prior database/migration/restore gates. Docker/PostgreSQL remain
 deferred at the user’s request. R8 frozen evaluation, actual end-to-end evidence,
 fresh setup and portfolio handoff remain pending.
+
+## 8 October 2026 — R8 frozen offline evidence and demo handoff
+
+- Froze 24 original fictional documents / 25 source files across three collections
+  in workspace A and three confusable-title documents in workspace B. Sources cover
+  TXT/MD, native/scanned PDF, DOCX headings/tables, English/Nepali, conflicting memos,
+  restricted collections, two leave versions and inert hostile source instructions.
+  The scanned PDF's text is an explicitly manual reference, not an OCR result.
+- Added 80 versioned labelled cases: 40 development / 40 held-out, each with the
+  prescribed category counts and separate topic/fact templates. Labels identify exact
+  document/version/block/Unicode offsets/quotes, required facts, caller/scope and
+  abstention expectations. A corpus lock and file checksums detect unintended changes.
+- Committed the freeze in `a76b057` before inference. Ran the already-prepared pinned
+  E5 model on CPU using production chunking/ranking and canonical fixture scope
+  simulation. Each split retrieved 41/41 gold spans and full evidence for 33/33
+  answerable questions. Held-out English MRR was 0.983; Nepali MRR was 1.0 across
+  only three questions. Whole-command time was 33.12 seconds, not request latency.
+  There was no post-result label/parameter tuning. All results and exact retrieved
+  passages are preserved in `docs/evaluations/r8-offline-semantic.json`.
+- Added read-only `run_evaluations --suite r8-v1 --profile local-e5`, with validation
+  independent of models/DB and explicitly opted-in offline inference. Default split
+  is development; no implicit download, application seeding, reset or provider call.
+- Owner diagnostics now expose both R4 document-group and R8 frozen exact-span
+  evidence with per-report definitions, versioned expected quotes and ranked chunks.
+  R8 artifacts must pass frozen hashes, scope/provenance checks and recomputed scores.
+  No-gold cases have `fullEvidence: null`, show abstention unmeasured and stay outside
+  the incomplete-evidence filter and answerable-rate denominators. Contracts updated.
+- Added `docs/evaluations/R8.md` and `docs/DEMO.md`, with measured provenance, pending
+  gates, operating/demo instructions and four preserved desktop/mobile screenshots.
+  Screenshots visibly identify mocked answers/comparisons. Backend image context
+  includes frozen source artifacts; an actual Docker rebuild remains unverified.
+
+Verified on the existing Windows host: **103 tests passed** (73 DB-free backend,
+25 web, one setup and four Chromium/axe cases), plus Ruff lint/format, ESLint,
+TypeScript, Django checks, production build and warning-free OpenAPI generation.
+All **147 backend tests collect**; collection is not execution of PostgreSQL tests.
+All 24 native source files reproduce canonical text/locators with the host parser.
+No dependencies, migrations, environment changes or CI bypass were added.
+
+R8 is not acceptance-complete. PostgreSQL keyword/vector/hybrid and real grants,
+parser/worker/OCR integration, live Qwen answers/citations/abstention/conflicts,
+human answer annotations, prior lifecycle/restore gates and fresh full-stack setup
+remain pending under Docker deferral. A database-backed frozen evaluation runner,
+guarded demo seed/reset and live recording still need implementation/verification.
+Offline exact-span coverage does not establish generated citation validity, answer
+quality or production isolation. The authored short corpus is not a blind benchmark.
