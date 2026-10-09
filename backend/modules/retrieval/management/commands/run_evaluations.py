@@ -18,7 +18,9 @@ from pipeline.ranking import normalize_query, rank_hits
 
 
 class Command(BaseCommand):
-    help = "Validate r8-v1 or explicitly run offline E5; never seeds or changes application data."
+    help = (
+        "Validate r8-v1, run offline E5, or evaluate temporary PostgreSQL fixtures with rollback."
+    )
     requires_system_checks = []
 
     def add_arguments(self, parser):
@@ -29,14 +31,27 @@ class Command(BaseCommand):
         )
         parser.add_argument("--validate-only", action="store_true")
         parser.add_argument("--embedding-only", action="store_true")
+        parser.add_argument("--database", action="store_true")
 
     def handle(self, *args, **options):
         if options["profile"] != "local-e5":
             raise CommandError("Only the pinned local-e5 profile is implemented.")
-        if not options["validate_only"] and not options["embedding_only"]:
+        if (
+            sum(bool(options[name]) for name in ["validate_only", "embedding_only", "database"])
+            != 1
+        ):
             raise CommandError(
-                "Pass --embedding-only. PostgreSQL/hybrid/answer evaluation remains deferred."
+                "Choose exactly one: --validate-only, --embedding-only or --database."
             )
+        if options["database"]:
+            from modules.workspaces.demo import database_name
+
+            if not settings.DEMO_MODE:
+                raise CommandError(
+                    "Set DEMO_MODE=true; database evaluation requires local lattice_demo."
+                )
+            if database_name() != "lattice_demo":
+                raise CommandError("Database evaluation requires local lattice_demo.")
         started = time.monotonic()
         try:
             suite = load_suite(settings.REPO_ROOT, options["suite"])
@@ -96,6 +111,31 @@ class Command(BaseCommand):
 
             vectors = embed([chunk.text for chunk in chunks])
             queries = embed([normalize_query(case["query"]) for case in cases], query=True)
+            if options["database"]:
+                from modules.retrieval.database_evaluation import evaluate_database
+
+                report = evaluate_database(suite, cases, chunks, vectors, queries)
+                self.stdout.write(
+                    json.dumps(
+                        {
+                            "suite": suite["version"],
+                            "suiteHash": digest(suite),
+                            "profile": PROFILE,
+                            "chunker": VERSION,
+                            "split": options["split"],
+                            "chunks": len(chunks),
+                            "backend": (
+                                "PostgreSQL canonical fixtures; real grants; all fixture records "
+                                "rolled back; not ingestion or live generation"
+                            ),
+                            "elapsedSeconds": round(time.monotonic() - started, 2),
+                            "modes": report,
+                        },
+                        indent=2,
+                        ensure_ascii=True,
+                    )
+                )
+                return
             results = []
             for case, query in zip(cases, queries, strict=True):
                 allowed = {doc["id"] for doc in permitted_documents(suite, case)}

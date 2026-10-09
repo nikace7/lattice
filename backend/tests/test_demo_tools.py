@@ -151,9 +151,10 @@ def test_seed_reset_round_trip(demo_environment, settings, monkeypatch):
     assert SourceVersion.objects.count() == 25
     assert ExtractionJob.objects.filter(state="CANCELLED").count() == 25
     assert CollectionGrant.objects.count() == 1
-    viewer = User.objects.get(username="demo-a-member")
+    member = User.objects.get(username="demo-a-member")
+    assert member.membership_set.get().role == "MEMBER"
     curator = User.objects.get(username="demo-a-curator")
-    assert readable_collections(viewer).count() == 1
+    assert readable_collections(member).count() == 1
     assert readable_collections(curator).count() == 2
     before = list(SourceVersion.objects.values_list("id", flat=True))
     call_command("seed_demo")

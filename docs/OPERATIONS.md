@@ -441,3 +441,17 @@ marker to bypass a refusal. A new seed uses new resource IDs.
 
 The new workspace migration is generated and drift-checked but unapplied. Demo
 PostgreSQL and container execution remain deferred alongside the full R8 gate.
+
+## Frozen evaluation and answer review
+
+[The acceptance workflow](evaluations/ACCEPTANCE.md) documents the new guarded
+`run_evaluations --database` comparison and `review_answers` capture/scoring commands.
+The comparison creates temporary canonical fixtures only inside a rolled-back
+transaction; it never seeds an application library or dispatches jobs. Answer capture
+is restricted to the matching marked demo and reads current-access delivery APIs.
+Offline review accepts separate UTF-8 operator files and performs no database call.
+No live run or human quality result is claimed until these steps are actually executed.
+
+New demo seeds give `demo-a-member` the MEMBER role, so frozen question cases can
+generate when the local model is configured. An existing READY seed is not silently
+modified; use the guarded stop/reset/reseed procedure to adopt this role update.

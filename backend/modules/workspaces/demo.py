@@ -204,7 +204,7 @@ def seed(root, password):
                 members[key] = Membership.objects.create(
                     workspace=workspaces[persona["workspace"]],
                     user=user,
-                    role="VIEWER" if persona["role"] == "MEMBER" else persona["role"],
+                    role=persona["role"],
                 )
             collections = {}
             for item in suite["collections"]:
