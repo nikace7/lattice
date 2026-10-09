@@ -147,3 +147,18 @@ uv run --project backend pytest backend -m "not django_db" -q
 
 Compose demo configuration can be merged/checked without starting its engine.
 Configuration checks do not prove live mount isolation or ingestion behavior.
+
+R8 completion tools: `test_database_evaluation.py` covers backend opt-in guards and
+canonical span/scope validation without PostgreSQL. Its two integration cases cover
+actual grants, denied-scope retrieval and rollback on both success and injected failure.
+`test_answer_review.py` covers unmeasured results, capture binding, exact claim offsets,
+duplicate/partial annotations, boolean verdicts and the offline command. Its two
+PostgreSQL cases bind actual demo turns and verify unanswerable/denied scopes. These
+four integration cases remain collected but unexecuted during Docker deferral.
+
+UI refresh: Vitest covers current-page filters and retained upload retry identifiers.
+`ui.spec.ts` covers password visibility, upload disclosure, title/status filters,
+keyboard modal focus and responsive layout. After `pnpm build`, `pnpm test:ui` runs
+this suite plus the existing reader tests using mocked APIs and axe, with no database.
+It keeps the real `pnpm test:e2e` server and checks intact. Preview screenshots carry
+fictional/mock labels and are not full-stack evidence.
