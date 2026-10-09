@@ -26,6 +26,7 @@
     "typecheck": "pnpm --filter @lattice/web typecheck",
     "test": "node --test scripts/project.test.mjs && pnpm --filter @lattice/web test && uv run --project backend pytest backend",
     "test:e2e": "pnpm --filter @lattice/web test:e2e",
+    "test:ui": "pnpm --filter @lattice/web test:ui",
     "verify": "node scripts/project.mjs verify",
     "build": "pnpm --filter @lattice/web build",
     "contracts:generate": "node scripts/project.mjs contracts"

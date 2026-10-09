@@ -9,6 +9,43 @@ afterEach(() => { cleanup(); vi.clearAllMocks(); });
 
 const workspace: Workspace = { id: "workspace", name: "Library", role: "OWNER", revision: 1, accessEpoch: 1 };
 
+test("document filters apply to the current page without presenting it as the entire library", async () => {
+  vi.mocked(api).mockImplementation(async (path) => path.includes("collections") ? { results: [], next: null, previous: null } : {
+    results: [
+      { id: "a", title: "Leave policy", kind: "PDF", state: "REVIEWED", currentSourceId: "s", sourceNumber: 1, byteSize: 1200 },
+      { id: "b", title: "Meeting notes", kind: "TXT", state: "FAILED", currentSourceId: null, sourceNumber: 1, byteSize: 500 },
+    ], next: "/api/v1/workspaces/workspace/documents?page=2", previous: null,
+  });
+  render(<Documents workspace={{ ...workspace, role: "VIEWER" }} />);
+  await screen.findByText("Leave policy");
+  fireEvent.change(screen.getByLabelText("Find on this page"), { target: { value: "notes" } });
+  expect(screen.queryByText("Leave policy")).not.toBeInTheDocument();
+  expect(screen.getByText("Meeting notes")).toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText("Document status"), { target: { value: "READY" } });
+  expect(screen.getByText("No documents match these filters on this page.")).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Clear filters" }));
+  expect(screen.getByText("Leave policy")).toBeInTheDocument();
+  expect(screen.getByText("2 of 2 documents on this page")).toBeInTheDocument();
+});
+
+test("collapsing and reopening an upload after an ambiguous failure preserves its submission identifier", async () => {
+  const submissions: FormData[] = [];
+  vi.mocked(api).mockImplementation(async (path, method, body) => {
+    if (method === "POST") { submissions.push(body as FormData); throw new Error("Response lost"); }
+    return { results: path.includes("collections") ? [{ id: "c", title: "Handbook", canWrite: true }] : [], next: null, previous: null };
+  });
+  render(<Documents workspace={{ ...workspace, role: "CURATOR" }} />);
+  fireEvent.click((await screen.findAllByRole("button", { name: "Add document" }))[0]);
+  fireEvent.change(screen.getByLabelText("Document file"), { target: { files: [new File(["Policy"], "policy.txt")] } });
+  fireEvent.submit(screen.getByRole("form", { name: "Upload a document" }));
+  await screen.findByText("Response lost");
+  fireEvent.click(screen.getByRole("button", { name: "Close upload" }));
+  fireEvent.click(screen.getAllByRole("button", { name: "Add document" })[0]);
+  fireEvent.submit(screen.getByRole("form", { name: "Upload a document" }));
+  await waitFor(() => expect(submissions).toHaveLength(2));
+  expect(submissions[1].get("uploadId")).toBe(submissions[0].get("uploadId"));
+});
+
 function openSource(kind: string, locator: SourceBlock["locator"], text: string, overrides: Partial<DocumentSource> = {}, chunkId?: string) {
   const document: DocumentSource = {
     id: "document", title: "Policy", collectionId: "collection", sourceId: "source", revision: 1,

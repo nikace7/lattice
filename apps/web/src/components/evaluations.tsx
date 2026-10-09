@@ -20,7 +20,7 @@ function EvaluationReports({ workspace, reportId }: { workspace: Workspace; repo
   const cases = detail?.cases.filter((item) => !failuresOnly || item.fullEvidence === false) ?? [];
   const selectedCase = cases.find((item) => item.id === selected);
   return <section aria-labelledby="evaluation-title">
-    <p className="eyebrow">MEASURE, THEN INSPECT</p>
+    <p className="eyebrow">Workspace / Recorded evaluations</p>
     <div className="section-heading"><h1 id="evaluation-title">Evaluations</h1>{reportId && <Link href={`/w/${workspace.id}/evaluations`}>All recorded evaluations</Link>}</div>
     <p>These are recorded synthetic retrieval runs shared across owner diagnostics. They do not evaluate this workspace’s documents or prove answer quality.</p>
     <ErrorNotice error={report.error} retry={report.reload} />

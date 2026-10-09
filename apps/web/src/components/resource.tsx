@@ -89,6 +89,7 @@ export function Loading({
 }) {
   return (
     <p className="loading" role="status">
+      <span className="loading-indicator" aria-hidden="true" />
       {children}
     </p>
   );

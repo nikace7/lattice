@@ -44,12 +44,13 @@ export function Search({ workspace }: { workspace: Workspace }) {
   }
 
   return <section>
-    <p className="eyebrow">FOLLOW THE EVIDENCE</p>
+    <p className="eyebrow">Library / Search</p>
     <h1>Search your library</h1>
-    <p className="muted">Find passages in ready indexes and open their source. Answer generation is not available yet.</p>
+    <p className="muted">Find a passage, then read it in context. To ask a question with citations, open <Link href={`/w/${workspace.id}/ask`}>Ask</Link>.</p>
     <form className="upload-form" aria-label="Search sources" onSubmit={submit} onChange={clear}>
       <label htmlFor="search-query">Search words or a question</label>
       <input id="search-query" name="query" type="search" required maxLength={4000} placeholder="For example, how much notice does leave require?" />
+      <details className="search-options"><summary>Search method & source scope</summary>
       <label htmlFor="search-mode">Search method</label>
       <select id="search-mode" name="mode" defaultValue="KEYWORD" aria-describedby="search-method-note">
         <option value="KEYWORD">Keyword</option><option value="SEMANTIC">Semantic</option><option value="HYBRID">Hybrid</option>
@@ -62,7 +63,8 @@ export function Search({ workspace }: { workspace: Workspace }) {
       </select>
       <ErrorNotice error={collections.error} retry={collections.reload} />
       {collections.data && <Pagination page={collections.data} onPage={(next) => { clear(); setPath(next); }} />}
-      {canInspect && <label><input type="checkbox" name="details" /> Show retrieval details</label>}
+      {canInspect && <label className="checkbox-label"><input type="checkbox" name="details" /> Show retrieval details</label>}
+      </details>
       <button className="primary-button" disabled={busy}>{busy ? "Searching…" : "Search"}</button>
     </form>
     <ErrorNotice error={error} />
