@@ -29,7 +29,9 @@ pending. R6 lifecycle implementation is present with its PostgreSQL, worker, bro
 and restore acceptance gates deferred. R7 responsive reader and owner diagnostics
 are implemented. R8 frozen corpus, offline evaluation evidence and demo handoff are
 present. Guarded demo tooling is implemented but unexecuted on PostgreSQL;
-full-stack acceptance and the database evaluation harness stay open.
+database comparison and answer-review tooling are implemented. Their PostgreSQL/live
+execution and full-stack acceptance stay open. The UI refresh is implemented and
+verified with mocked responsive browser journeys.
 The ingestion worker handles recovery email and document
 extraction; the answers queue handles private questions in LOCAL mode.
 
@@ -537,3 +539,45 @@ fresh setup and live recording still remain. Docker stays deferred at the user's
 request; the new tooling does not establish production erasure or full-stack success.
 Offline exact-span coverage does not establish generated citation validity, answer
 quality or production isolation. The authored short corpus is not a blind benchmark.
+
+## 9 October 2026 — R8 evaluation tooling and interface refresh
+
+Implemented on `codex/r8-completion-ui`, keeping Docker deferred at the user's request:
+
+- `run_evaluations --database` compares PostgreSQL keyword/semantic/hybrid ranking
+  through production collection scope and candidates. Temporary canonical records
+  and real grants always roll back; stable chunk IDs and an advisory lock protect
+  reproducibility and concurrent demo operations. The command requires local
+  `lattice_demo` and DEMO_MODE. It does not measure real ingestion/OCR or live answers.
+- `review_answers` captures actual marked demo turns with exact persona/question/
+  authorized scope and model digest, generates blank human annotation files, and
+  scores separate reviews offline. Full nonoverlapping code-point text coverage is
+  required; missing/partial reviews cannot become perfect support results. No live
+  answers or human-labelled metrics were created in this session.
+- Demo member now uses MEMBER, allowing questions while retaining frozen read scope.
+  Existing READY seeds remain idempotent; reset/reseed is required for this role change.
+- Reworked typography, paper/evergreen surfaces, navigation and outline icons. Added
+  page-explicit document title/status filters, retained upload disclosure, password
+  visibility and a native keyboard navigation dialog. Maintenance/search options
+  disclose progressively; source/answer text retains its serif reader treatment.
+- Added [UI guide](UI.md), visibly mocked previews and [acceptance workflow](evaluations/ACCEPTANCE.md).
+  Frozen corpus/labels/offline report, dependencies, normal environment, migrations
+  and API contracts remain unchanged.
+
+Observed verification: **103 DB-free backend + 28 Vitest + 10 Chromium/axe + 1 Node
+setup tests passed (142 tests)**. Production Next.js build/type checking, ESLint,
+Ruff lint/format, Django system checks, frozen-suite validation and whitespace checks
+passed. **189 backend tests collect; 86 PostgreSQL tests are unexecuted**, including
+four new database evaluation/capture cases. Migration drift reports no changes;
+database-history verification timed out with Docker deferred. No migration applied.
+
+Review findings were fixed and re-reviewed: retrieval ties, normalized denied scopes,
+complete human annotation coverage, and preserving upload retry IDs after disclosure.
+Browser checks also caught/fixed mobile accessible naming and initial dialog focus.
+The mocked UI checks run independently via `pnpm build` then `pnpm test:ui` and do
+not replace the real `pnpm test:e2e` integration suite.
+
+Local-path implementation is ready for acceptance execution. Full-stack acceptance
+remains open: actual PostgreSQL/migrations/demo operations, workers/parser/OCR,
+live generation and human labels, security/lifecycle/restore races, target-size
+performance, fresh setup and live recording. Optional cloud adapters are unimplemented.

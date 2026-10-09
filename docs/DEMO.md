@@ -3,6 +3,9 @@
 R1–R7 features and R8 offline evidence are implemented. Full-stack acceptance is
 still pending. This walkthrough keeps illustrative UI fixtures, measured retrieval
 and a future live application demonstration clearly identified.
+The [refreshed interface guide](UI.md) shows the current design with fictional preview
+data. The [acceptance workflow](evaluations/ACCEPTANCE.md) covers implemented database
+comparison and actual-answer capture/human-review commands whose live execution is deferred.
 
 ## Review today without Docker
 
@@ -72,7 +75,7 @@ PostgreSQL integration and this Compose walkthrough remain unexecuted.
    apply. Seed requires an empty application database and empty demo storage on
    first use. A database marker and matching `.lattice-demo.json` bind it to that
    storage root. No provider, email, Redis or parser call is made by seeding.
-4. Sign in as `demo-a-owner`, `demo-a-curator`, `demo-a-member` (VIEWER), or
+4. Sign in as `demo-a-owner`, `demo-a-curator`, `demo-a-member` (MEMBER), or
    `demo-b-owner`. Their emails use `@lattice.invalid`. There are two workspaces,
    four collections, 24 documents and 25 source versions. Only the A curator gets
    a restricted Projects grant; Finance is owner-only. Repeated seed is a no-op
@@ -111,8 +114,8 @@ investigation; do not forge or copy a marker to authorize deletion.
    and run real tests. Preserve the independent tombstone journal before any restore.
 2. Use the seeded accounts in Cedar Studio (workspace A) and Birch Studio
    (workspace B). The frozen `a-member`
-   persona maps to the application's VIEWER role; fixture roles are scope labels,
-   not an import of production grants.
+   persona uses the application's MEMBER role so it can ask questions. Its collection
+   scope matches the frozen labels; Projects and Finance remain restricted.
 3. Inspect A's Handbook (workspace-readable), Projects (restricted, curator grant)
    and Finance (restricted, owner-only). B has its separate Handbook. Follow
    [the manifest](../fixtures/evals/r8-v1.json) when assigning documents; matching

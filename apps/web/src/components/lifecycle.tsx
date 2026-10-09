@@ -26,7 +26,7 @@ export function DocumentLifecycle({ document, workspace, selectSource, reload }:
       else router.push(`/w/${workspace.id}/documents`);
     });
   }
-  return <details className="source-warnings">
+  return <details className="workspace-maintenance">
     <summary>Source versions and retention</summary>
     <p>Older versions keep their exact citation references until an owner removes them.</p>
     <ErrorNotice error={versions.error} retry={versions.reload} />
@@ -65,7 +65,7 @@ export function WorkspaceLifecycle({ workspace }: { workspace: Workspace }) {
     const values = Object.fromEntries([...form].map(([key, value]) => [key, Number(value)]));
     void action.run(async () => { await api(`${base}/quotas`, "PUT", values); quotas.reload(); });
   }
-  return <details className="source-warnings">
+  return <details className="workspace-maintenance">
     <summary>Workspace indexing and limits</summary>
     <p>Build a new index for every searchable document. The current indexes stay available until the entire build is ready. Previous indexes remain retained for citations.</p>
     <ErrorNotice error={batch.error} retry={batch.reload} />

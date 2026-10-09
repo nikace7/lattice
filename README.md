@@ -14,12 +14,17 @@ owner-controlled quotas. R7 adds responsive reader controls, accessible mobile n
 scoped document status and owner diagnostics for recorded synthetic evaluations.
 R8 freezes 24 fictional documents and 80 labelled evaluation cases, records real
 offline E5 exact-span retrieval, and includes an illustrated demo/handoff guide.
+R8 now includes guarded demo tooling, a rollback-only PostgreSQL comparison runner
+and actual-answer capture/human-review commands. The refreshed interface adds clearer
+typography, document filters, upload disclosure and keyboard navigation.
 Live Qwen generation and R2–R7 database/worker/browser integration validation remain
 deferred while Docker is skipped.
 The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
 observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).
 Read [R8 evidence](docs/evaluations/R8.md) for measured counts and open acceptance
 gates, and [the demo guide](docs/DEMO.md) for screenshots and the live walkthrough.
+See [interface design](docs/UI.md) and [the acceptance workflow](docs/evaluations/ACCEPTANCE.md)
+for the implemented tools and deferred validation.
 
 ## First run
 

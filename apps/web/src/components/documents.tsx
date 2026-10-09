@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { api, type Collection, type DocumentSource, type Page, type SourceBlock, type Workspace } from "@/lib/api";
 import { ErrorNotice, Loading, Pagination, useAction, useResource } from "./resource";
 import { DocumentLifecycle, WorkspaceLifecycle } from "./lifecycle";
+import { Icon } from "./icon";
 
 const states: Record<string, string> = {
   QUEUED: "Queued for extraction", EXTRACTING: "Extracting text",
@@ -22,10 +23,17 @@ function DocumentList({ workspace }: { workspace: Workspace }) {
   const [collectionPath, setCollectionPath] = useState(`/workspaces/${workspace.id}/collections?pageSize=100`);
   const collections = useResource<Page<Collection>>(collectionPath);
   const [collectionId, setCollectionId] = useState("");
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadBusy, setUploadBusy] = useState(false);
   const base = `/workspaces/${workspace.id}/documents${collectionId ? `?collectionId=${collectionId}` : ""}`;
   const [cursor, setCursor] = useState<{ base: string; path: string }>();
   const documents = useResource<Page<DocumentSource>>(cursor?.base === base ? cursor.path : base);
   const writable = collections.data?.results.filter((collection) => collection.canWrite) ?? [];
+  const shown = documents.data?.results.filter((doc) => doc.title.toLowerCase().includes(query.trim().toLowerCase()) && (
+    !status || (status === "READY" ? Boolean(doc.currentSourceId) : status === "REVIEW" ? doc.state === "NEEDS_REVIEW" : status === "FAILED" ? doc.state === "FAILED" || doc.index?.state === "FAILED" : ["QUEUED", "EXTRACTING"].includes(doc.state) || ["QUEUED", "CHUNKING", "EMBEDDING"].includes(doc.index?.state ?? ""))
+  )) ?? [];
   const pending = documents.data?.results.some((document) => ["QUEUED", "EXTRACTING"].includes(document.state) || ["QUEUED", "CHUNKING", "EMBEDDING"].includes(document.index?.state ?? ""));
   useEffect(() => {
     if (!pending) return;
@@ -33,36 +41,42 @@ function DocumentList({ workspace }: { workspace: Workspace }) {
     return () => clearTimeout(timer);
   }, [pending, documents.data, documents.reload]);
   return <section>
-    <p className="eyebrow">YOUR SOURCES, CLOSE AT HAND</p>
-    <div className="section-heading"><h1>Documents</h1><button onClick={documents.reload}>Refresh documents</button></div>
-    <p className="muted">Upload PDF, Word, Markdown or plain text, then prepare an index to search the original evidence.</p>
+    <p className="eyebrow">Library / Sources</p>
+    <div className="section-heading"><div><h1>Documents</h1><p className="muted">The original sources behind your team’s knowledge.</p></div><div className="heading-actions"><button onClick={documents.reload}>Refresh documents</button>{writable.length > 0 && <button className="primary-button" disabled={uploadBusy} aria-expanded={uploading} aria-controls="document-upload" onClick={() => setUploading(!uploading)}><Icon name="plus" />{uploading ? "Close upload" : "Add document"}</button>}</div></div>
     <ErrorNotice error={collections.error} retry={collections.reload} />
-    {writable.length > 0 && <UploadForm collections={writable} workspace={workspace} />}
-    {workspace.role === "OWNER" && <WorkspaceLifecycle workspace={workspace} />}
+    {["OWNER", "CURATOR"].includes(workspace.role) && <div id="document-upload" hidden={!uploading || !writable.length}><UploadForm collections={writable} workspace={workspace} onBusyChange={setUploadBusy} /></div>}
+    <div className="document-toolbar">
+      <div><label htmlFor="document-query">Find on this page</label><input id="document-query" type="search" placeholder="Filter document titles…" value={query} onChange={(event) => setQuery(event.target.value)} /></div>
     {collections.data && <>
-      <label htmlFor="document-filter">Filter by collection</label>
+      <div><label htmlFor="document-filter">Filter by collection</label>
       <select id="document-filter" value={collectionId} onChange={(event) => setCollectionId(event.target.value)}>
         <option value="">All accessible collections</option>
         {collections.data.results.map((collection) => <option key={collection.id} value={collection.id}>{collection.title}</option>)}
-      </select>
+      </select></div>
       <Pagination page={collections.data} onPage={setCollectionPath} />
     </>}
+      <div><label htmlFor="document-status-filter">Document status</label><select id="document-status-filter" value={status} onChange={(event) => setStatus(event.target.value)}><option value="">All statuses</option><option value="READY">Searchable</option><option value="REVIEW">Needs review</option><option value="PROCESSING">Processing</option><option value="FAILED">Failed</option></select></div>
+    </div>
+    {(query || status) && <button className="text-button" onClick={() => { setQuery(""); setStatus(""); }}>Clear filters</button>}
     <ErrorNotice error={documents.error} retry={documents.reload} />
     {!documents.data && !documents.error && <Loading>Finding your documents…</Loading>}
     {documents.data && <>
-      {documents.data.results.length ? <div className="document-list">
-        {documents.data.results.map((document) => <Link className="workspace-row" key={document.id} href={`/w/${workspace.id}/documents/${document.id}`}>
+      <p className="field-note" role="status">{shown.length} of {documents.data.results.length} documents on this page</p>
+      {shown.length ? <div className="document-list">
+        <div className="document-list-heading" aria-hidden="true"><span>Format</span><span>Document & source version</span><span>Open</span></div>
+        {shown.map((document) => <Link className="workspace-row" key={document.id} href={`/w/${workspace.id}/documents/${document.id}`}>
           <span className="access-badge">{document.kind}</span>
-          <span><strong>{document.title}</strong><small>{states[document.state]} · {document.currentSourceId ? "Searchable version available" : "Not indexed"} · source version {document.sourceNumber} · {Math.ceil(document.byteSize / 1024)} KiB</small></span>
-          <span aria-hidden="true">↗</span>
+          <span><strong>{document.title}</strong><small>{states[document.state]} · v{document.sourceNumber} · {Math.ceil(document.byteSize / 1024)} KiB</small><span className={`document-readiness ${document.currentSourceId ? "is-ready" : ""}`}>{document.currentSourceId ? "Searchable" : "Not indexed"}</span></span>
+          <Icon name="arrow" />
         </Link>)}
-      </div> : <div className="empty-library"><h2>No documents here yet.</h2><p>{writable.length ? "Add your first source using the form above." : "Ask a curator to add documents, or create a collection if you are an owner."}</p><Link href={`/w/${workspace.id}/collections`}>View collections</Link></div>}
+      </div> : <div className="empty-library"><Icon name="documents" /><h2>{documents.data.results.length ? "No matching documents" : "Add your first source"}</h2><p>{documents.data.results.length ? "No documents match these filters on this page." : writable.length ? "Add a PDF, Word document, Markdown or text file to get started." : "Your team’s documents will appear here. Ask a curator to add a source."}</p>{writable.length && !documents.data.results.length ? <button className="primary-button" onClick={() => setUploading(true)}>Add document</button> : <Link href={`/w/${workspace.id}/collections`}>View collections</Link>}</div>}
       <Pagination page={documents.data} onPage={(path) => setCursor({ base, path })} />
     </>}
+    {workspace.role === "OWNER" && <WorkspaceLifecycle workspace={workspace} />}
   </section>;
 }
 
-function UploadForm({ collections, workspace, replacement, onComplete }: { collections: Collection[]; workspace: Workspace; replacement?: DocumentSource; onComplete?: () => void }) {
+function UploadForm({ collections, workspace, replacement, onComplete, onBusyChange }: { collections: Collection[]; workspace: Workspace; replacement?: DocumentSource; onComplete?: () => void; onBusyChange?: (busy: boolean) => void }) {
   const action = useAction();
   const uploadId = useRef<string | null>(null);
   const router = useRouter();
@@ -74,9 +88,12 @@ function UploadForm({ collections, workspace, replacement, onComplete }: { colle
     const collection = values.get("collection");
     values.delete("collection");
     if (replacement) values.set("expectedRevision", String(replacement.revision));
+    onBusyChange?.(true);
     void action.run(async () => {
-      const document = await api<DocumentSource>(replacement ? `/documents/${replacement.id}/replace` : `/collections/${collection}/documents`, "POST", values);
-      if (onComplete) onComplete(); else router.push(`/w/${workspace.id}/documents/${document.id}`);
+      try {
+        const document = await api<DocumentSource>(replacement ? `/documents/${replacement.id}/replace` : `/collections/${collection}/documents`, "POST", values);
+        if (onComplete) onComplete(); else router.push(`/w/${workspace.id}/documents/${document.id}`);
+      } finally { onBusyChange?.(false); }
     });
   }
   return <form className="upload-form" onSubmit={submit} aria-label={replacement ? "Replace document" : "Upload a document"}>

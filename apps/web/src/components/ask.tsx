@@ -15,7 +15,7 @@ export function Ask({ workspace, conversationId }: { workspace: Workspace; conve
   const status = useResource<components["schemas"]["DocumentStatusData"]>(`/workspaces/${workspace.id}/document-status`);
   const router = useRouter();
   return <section>
-    <p className="eyebrow">ASK, THEN READ THE EVIDENCE</p>
+    <p className="eyebrow">Library / Questions</p>
     <div className="section-heading"><h1>Your questions</h1>{conversationId && <Link href={`/w/${workspace.id}/ask`}>New conversation</Link>}</div>
     <ErrorNotice error={capability.error} retry={capability.reload} />
     <p className="muted">{capability.data?.message ?? "Checking answer availability…"}</p>

@@ -15,6 +15,8 @@ import { Documents } from "./documents";
 import { Search } from "./search";
 import { Ask } from "./ask";
 import { Evaluations } from "./evaluations";
+import { CommandMenu } from "./command-menu";
+import { Icon } from "./icon";
 import {
   ErrorNotice,
   Loading,
@@ -27,18 +29,16 @@ function Brand() {
   return (
     <Link href="/" className="wordmark" aria-label="Lattice home">
       <span className="brand-symbol" aria-hidden="true">
-        ▦
+        <Icon name="library" />
       </span>{" "}
       lattice
-      <span className="brand-dot" aria-hidden="true">
-        .
-      </span>
     </Link>
   );
 }
 
 export function Authentication({ onSuccess, invitation = false }: { onSuccess: () => void; invitation?: boolean }) {
   const [register, setRegister] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const action = useAction();
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -57,23 +57,21 @@ export function Authentication({ onSuccess, invitation = false }: { onSuccess: (
       <section className="auth-story" aria-label="About Lattice">
         <Brand />
         <div>
-          <p className="eyebrow">THE KNOWLEDGE LIBRARY</p>
+          <p className="eyebrow">A shared knowledge workspace</p>
           <h2>
-            Good knowledge.
-            <br />A clear source.
+            Answers begin
+            <br />with a source.
           </h2>
           <p>
-            A quiet place for your team’s documents, ideas, and the evidence
-            behind them.
+            Bring your team’s documents together. Find the passage you need.
+            Keep the evidence within reach.
           </p>
         </div>
-        <p className="auth-footnote">
-          Your workspace. Your collections. Your people.
-        </p>
+        <ol className="auth-workflow"><li><span>01</span><div><strong>Build your library</strong><small>Private collections for your team’s documents.</small></div></li><li><span>02</span><div><strong>Find the right passage</strong><small>Search by words or meaning.</small></div></li><li><span>03</span><div><strong>Read the evidence</strong><small>Open the original source behind a citation.</small></div></li></ol>
       </section>
       <main id="main" tabIndex={-1} className="auth-main">
         <div className="auth-form">
-          <p className="eyebrow">MAKE ROOM FOR WHAT YOU KNOW</p>
+          <p className="eyebrow">Your library awaits</p>
           <h1>{register ? "Create your account" : "Welcome back"}</h1>
           <p className="muted">
             {invitation ? "Use the email address that received your invitation. You can accept it after signing in." : register
@@ -95,16 +93,16 @@ export function Authentication({ onSuccess, invitation = false }: { onSuccess: (
               disabled={action.busy}
             />
             <label htmlFor="password">Password</label>
-            <input
+            <div className="password-field"><input
               id="password"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               autoComplete={register ? "new-password" : "current-password"}
               minLength={register ? 8 : undefined}
               maxLength={128}
               required
               disabled={action.busy}
-            />
+            /><button type="button" disabled={action.busy} aria-pressed={showPassword} aria-controls="password" onClick={() => setShowPassword(!showPassword)}>{showPassword ? "Hide password" : "Show password"}</button></div>
             {register && (
               <p className="field-note">
                 Use at least 8 characters and avoid common passwords.
@@ -203,10 +201,10 @@ function Lobby({
         <SignOut username={user.username} onSignedOut={onSignedOut} />
       </header>
       <main id="main" tabIndex={-1} className="lobby-main">
-        <p className="eyebrow">YOUR READING ROOMS</p>
+        <p className="eyebrow">Workspace directory</p>
         <h1>Your workspaces</h1>
         <p className="muted">
-          Choose a library, or give your next project a home.
+          Choose a workspace to open its documents and collections.
         </p>
         <ErrorNotice error={workspaces.error} retry={workspaces.reload} />
         {!workspaces.data && !workspaces.error && <Loading />}
@@ -243,7 +241,7 @@ function Lobby({
           className="create-workspace"
           aria-labelledby="create-workspace-title"
         >
-          <h2 id="create-workspace-title">A new space to think.</h2>
+          <h2 id="create-workspace-title">Create a workspace</h2>
           <form onSubmit={create}>
             <label htmlFor="workspace-name">Workspace name</label>
             <div className="inline-form">
@@ -299,7 +297,7 @@ function CollectionList({
     <section aria-labelledby="collection-title">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">YOUR KNOWLEDGE, ORGANIZED</p>
+          <p className="eyebrow">Library / Organization</p>
           <h1 id="collection-title">Collections</h1>
         </div>
         {canCreate && (
@@ -362,7 +360,7 @@ function CollectionList({
                   onClick={() => onSelect(collection.id)}
                 >
                   <span className="collection-icon" aria-hidden="true">
-                    ▤
+                    <Icon name="collections" />
                   </span>
                   <span className="collection-row-title">
                     <strong>{collection.title}</strong>
@@ -382,7 +380,7 @@ function CollectionList({
           ) : (
             <div className="empty-library">
               <span className="empty-symbol" aria-hidden="true">
-                ▤
+                <Icon name="collections" />
               </span>
               <h2>
                 {canCreate
@@ -443,26 +441,29 @@ function WorkspaceRoom({
   const isDocuments = view === "documents" || view.startsWith("documents/");
   const isEvaluations = view === "evaluations" || view.startsWith("evaluations/");
   const navigation = <nav aria-label="Workspace">
-    <Link href={`/w/${id}/collections`} aria-current={!isMembers && !isDocuments && !isSearch && !isAsk && !isEvaluations ? "page" : undefined} onClick={() => setDrawer(false)}><span aria-hidden="true">▤</span> Collections</Link>
-    <Link href={`/w/${id}/documents`} aria-current={isDocuments ? "page" : undefined} onClick={() => setDrawer(false)}><span aria-hidden="true">▱</span> Documents</Link>
-    <Link href={`/w/${id}/search`} aria-current={isSearch ? "page" : undefined} onClick={() => setDrawer(false)}><span aria-hidden="true">⌕</span> Search</Link>
-    <Link href={`/w/${id}/ask`} aria-current={isAsk ? "page" : undefined} onClick={() => setDrawer(false)}><span aria-hidden="true">?</span> Ask</Link>
+    <Link href={`/w/${id}/documents`} aria-current={isDocuments ? "page" : undefined} onClick={() => setDrawer(false)}><Icon name="documents" /> Documents</Link>
+    <Link href={`/w/${id}/collections`} aria-current={!isMembers && !isDocuments && !isSearch && !isAsk && !isEvaluations ? "page" : undefined} onClick={() => setDrawer(false)}><Icon name="collections" /> Collections</Link>
+    <Link href={`/w/${id}/search`} aria-current={isSearch ? "page" : undefined} onClick={() => setDrawer(false)}><Icon name="search" /> Search</Link>
+    <Link href={`/w/${id}/ask`} aria-current={isAsk ? "page" : undefined} onClick={() => setDrawer(false)}><Icon name="ask" /> Ask</Link>
     {workspace.data?.role === "OWNER" && <>
-      <Link href={`/w/${id}/evaluations`} aria-current={isEvaluations ? "page" : undefined} onClick={() => setDrawer(false)}><span aria-hidden="true">≡</span> Evaluations</Link>
-      <Link href={`/w/${id}/settings/members`} aria-current={isMembers ? "page" : undefined} onClick={() => setDrawer(false)}><span aria-hidden="true">♧</span> People & access</Link>
+      <Link href={`/w/${id}/evaluations`} aria-current={isEvaluations ? "page" : undefined} onClick={() => setDrawer(false)}><Icon name="chart" /> Evaluations</Link>
+      <Link href={`/w/${id}/settings/members`} aria-current={isMembers ? "page" : undefined} onClick={() => setDrawer(false)}><Icon name="people" /> People & access</Link>
     </>}
   </nav>;
   return (
     <div className="room">
       <header className="topbar">
         <Brand />
+        {workspace.data && <CommandMenu workspace={workspace.data} />}
         <button
           className="mobile-menu"
+          aria-label="Workspace menu"
+          aria-haspopup="dialog"
           aria-expanded={drawer}
           aria-controls="workspace-menu"
           onClick={() => setDrawer(!drawer)}
         >
-          Workspace menu
+          <Icon name="menu" />
         </button>
         <SignOut username={user.username} onSignedOut={onSignedOut} />
       </header>
@@ -488,8 +489,7 @@ function WorkspaceRoom({
           )}
           {navigation}
           <div className="rail-footer">
-            <span className="small-dot" aria-hidden="true" /> Workspace
-            library<p>Careful reading starts with the right access.</p>
+            <Icon name="library" /> Team library<p>Access is managed by your workspace owner.</p>
           </div>
         </aside>
         <main id="main" tabIndex={-1} className={`room-main ${isDocuments || isSearch || isAsk || isEvaluations ? "document-main" : ""}`}>
@@ -526,19 +526,13 @@ function WorkspaceRoom({
               />
             ) : (
               <>
-                <p className="eyebrow">A CLOSER LOOK</p>
-                <h2>Every source has a place.</h2>
-                <div className="source-illustration" aria-hidden="true">
-                  <span />
-                  <span />
-                  <span className="highlight-line" />
-                  <span />
-                </div>
+                <p className="eyebrow">Collection inspector</p>
+                <h2>Collection details</h2>
                 <p>
                   Select a collection to see its details and who can use it.
                 </p>
                 <p className="inspector-footnote">
-                  When documents arrive, this is where their evidence will live.
+                  Workspace collections are shared with members. Restricted collections have their own access grants.
                 </p>
               </>
             )}
