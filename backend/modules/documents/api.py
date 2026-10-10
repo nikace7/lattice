@@ -81,7 +81,7 @@ class DocumentStatusView(APIView):
             current_source=Subquery(latest.values("pk")[:1]),
             searchable=Exists(indexes.filter(active=True, state="READY")),
         ).annotate(
-            processing=Exists(
+            is_processing=Exists(
                 ExtractionJob.objects.filter(
                     source_id=OuterRef("current_source"), state__in=["QUEUED", "EXTRACTING"]
                 )
@@ -95,7 +95,7 @@ class DocumentStatusView(APIView):
                 documents.aggregate(
                     total=Count("pk"),
                     ready=Count("pk", filter=Q(searchable=True)),
-                    processing=Count("pk", filter=Q(processing=True)),
+                    processing=Count("pk", filter=Q(is_processing=True)),
                 )
             ).data
         )

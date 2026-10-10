@@ -87,6 +87,7 @@ def test_database_runner_uses_real_scopes_and_rolls_back_all_fixture_data(monkey
     cases.append(
         next(case for case in suite["cases"] if case["category"] == "access" and not case["gold"])
     )
+    cases.append({**cases[-1], "collections": ["finance"]})
     if failure:
 
         def broken(*_):
@@ -100,6 +101,7 @@ def test_database_runner_uses_real_scopes_and_rolls_back_all_fixture_data(monkey
         assert set(report) == {"KEYWORD", "SEMANTIC", "HYBRID"}
         assert all(len(mode["cases"]) == len(cases) for mode in report.values())
         assert all(mode["unauthorizedHits"] == 0 for mode in report.values())
+        assert report["SEMANTIC"]["cases"][-2]["retrieved"]
         assert all(mode["cases"][-1]["retrieved"] == [] for mode in report.values())
     assert Workspace.objects.count() == before
     assert User.objects.count() == users_before

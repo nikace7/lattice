@@ -19,6 +19,7 @@ test("upload PDF and Nepali text, inspect exact locations and deny signed-out do
   await page.getByRole("button", { name: "Create collection", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Source material", exact: true })).toBeVisible();
   await page.getByRole("link", { name: "Documents", exact: true }).click();
+  await page.getByRole("button", { name: "Add document", exact: true }).first().click();
   await page.getByLabel("Document file").setInputFiles({
     name: "Nepali notes.txt", mimeType: "text/plain", buffer: Buffer.from("First line\r\nनेपाली e\u0301\nplain <script>alert(1)</script>"),
   });
@@ -34,6 +35,7 @@ test("upload PDF and Nepali text, inspect exact locations and deny signed-out do
     expect((await anonymous.request.get(originalUrl!)).status()).toBe(401);
   } finally { await anonymous.close(); }
   await page.getByRole("link", { name: "All documents" }).click();
+  await page.getByRole("button", { name: "Add document", exact: true }).first().click();
   await page.getByLabel("Document file").setInputFiles({
     name: "Leave policy.pdf", mimeType: "application/pdf", buffer: readFileSync(resolve("../../fixtures/corpus/r2-policy.pdf")),
   });
@@ -56,5 +58,6 @@ test("upload PDF and Nepali text, inspect exact locations and deny signed-out do
   }
   const download = await page.getByRole("link", { name: "Download original" }).getAttribute("href");
   await page.getByRole("button", { name: "Sign out" }).click();
+  await expect(page.getByRole("button", { name: "Sign in", exact: true })).toBeVisible();
   expect((await page.request.get(download!)).status()).toBe(401);
 });
