@@ -164,6 +164,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/conversations/{conversation_id}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_conversations_export_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/conversations/{conversation_id}/turns": {
         parameters: {
             query?: never;
@@ -478,6 +494,22 @@ export interface paths {
         get: operations["api_v1_turns_events_retrieve"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/turns/{turn_id}/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_turns_feedback_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -833,6 +865,10 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
         };
+        ConversationExportData: {
+            filename: string;
+            markdown: string;
+        };
         CredentialsRequest: {
             username: string;
             password: string;
@@ -915,6 +951,9 @@ export interface components {
             fullEvidenceQuestions: number;
             /** Format: double */
             meanReciprocalRank: number;
+        };
+        FeedbackInputRequest: {
+            helpful: boolean;
         };
         GrantData: {
             /** Format: uuid */
@@ -1315,6 +1354,7 @@ export interface components {
             createdAt: string;
             answer: components["schemas"]["AnswerData"] | null;
             unavailable: boolean;
+            helpful?: boolean | null;
             error: string;
             collectionIds: string[];
         };
@@ -1647,6 +1687,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CollectionData"];
+                };
+            };
+        };
+    };
+    api_v1_conversations_export_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationExportData"];
                 };
             };
         };
@@ -2144,6 +2205,33 @@ export interface operations {
                 };
                 content: {
                     "text/event-stream": string;
+                };
+            };
+        };
+    };
+    api_v1_turns_feedback_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                turn_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedbackInputRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["FeedbackInputRequest"];
+                "multipart/form-data": components["schemas"]["FeedbackInputRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TurnData"];
                 };
             };
         };

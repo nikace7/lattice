@@ -23,6 +23,8 @@ from .models import ACTIVE, Conversation
 from .serializers import (
     AnswerCapabilityData,
     ConversationData,
+    ConversationExportData,
+    FeedbackInput,
     QuestionInput,
     SourceQuoteData,
     TurnData,
@@ -34,9 +36,11 @@ from .service import (
     citation_data,
     create_turn,
     event_cursor,
+    export_conversation,
     locked_turn,
     owner_access,
     read_turn,
+    record_feedback,
     turn_data,
 )
 
@@ -120,6 +124,21 @@ class CancelTurnView(SafeErrors, APIView):
     @extend_schema(request=None, responses=TurnData)
     def post(self, request, turn_id):
         return Response(TurnData(cancel_turn(request.user, turn_id)).data)
+
+
+class FeedbackView(SafeErrors, APIView):
+    @extend_schema(request=FeedbackInput, responses=TurnData)
+    def post(self, request, turn_id):
+        data = validated(FeedbackInput, request)
+        return Response(TurnData(record_feedback(request.user, turn_id, data["helpful"])).data)
+
+
+class ConversationExportView(SafeErrors, APIView):
+    @extend_schema(request=None, responses=ConversationExportData)
+    def post(self, request, conversation_id):
+        return Response(
+            ConversationExportData(export_conversation(request.user, conversation_id)).data
+        )
 
 
 class CitationView(SafeErrors, APIView):

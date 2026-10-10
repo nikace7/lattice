@@ -97,3 +97,38 @@ test("older-version citation is labelled and closing restores its invoking butto
   fireEvent.click(screen.getByRole("button", { name: "Back to answer" }));
   await waitFor(() => expect(button).toHaveFocus());
 });
+
+test("feedback waits for confirmation, persists selection and hides an answer after access denial", async () => {
+  vi.mocked(api).mockResolvedValue({ ...completed, helpful: true });
+  render(<TurnCard initial={completed} workspace={workspace} enabled={false} onSettled={vi.fn()} />);
+  fireEvent.click(screen.getByRole("button", { name: "Helpful" }));
+  await waitFor(() => expect(screen.getByRole("button", { name: "Helpful" })).toHaveAttribute("aria-pressed", "true"));
+  expect(api).toHaveBeenCalledWith("/turns/turn/feedback", "POST", { helpful: true });
+  vi.mocked(api).mockRejectedValue(new ApiError(404, "Answer unavailable"));
+  fireEvent.click(screen.getByRole("button", { name: "Needs review" }));
+  await screen.findByText("This answer uses sources that are no longer available.");
+  expect(screen.queryByText("Request leave five days ahead.")).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Helpful" })).not.toBeInTheDocument();
+});
+
+test("export authorization denial clears cached answers without downloading", async () => {
+  let denied = false;
+  const createObjectURL = vi.fn();
+  vi.stubGlobal("URL", class extends URL { static createObjectURL = createObjectURL; });
+  vi.mocked(api).mockImplementation(async (path) => {
+    if (path.endsWith("answer-capabilities")) return { enabled: true, message: "Fresh sources" };
+    if (path.endsWith("document-status")) return { total: 1, ready: 1, processing: 0 };
+    if (path.endsWith("/export")) { denied = true; throw new ApiError(404, "Conversation unavailable"); }
+    if (path.endsWith("/turns")) {
+      if (denied) throw new ApiError(404, "Conversation unavailable");
+      return { results: [completed], next: null, previous: null };
+    }
+    return { results: [], next: null, previous: null };
+  });
+  render(<Ask workspace={workspace} conversationId="conversation" />);
+  await screen.findByText("Request leave five days ahead.");
+  fireEvent.click(screen.getByRole("button", { name: "Download conversation" }));
+  await waitFor(() => expect(screen.queryByText("Request leave five days ahead.")).not.toBeInTheDocument());
+  expect(await screen.findAllByText("Conversation unavailable")).not.toHaveLength(0);
+  expect(createObjectURL).not.toHaveBeenCalled();
+});
