@@ -1,0 +1,23 @@
+{
+  "suite": "r8-v1",
+  "suiteHash": "f8653ad9deb5cb73429d7f70b6737198f1dd680373ce541a3a05b98958e3ce4e",
+  "captureHash": "e3ac7381fea969df80b720d364507193202a944105a48a5dd8782891ba1081b0",
+  "split": "development",
+  "totalCases": 40,
+  "reviewedCases": 0,
+  "missingAnswers": 1,
+  "claimCount": 0,
+  "supportedClaims": 0,
+  "humanSupportedClaims": null,
+  "citationCount": 25,
+  "validCitations": 25,
+  "citationValidity": 1.0,
+  "answerableCasesReviewed": 0,
+  "requiredFactsComplete": null,
+  "unsupportedCasesReviewed": 0,
+  "unsupportedAbstention": null,
+  "conflictCasesReviewed": 0,
+  "conflictHandling": null,
+  "reviewComplete": false,
+  "scope": "Demo answers and human annotations; full-stack acceptance stays separate"
+}

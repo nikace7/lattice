@@ -1,5 +1,6 @@
 """Short workspace locks serialize turn mutations and current-access delivery."""
 
+import re
 from contextlib import contextmanager
 from datetime import timedelta
 from functools import partial
@@ -11,7 +12,7 @@ from django.db.models import Sum
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from rest_framework.exceptions import APIException, PermissionDenied, Throttled
+from rest_framework.exceptions import APIException, PermissionDenied, Throttled, ValidationError
 
 from config.api import Conflict
 from modules.documents.models import Chunk, SourceBlock
@@ -264,6 +265,7 @@ def turn_data(turn, user):
         "createdAt": turn.created_at,
         "answer": turn.answer if available else None,
         "unavailable": not available,
+        "helpful": turn.helpful if available else None,
         "error": turn.error,
         "collectionIds": turn.collection_ids,
     }
@@ -284,6 +286,67 @@ def cancel_turn(user, turn_id):
             emit(turn, "cancelled")
             turn.save()
         return turn_data(turn, user)
+
+
+def record_feedback(user, turn_id, helpful):
+    with locked_turn(turn_id) as turn:
+        owner_access(turn, user)
+        if not answer_available(turn, user):
+            raise Http404
+        if turn.state != "COMPLETED" or turn.answer is None:
+            raise Conflict("Feedback is available after an answer completes.")
+        turn.helpful = helpful
+        turn.save(update_fields=["helpful"])
+        return turn_data(turn, user)
+
+
+def markdown_literal(text):
+    # Source/user text stays literal even when it contains HTML or closing fences.
+    fence = "`" * max(3, max((len(run) + 1 for run in re.findall(r"`+", text)), default=0))
+    return f"{fence}text\n{text}\n{fence}"
+
+
+@transaction.atomic
+def export_conversation(user, conversation_id):
+    conversation = get_object_or_404(Conversation, pk=conversation_id, owner=user)
+    locked_membership(user, conversation.workspace_id)
+    turns = list(
+        conversation.turns.select_related("conversation__owner").order_by("created_at", "id")[:101]
+    )
+    if len(turns) > 100:
+        raise ValidationError("Markdown export is limited to conversations with 100 questions.")
+    if any(turn.state in ACTIVE for turn in turns):
+        raise Conflict("Wait for the active answer to finish before exporting.")
+    sections = ["# Lattice conversation", markdown_literal(conversation.title)]
+    for number, turn in enumerate(turns, 1):
+        data = turn_data(turn, user)
+        sections.extend([f"## Question {number}", markdown_literal(turn.question)])
+        if data["unavailable"]:
+            sections.append("This answer uses sources that are no longer available.")
+        elif data["answer"] is None:
+            sections.append("No answer was published.")
+        else:
+            sections.append("Answer status: " + data["answer"]["status"])
+            for block_index, block in enumerate(data["answer"]["blocks"]):
+                sections.append(markdown_literal(block["text"]))
+                for cite_index, _ in enumerate(block["citations"]):
+                    cite = citation_data(user, turn.pk, block_index, cite_index)
+                    sections.extend(
+                        [
+                            "### Cited source",
+                            markdown_literal(cite["title"]),
+                            f"Source version {cite['sourceNumber']} · Source {cite['sourceId']}",
+                            markdown_literal(cite["quote"]),
+                            "[Open conversation to inspect citation]("
+                            f"{settings.APP_ORIGIN.rstrip('/')}/w/{conversation.workspace_id}"
+                            f"/c/{conversation.pk})",
+                            "Partial extraction." if cite["partial"] else "",
+                        ]
+                    )
+    markdown = "\n\n".join(sections) + "\n"
+    if len(markdown.encode("utf-8")) > 2 * 1024 * 1024:
+        raise ValidationError("This conversation exceeds the 2 MiB Markdown export limit.")
+    return {"filename": f"lattice-{conversation.pk}.md", "markdown": markdown}
 
 
 def citation_data(user, turn_id, block_index, citation_index):

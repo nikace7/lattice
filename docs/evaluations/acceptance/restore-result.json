@@ -1,0 +1,13 @@
+{
+  "database": "lattice_acceptance_restore",
+  "realPgDumpRestore": true,
+  "separateStorage": true,
+  "journalFromAfterDeletion": true,
+  "replayIdempotent": true,
+  "physicalProbeFilesRemoved": true,
+  "remainingOriginalChecksums": 25,
+  "activeProfilesPreserved": 24,
+  "actualCitationLookupsPreserved": 25,
+  "forbiddenSourceLookupsDenied": 2,
+  "scope": "Clone with no API/workers; production source/citation access functions. Not backup-retention expiry or a production deployment."
+}

@@ -39,6 +39,7 @@ class Turn(models.Model):
     model_digest = models.CharField(max_length=64, blank=True)
     answer = models.JSONField(null=True)
     answer_purged = models.BooleanField(default=False)
+    helpful = models.BooleanField(null=True)
     error = models.CharField(max_length=240, blank=True)
     usage = models.JSONField(default=list)
     charged_tokens = models.PositiveIntegerField()

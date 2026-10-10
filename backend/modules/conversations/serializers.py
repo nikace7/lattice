@@ -32,6 +32,15 @@ class ConversationData(serializers.ModelSerializer):
         fields = ["id", "title", "createdAt"]
 
 
+class FeedbackInput(serializers.Serializer):
+    helpful = serializers.BooleanField()
+
+
+class ConversationExportData(serializers.Serializer):
+    filename = serializers.CharField()
+    markdown = serializers.CharField()
+
+
 class CitationSpanData(serializers.Serializer):
     blockId = serializers.UUIDField()
     start = serializers.IntegerField()
@@ -74,6 +83,7 @@ class TurnData(serializers.Serializer):
     createdAt = serializers.DateTimeField()
     answer = AnswerData(allow_null=True)
     unavailable = serializers.BooleanField()
+    helpful = serializers.BooleanField(allow_null=True, required=False)
     error = serializers.CharField(allow_blank=True)
     collectionIds = serializers.ListField(child=serializers.UUIDField())
 

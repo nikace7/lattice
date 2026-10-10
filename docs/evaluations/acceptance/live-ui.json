@@ -1,0 +1,11 @@
+{
+  "mode": "actual API/Redis/workers/OCR/E5/Qwen",
+  "syntheticCorpus": "r8-v1",
+  "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+  "turn": "d63dd21f-6b95-4d13-83a6-71aa526d75b7",
+  "screenshotCase": "development-03",
+  "sourceFocusReturn": true,
+  "overflow360": false,
+  "feedbackPersisted": true,
+  "privateMarkdownDownload": true
+}

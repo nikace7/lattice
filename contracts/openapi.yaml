@@ -307,6 +307,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/CollectionData'
           description: ''
+  /api/v1/conversations/{conversation_id}/export:
+    post:
+      operationId: api_v1_conversations_export_create
+      parameters:
+      - in: path
+        name: conversation_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationExportData'
+          description: ''
   /api/v1/conversations/{conversation_id}/turns:
     get:
       operationId: api_v1_conversations_turns_list
@@ -883,6 +904,39 @@ paths:
             text/event-stream:
               schema:
                 type: string
+          description: ''
+  /api/v1/turns/{turn_id}/feedback:
+    post:
+      operationId: api_v1_turns_feedback_create
+      parameters:
+      - in: path
+        name: turn_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FeedbackInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FeedbackInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TurnData'
           description: ''
   /api/v1/workspaces:
     get:
@@ -1748,6 +1802,16 @@ components:
       - createdAt
       - id
       - title
+    ConversationExportData:
+      type: object
+      properties:
+        filename:
+          type: string
+        markdown:
+          type: string
+      required:
+      - filename
+      - markdown
     CredentialsRequest:
       type: object
       properties:
@@ -1996,6 +2060,13 @@ components:
       - meanReciprocalRank
       - mode
       - questions
+    FeedbackInputRequest:
+      type: object
+      properties:
+        helpful:
+          type: boolean
+      required:
+      - helpful
     GrantData:
       type: object
       properties:
@@ -2887,6 +2958,9 @@ components:
           nullable: true
         unavailable:
           type: boolean
+        helpful:
+          type: boolean
+          nullable: true
         error:
           type: string
         collectionIds:

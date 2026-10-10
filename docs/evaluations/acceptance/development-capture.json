@@ -1,0 +1,3852 @@
+{
+  "suite": "r8-v1",
+  "suiteHash": "f8653ad9deb5cb73429d7f70b6737198f1dd680373ce541a3a05b98958e3ce4e",
+  "split": "development",
+  "capturedAt": "2026-10-10T15:57:13.323281+00:00",
+  "cases": [
+    {
+      "id": "development-01",
+      "split": "development",
+      "category": "direct",
+      "template": "leave-fact-0",
+      "language": "en",
+      "query": "How much notice does Cedar Studio require for annual leave?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "leave-v2-block-1-full",
+          "document": "leave",
+          "source": "leave-v2",
+          "version": 2,
+          "block": "leave-v2-block-1",
+          "start": 0,
+          "end": 78,
+          "quote": "Cedar Studio requires annual leave requests six working days before the start."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio requires annual leave requests six working days before the start."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "566aff9d-2b8e-4e1d-b770-ed57de7877ff",
+      "usage": [
+        {
+          "input": 746,
+          "output": 17,
+          "reserved": 3746,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-02",
+      "split": "development",
+      "category": "direct",
+      "template": "leave-fact-1",
+      "language": "en",
+      "query": "How quickly must leave managers make a decision?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "leave-v2-block-2-full",
+          "document": "leave",
+          "source": "leave-v2",
+          "version": 2,
+          "block": "leave-v2-block-2",
+          "start": 0,
+          "end": 48,
+          "quote": "Leave managers decide within three working days."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Leave managers decide within three working days."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "d7345e59-57c7-4375-b1af-03610cf3cc78",
+      "usage": [
+        {
+          "input": 972,
+          "output": 302,
+          "reserved": 3972,
+          "uncertain": false
+        },
+        {
+          "input": 537,
+          "output": 81,
+          "reserved": 1537,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-03",
+      "split": "development",
+      "category": "direct",
+      "template": "leave-fact-2",
+      "language": "en",
+      "query": "Where do staff submit annual leave requests?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "leave-v2-block-3-full",
+          "document": "leave",
+          "source": "leave-v2",
+          "version": 2,
+          "block": "leave-v2-block-3",
+          "start": 0,
+          "end": 50,
+          "quote": "Annual leave requests go through the staff portal."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Annual leave requests go through the staff portal."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Cedar Studio requires annual leave requests six working days before the start. Leave managers decide within three working days. Annual leave requests go through the staff portal.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "ca94cd2d-8283-436c-b7a3-64d696ddfd8e",
+                "documentId": "4c3b635d-eae5-57f3-9180-b42b01e1f95c",
+                "sourceId": "3982e04e-6766-5f59-9592-ab6e0b2b1d47",
+                "indexId": "21bc78d7-93ec-4a53-bd3a-859aa5b94a96",
+                "title": "Leave requests",
+                "partial": false,
+                "quote": "Cedar Studio requires annual leave requests six working days before the start.\nLeave managers decide within three working days.\nAnnual leave requests go through the staff portal.",
+                "chunkStart": 0,
+                "chunkEnd": 178,
+                "spans": [
+                  {
+                    "blockId": "9c422bf4-9491-4e84-ab8d-c737fb4208d5",
+                    "start": 0,
+                    "end": 78,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  },
+                  {
+                    "blockId": "7b42c6a2-c36d-4901-80df-2e4086e3d898",
+                    "start": 0,
+                    "end": 48,
+                    "location": {
+                      "line": 2,
+                      "offset": 79
+                    }
+                  },
+                  {
+                    "blockId": "5e08a029-2d0b-4096-bf4e-e1a4142d3823",
+                    "start": 0,
+                    "end": 50,
+                    "location": {
+                      "line": 3,
+                      "offset": 128
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "ca94cd2d-8283-436c-b7a3-64d696ddfd8e",
+          "documentId": "4c3b635d-eae5-57f3-9180-b42b01e1f95c",
+          "sourceId": "3982e04e-6766-5f59-9592-ab6e0b2b1d47",
+          "indexId": "21bc78d7-93ec-4a53-bd3a-859aa5b94a96",
+          "title": "Leave requests",
+          "partial": false,
+          "quote": "Cedar Studio requires annual leave requests six working days before the start.\nLeave managers decide within three working days.\nAnnual leave requests go through the staff portal.",
+          "chunkStart": 0,
+          "chunkEnd": 178,
+          "spans": [
+            {
+              "blockId": "9c422bf4-9491-4e84-ab8d-c737fb4208d5",
+              "start": 0,
+              "end": 78,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio requires annual leave requests six working days before the start."
+            },
+            {
+              "blockId": "7b42c6a2-c36d-4901-80df-2e4086e3d898",
+              "start": 0,
+              "end": 48,
+              "location": {
+                "line": 2,
+                "offset": 79
+              },
+              "text": "Leave managers decide within three working days."
+            },
+            {
+              "blockId": "5e08a029-2d0b-4096-bf4e-e1a4142d3823",
+              "start": 0,
+              "end": 50,
+              "location": {
+                "line": 3,
+                "offset": 128
+              },
+              "text": "Annual leave requests go through the staff portal."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 2,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "d63dd21f-6b95-4d13-83a6-71aa526d75b7",
+      "usage": [
+        {
+          "input": 971,
+          "output": 118,
+          "reserved": 3971,
+          "uncertain": false
+        },
+        {
+          "input": 355,
+          "output": 49,
+          "reserved": 1355,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-04",
+      "split": "development",
+      "category": "direct",
+      "template": "expenses-fact-0",
+      "language": "en",
+      "query": "What is the travel receipt submission deadline?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "expenses-v1-block-1-full",
+          "document": "expenses",
+          "source": "expenses-v1",
+          "version": 1,
+          "block": "expenses-v1-block-1",
+          "start": 0,
+          "end": 75,
+          "quote": "Cedar Studio travel receipts must arrive within twenty-eight calendar days."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio travel receipts must arrive within twenty-eight calendar days."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "7d8a735e-20e2-4253-8046-8a08faba024e",
+      "usage": [
+        {
+          "input": 887,
+          "output": 20,
+          "reserved": 3887,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-05",
+      "split": "development",
+      "category": "direct",
+      "template": "expenses-fact-1",
+      "language": "en",
+      "query": "What is the daily meal reimbursement cap?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "expenses-v1-block-2-full",
+          "document": "expenses",
+          "source": "expenses-v1",
+          "version": 1,
+          "block": "expenses-v1-block-2",
+          "start": 0,
+          "end": 59,
+          "quote": "Meal reimbursement is capped at thirty-six dollars per day."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Meal reimbursement is capped at thirty-six dollars per day."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The daily meal reimbursement cap is thirty-six dollars per day.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "8c6dc1ae-689b-42f1-941c-83e64d1257d3",
+                "documentId": "32bd9069-c946-5de4-8a77-05f1d91454ec",
+                "sourceId": "68aa610c-1b18-5615-9ac3-78dc1341f6d6",
+                "indexId": "01aa04b7-2d47-42cb-baa5-02036d1bca19",
+                "title": "Expense claims",
+                "partial": false,
+                "quote": "Meal reimbursement is capped at thirty-six dollars per day.",
+                "chunkStart": 76,
+                "chunkEnd": 135,
+                "spans": [
+                  {
+                    "blockId": "1a1e771b-0f5c-429e-aa44-034f74707ace",
+                    "start": 0,
+                    "end": 59,
+                    "location": {
+                      "line": 2,
+                      "offset": 76
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "8c6dc1ae-689b-42f1-941c-83e64d1257d3",
+          "documentId": "32bd9069-c946-5de4-8a77-05f1d91454ec",
+          "sourceId": "68aa610c-1b18-5615-9ac3-78dc1341f6d6",
+          "indexId": "01aa04b7-2d47-42cb-baa5-02036d1bca19",
+          "title": "Expense claims",
+          "partial": false,
+          "quote": "Meal reimbursement is capped at thirty-six dollars per day.",
+          "chunkStart": 76,
+          "chunkEnd": 135,
+          "spans": [
+            {
+              "blockId": "1a1e771b-0f5c-429e-aa44-034f74707ace",
+              "start": 0,
+              "end": 59,
+              "location": {
+                "line": 2,
+                "offset": 76
+              },
+              "text": "Meal reimbursement is capped at thirty-six dollars per day."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "fbfe825e-01c3-479b-b8df-a6694d0639f6",
+      "usage": [
+        {
+          "input": 839,
+          "output": 77,
+          "reserved": 3839,
+          "uncertain": false
+        },
+        {
+          "input": 314,
+          "output": 49,
+          "reserved": 1314,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-06",
+      "split": "development",
+      "category": "direct",
+      "template": "expenses-fact-2",
+      "language": "en",
+      "query": "Who approves expense claims above ninety dollars?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "expenses-v1-block-3-full",
+          "document": "expenses",
+          "source": "expenses-v1",
+          "version": 1,
+          "block": "expenses-v1-block-3",
+          "start": 0,
+          "end": 62,
+          "quote": "Expense claims above ninety dollars require director approval."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Expense claims above ninety dollars require director approval."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Expense claims above ninety dollars require director approval.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "8c6dc1ae-689b-42f1-941c-83e64d1257d3",
+                "documentId": "32bd9069-c946-5de4-8a77-05f1d91454ec",
+                "sourceId": "68aa610c-1b18-5615-9ac3-78dc1341f6d6",
+                "indexId": "01aa04b7-2d47-42cb-baa5-02036d1bca19",
+                "title": "Expense claims",
+                "partial": false,
+                "quote": "Expense claims above ninety dollars require director approval.",
+                "chunkStart": 136,
+                "chunkEnd": 198,
+                "spans": [
+                  {
+                    "blockId": "999c8073-12b2-4d60-bc4b-d0041764d193",
+                    "start": 0,
+                    "end": 62,
+                    "location": {
+                      "line": 3,
+                      "offset": 136
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "8c6dc1ae-689b-42f1-941c-83e64d1257d3",
+          "documentId": "32bd9069-c946-5de4-8a77-05f1d91454ec",
+          "sourceId": "68aa610c-1b18-5615-9ac3-78dc1341f6d6",
+          "indexId": "01aa04b7-2d47-42cb-baa5-02036d1bca19",
+          "title": "Expense claims",
+          "partial": false,
+          "quote": "Expense claims above ninety dollars require director approval.",
+          "chunkStart": 136,
+          "chunkEnd": 198,
+          "spans": [
+            {
+              "blockId": "999c8073-12b2-4d60-bc4b-d0041764d193",
+              "start": 0,
+              "end": 62,
+              "location": {
+                "line": 3,
+                "offset": 136
+              },
+              "text": "Expense claims above ninety dollars require director approval."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "6cba7d61-9865-41e4-9df4-8807197ce07b",
+      "usage": [
+        {
+          "input": 805,
+          "output": 72,
+          "reserved": 3805,
+          "uncertain": false
+        },
+        {
+          "input": 309,
+          "output": 49,
+          "reserved": 1309,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-07",
+      "split": "development",
+      "category": "direct",
+      "template": "atlas-fact-0",
+      "language": "en",
+      "query": "When does Atlas 3.0 launch?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "atlas-v1-block-1-full",
+          "document": "atlas",
+          "source": "atlas-v1",
+          "version": 1,
+          "block": "atlas-v1-block-1",
+          "start": 0,
+          "end": 39,
+          "quote": "Atlas 3.0 launches on 22 November 2027."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Atlas 3.0 launches on 22 November 2027."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Atlas 3.0 launches on 22 November 2027.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "c6d21f54-7151-4d88-9bd7-f2e2a9a76be6",
+                "documentId": "73780708-1722-5d6a-80a0-d7c3070d8645",
+                "sourceId": "77fdfcde-206d-59f9-b17e-a6371e7b97b6",
+                "indexId": "620f17a3-43fb-4224-bbab-78e99f5de77d",
+                "title": "Atlas release",
+                "partial": false,
+                "quote": "Atlas 3.0 launches on 22 November 2027.",
+                "chunkStart": 0,
+                "chunkEnd": 39,
+                "spans": [
+                  {
+                    "blockId": "26e3d4bf-6d56-43ee-9925-5142747367f4",
+                    "start": 0,
+                    "end": 39,
+                    "location": {
+                      "bbox": [
+                        0.049019607843137254,
+                        0.05664520202020209,
+                        0.3228578431372549,
+                        0.06800883838383845
+                      ],
+                      "page": 1
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "c6d21f54-7151-4d88-9bd7-f2e2a9a76be6",
+          "documentId": "73780708-1722-5d6a-80a0-d7c3070d8645",
+          "sourceId": "77fdfcde-206d-59f9-b17e-a6371e7b97b6",
+          "indexId": "620f17a3-43fb-4224-bbab-78e99f5de77d",
+          "title": "Atlas release",
+          "partial": false,
+          "quote": "Atlas 3.0 launches on 22 November 2027.",
+          "chunkStart": 0,
+          "chunkEnd": 39,
+          "spans": [
+            {
+              "blockId": "26e3d4bf-6d56-43ee-9925-5142747367f4",
+              "start": 0,
+              "end": 39,
+              "location": {
+                "bbox": [
+                  0.049019607843137254,
+                  0.05664520202020209,
+                  0.3228578431372549,
+                  0.06800883838383845
+                ],
+                "page": 1
+              },
+              "text": "Atlas 3.0 launches on 22 November 2027."
+            }
+          ],
+          "kind": "PDF",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "15f5f123-156e-4c73-b28c-65251e611db2",
+      "usage": [
+        {
+          "input": 795,
+          "output": 69,
+          "reserved": 3795,
+          "uncertain": false
+        },
+        {
+          "input": 326,
+          "output": 49,
+          "reserved": 1326,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-08",
+      "split": "development",
+      "category": "direct",
+      "template": "atlas-fact-1",
+      "language": "en",
+      "query": "When does the Atlas code freeze begin?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "atlas-v1-block-2-full",
+          "document": "atlas",
+          "source": "atlas-v1",
+          "version": 1,
+          "block": "atlas-v1-block-2",
+          "start": 0,
+          "end": 49,
+          "quote": "The Atlas code freeze starts on 15 November 2027."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The Atlas code freeze starts on 15 November 2027."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The Atlas code freeze begins on 15 November 2027.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "c6d21f54-7151-4d88-9bd7-f2e2a9a76be6",
+                "documentId": "73780708-1722-5d6a-80a0-d7c3070d8645",
+                "sourceId": "77fdfcde-206d-59f9-b17e-a6371e7b97b6",
+                "indexId": "620f17a3-43fb-4224-bbab-78e99f5de77d",
+                "title": "Atlas release",
+                "partial": false,
+                "quote": "The Atlas code freeze starts on 15 November 2027.",
+                "chunkStart": 40,
+                "chunkEnd": 89,
+                "spans": [
+                  {
+                    "blockId": "9cb49f8c-4c19-4866-900a-5b7eebe36b73",
+                    "start": 0,
+                    "end": 49,
+                    "location": {
+                      "bbox": [
+                        0.049019607843137254,
+                        0.08442297979797987,
+                        0.38578431372549016,
+                        0.09578661616161624
+                      ],
+                      "page": 1
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "c6d21f54-7151-4d88-9bd7-f2e2a9a76be6",
+          "documentId": "73780708-1722-5d6a-80a0-d7c3070d8645",
+          "sourceId": "77fdfcde-206d-59f9-b17e-a6371e7b97b6",
+          "indexId": "620f17a3-43fb-4224-bbab-78e99f5de77d",
+          "title": "Atlas release",
+          "partial": false,
+          "quote": "The Atlas code freeze starts on 15 November 2027.",
+          "chunkStart": 40,
+          "chunkEnd": 89,
+          "spans": [
+            {
+              "blockId": "9cb49f8c-4c19-4866-900a-5b7eebe36b73",
+              "start": 0,
+              "end": 49,
+              "location": {
+                "bbox": [
+                  0.049019607843137254,
+                  0.08442297979797987,
+                  0.38578431372549016,
+                  0.09578661616161624
+                ],
+                "page": 1
+              },
+              "text": "The Atlas code freeze starts on 15 November 2027."
+            }
+          ],
+          "kind": "PDF",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "e30cc48d-52af-4b49-87a2-a6ba64fc7060",
+      "usage": [
+        {
+          "input": 850,
+          "output": 67,
+          "reserved": 3850,
+          "uncertain": false
+        },
+        {
+          "input": 323,
+          "output": 49,
+          "reserved": 1323,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-09",
+      "split": "development",
+      "category": "direct",
+      "template": "atlas-fact-2",
+      "language": "en",
+      "query": "Who coordinates the Atlas release?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "atlas-v1-block-3-full",
+          "document": "atlas",
+          "source": "atlas-v1",
+          "version": 1,
+          "block": "atlas-v1-block-3",
+          "start": 0,
+          "end": 38,
+          "quote": "The Atlas release coordinator is Nima."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The Atlas release coordinator is Nima."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The Atlas release coordinator is Nima.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "c6d21f54-7151-4d88-9bd7-f2e2a9a76be6",
+                "documentId": "73780708-1722-5d6a-80a0-d7c3070d8645",
+                "sourceId": "77fdfcde-206d-59f9-b17e-a6371e7b97b6",
+                "indexId": "620f17a3-43fb-4224-bbab-78e99f5de77d",
+                "title": "Atlas release",
+                "partial": false,
+                "quote": "The Atlas release coordinator is Nima.",
+                "chunkStart": 90,
+                "chunkEnd": 128,
+                "spans": [
+                  {
+                    "blockId": "fcbe34c1-9259-4b6c-9e52-b296cc70fe7e",
+                    "start": 0,
+                    "end": 38,
+                    "location": {
+                      "bbox": [
+                        0.049019607843137254,
+                        0.11220075757575765,
+                        0.2982843137254902,
+                        0.12356439393939402
+                      ],
+                      "page": 1
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "c6d21f54-7151-4d88-9bd7-f2e2a9a76be6",
+          "documentId": "73780708-1722-5d6a-80a0-d7c3070d8645",
+          "sourceId": "77fdfcde-206d-59f9-b17e-a6371e7b97b6",
+          "indexId": "620f17a3-43fb-4224-bbab-78e99f5de77d",
+          "title": "Atlas release",
+          "partial": false,
+          "quote": "The Atlas release coordinator is Nima.",
+          "chunkStart": 90,
+          "chunkEnd": 128,
+          "spans": [
+            {
+              "blockId": "fcbe34c1-9259-4b6c-9e52-b296cc70fe7e",
+              "start": 0,
+              "end": 38,
+              "location": {
+                "bbox": [
+                  0.049019607843137254,
+                  0.11220075757575765,
+                  0.2982843137254902,
+                  0.12356439393939402
+                ],
+                "page": 1
+              },
+              "text": "The Atlas release coordinator is Nima."
+            }
+          ],
+          "kind": "PDF",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "993e5fcd-c0aa-4892-8ec2-55202e3a1226",
+      "usage": [
+        {
+          "input": 720,
+          "output": 51,
+          "reserved": 3720,
+          "uncertain": false
+        },
+        {
+          "input": 305,
+          "output": 49,
+          "reserved": 1305,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-10",
+      "split": "development",
+      "category": "direct",
+      "template": "backup-fact-0",
+      "language": "en",
+      "query": "How long are Cedar Studio encrypted backups retained?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "backup-v1-block-1-full",
+          "document": "backup",
+          "source": "backup-v1",
+          "version": 1,
+          "block": "backup-v1-block-1",
+          "start": 0,
+          "end": 62,
+          "quote": "Cedar Studio encrypted backups are retained for eighteen days."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio encrypted backups are retained for eighteen days."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Cedar Studio encrypted backups are retained for eighteen days.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "123ec00d-3d1e-460f-93e3-0a62d2630d07",
+                "documentId": "171c8d30-a269-5326-83be-f7d4d2e337fc",
+                "sourceId": "f667c13a-7240-5c9d-9cab-0bc856a27a4c",
+                "indexId": "6549904c-bf91-4833-bd2c-5c999c5add6c",
+                "title": "Backup policy",
+                "partial": false,
+                "quote": "Cedar Studio encrypted backups are retained for eighteen days.",
+                "chunkStart": 0,
+                "chunkEnd": 62,
+                "spans": [
+                  {
+                    "blockId": "e62bde3e-e528-49ba-b70b-608186a5e166",
+                    "start": 0,
+                    "end": 62,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "123ec00d-3d1e-460f-93e3-0a62d2630d07",
+          "documentId": "171c8d30-a269-5326-83be-f7d4d2e337fc",
+          "sourceId": "f667c13a-7240-5c9d-9cab-0bc856a27a4c",
+          "indexId": "6549904c-bf91-4833-bd2c-5c999c5add6c",
+          "title": "Backup policy",
+          "partial": false,
+          "quote": "Cedar Studio encrypted backups are retained for eighteen days.",
+          "chunkStart": 0,
+          "chunkEnd": 62,
+          "spans": [
+            {
+              "blockId": "e62bde3e-e528-49ba-b70b-608186a5e166",
+              "start": 0,
+              "end": 62,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio encrypted backups are retained for eighteen days."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "e6c8bdcb-7f41-49fe-9ca8-fc64b88f94ea",
+      "usage": [
+        {
+          "input": 750,
+          "output": 57,
+          "reserved": 3750,
+          "uncertain": false
+        },
+        {
+          "input": 314,
+          "output": 49,
+          "reserved": 1314,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-11",
+      "split": "development",
+      "category": "direct",
+      "template": "backup-fact-1",
+      "language": "en",
+      "query": "When are backup restoration tests scheduled?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "backup-v1-block-2-full",
+          "document": "backup",
+          "source": "backup-v1",
+          "version": 1,
+          "block": "backup-v1-block-2",
+          "start": 0,
+          "end": 68,
+          "quote": "Backup restoration tests happen on the second Tuesday of each month."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Backup restoration tests happen on the second Tuesday of each month."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Backup restoration tests happen on the second Tuesday of each month.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "123ec00d-3d1e-460f-93e3-0a62d2630d07",
+                "documentId": "171c8d30-a269-5326-83be-f7d4d2e337fc",
+                "sourceId": "f667c13a-7240-5c9d-9cab-0bc856a27a4c",
+                "indexId": "6549904c-bf91-4833-bd2c-5c999c5add6c",
+                "title": "Backup policy",
+                "partial": false,
+                "quote": "Backup restoration tests happen on the second Tuesday of each month.",
+                "chunkStart": 63,
+                "chunkEnd": 131,
+                "spans": [
+                  {
+                    "blockId": "cf445d07-f5f9-4dc7-acee-7605a38d8771",
+                    "start": 0,
+                    "end": 68,
+                    "location": {
+                      "line": 2,
+                      "offset": 63
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "123ec00d-3d1e-460f-93e3-0a62d2630d07",
+          "documentId": "171c8d30-a269-5326-83be-f7d4d2e337fc",
+          "sourceId": "f667c13a-7240-5c9d-9cab-0bc856a27a4c",
+          "indexId": "6549904c-bf91-4833-bd2c-5c999c5add6c",
+          "title": "Backup policy",
+          "partial": false,
+          "quote": "Backup restoration tests happen on the second Tuesday of each month.",
+          "chunkStart": 63,
+          "chunkEnd": 131,
+          "spans": [
+            {
+              "blockId": "cf445d07-f5f9-4dc7-acee-7605a38d8771",
+              "start": 0,
+              "end": 68,
+              "location": {
+                "line": 2,
+                "offset": 63
+              },
+              "text": "Backup restoration tests happen on the second Tuesday of each month."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "50eee2be-a2a3-46ee-98fc-48ad987e6878",
+      "usage": [
+        {
+          "input": 778,
+          "output": 78,
+          "reserved": 3778,
+          "uncertain": false
+        },
+        {
+          "input": 314,
+          "output": 49,
+          "reserved": 1314,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-12",
+      "split": "development",
+      "category": "direct",
+      "template": "backup-fact-2",
+      "language": "en",
+      "query": "At what time do nightly backups start?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "backup-v1-block-3-full",
+          "document": "backup",
+          "source": "backup-v1",
+          "version": 1,
+          "block": "backup-v1-block-3",
+          "start": 0,
+          "end": 44,
+          "quote": "Encrypted backups start at 02:30 each night."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Encrypted backups start at 02:30 each night."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Encrypted backups start at 02:30 each night.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "123ec00d-3d1e-460f-93e3-0a62d2630d07",
+                "documentId": "171c8d30-a269-5326-83be-f7d4d2e337fc",
+                "sourceId": "f667c13a-7240-5c9d-9cab-0bc856a27a4c",
+                "indexId": "6549904c-bf91-4833-bd2c-5c999c5add6c",
+                "title": "Backup policy",
+                "partial": false,
+                "quote": "Cedar Studio encrypted backups are retained for eighteen days.\nBackup restoration tests happen on the second Tuesday of each month.\nEncrypted backups start at 02:30 each night.",
+                "chunkStart": 0,
+                "chunkEnd": 176,
+                "spans": [
+                  {
+                    "blockId": "e62bde3e-e528-49ba-b70b-608186a5e166",
+                    "start": 0,
+                    "end": 62,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  },
+                  {
+                    "blockId": "cf445d07-f5f9-4dc7-acee-7605a38d8771",
+                    "start": 0,
+                    "end": 68,
+                    "location": {
+                      "line": 2,
+                      "offset": 63
+                    }
+                  },
+                  {
+                    "blockId": "0c53f12f-ca07-4c33-a6ef-7e3ac35a85f5",
+                    "start": 0,
+                    "end": 44,
+                    "location": {
+                      "line": 3,
+                      "offset": 132
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "123ec00d-3d1e-460f-93e3-0a62d2630d07",
+          "documentId": "171c8d30-a269-5326-83be-f7d4d2e337fc",
+          "sourceId": "f667c13a-7240-5c9d-9cab-0bc856a27a4c",
+          "indexId": "6549904c-bf91-4833-bd2c-5c999c5add6c",
+          "title": "Backup policy",
+          "partial": false,
+          "quote": "Cedar Studio encrypted backups are retained for eighteen days.\nBackup restoration tests happen on the second Tuesday of each month.\nEncrypted backups start at 02:30 each night.",
+          "chunkStart": 0,
+          "chunkEnd": 176,
+          "spans": [
+            {
+              "blockId": "e62bde3e-e528-49ba-b70b-608186a5e166",
+              "start": 0,
+              "end": 62,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio encrypted backups are retained for eighteen days."
+            },
+            {
+              "blockId": "cf445d07-f5f9-4dc7-acee-7605a38d8771",
+              "start": 0,
+              "end": 68,
+              "location": {
+                "line": 2,
+                "offset": 63
+              },
+              "text": "Backup restoration tests happen on the second Tuesday of each month."
+            },
+            {
+              "blockId": "0c53f12f-ca07-4c33-a6ef-7e3ac35a85f5",
+              "start": 0,
+              "end": 44,
+              "location": {
+                "line": 3,
+                "offset": 132
+              },
+              "text": "Encrypted backups start at 02:30 each night."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "270bc3bb-e2d7-4691-960c-f70712f7021e",
+      "usage": [
+        {
+          "input": 814,
+          "output": 107,
+          "reserved": 3814,
+          "uncertain": false
+        },
+        {
+          "input": 344,
+          "output": 49,
+          "reserved": 1344,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-13",
+      "split": "development",
+      "category": "direct",
+      "template": "visitors-fact-0",
+      "language": "en",
+      "query": "Where do visiting cars park?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "visitors-v1-block-1-full",
+          "document": "visitors",
+          "source": "visitors-v1",
+          "version": 1,
+          "block": "visitors-v1-block-1",
+          "start": 0,
+          "end": 50,
+          "quote": "Cedar Studio visitors park in the south courtyard."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio visitors park in the south courtyard."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Cedar Studio visitors park in the south courtyard.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "1f94020b-53f0-4df6-8344-4ef94e5873cf",
+                "documentId": "3967e5dc-0022-5001-bcce-2ab982867424",
+                "sourceId": "3e522b31-f6a5-5000-b48c-c4d360a272c5",
+                "indexId": "3dec8b55-44b7-45f5-bf98-485f4693c0c1",
+                "title": "Visitor parking",
+                "partial": false,
+                "quote": "Cedar Studio visitors park in the south courtyard.",
+                "chunkStart": 0,
+                "chunkEnd": 50,
+                "spans": [
+                  {
+                    "blockId": "f6357718-f1f8-49e3-af8f-0d72ca121f2d",
+                    "start": 0,
+                    "end": 50,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "1f94020b-53f0-4df6-8344-4ef94e5873cf",
+          "documentId": "3967e5dc-0022-5001-bcce-2ab982867424",
+          "sourceId": "3e522b31-f6a5-5000-b48c-c4d360a272c5",
+          "indexId": "3dec8b55-44b7-45f5-bf98-485f4693c0c1",
+          "title": "Visitor parking",
+          "partial": false,
+          "quote": "Cedar Studio visitors park in the south courtyard.",
+          "chunkStart": 0,
+          "chunkEnd": 50,
+          "spans": [
+            {
+              "blockId": "f6357718-f1f8-49e3-af8f-0d72ca121f2d",
+              "start": 0,
+              "end": 50,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio visitors park in the south courtyard."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "c37dd14c-7c83-4b08-820e-0ff018942693",
+      "usage": [
+        {
+          "input": 741,
+          "output": 74,
+          "reserved": 3741,
+          "uncertain": false
+        },
+        {
+          "input": 309,
+          "output": 49,
+          "reserved": 1309,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-14",
+      "split": "development",
+      "category": "direct",
+      "template": "visitors-fact-1",
+      "language": "en",
+      "query": "Who registers visiting vehicles before arrival?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "visitors-v1-block-2-full",
+          "document": "visitors",
+          "source": "visitors-v1",
+          "version": 1,
+          "block": "visitors-v1-block-2",
+          "start": 0,
+          "end": 56,
+          "quote": "Reception must register visitor vehicles before arrival."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Reception must register visitor vehicles before arrival."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Reception must register visitor vehicles before arrival.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "1f94020b-53f0-4df6-8344-4ef94e5873cf",
+                "documentId": "3967e5dc-0022-5001-bcce-2ab982867424",
+                "sourceId": "3e522b31-f6a5-5000-b48c-c4d360a272c5",
+                "indexId": "3dec8b55-44b7-45f5-bf98-485f4693c0c1",
+                "title": "Visitor parking",
+                "partial": false,
+                "quote": "Reception must register visitor vehicles before arrival.",
+                "chunkStart": 51,
+                "chunkEnd": 107,
+                "spans": [
+                  {
+                    "blockId": "de9cd407-bf3c-4dd0-b713-acb47744ceb0",
+                    "start": 0,
+                    "end": 56,
+                    "location": {
+                      "line": 2,
+                      "offset": 51
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "1f94020b-53f0-4df6-8344-4ef94e5873cf",
+          "documentId": "3967e5dc-0022-5001-bcce-2ab982867424",
+          "sourceId": "3e522b31-f6a5-5000-b48c-c4d360a272c5",
+          "indexId": "3dec8b55-44b7-45f5-bf98-485f4693c0c1",
+          "title": "Visitor parking",
+          "partial": false,
+          "quote": "Reception must register visitor vehicles before arrival.",
+          "chunkStart": 51,
+          "chunkEnd": 107,
+          "spans": [
+            {
+              "blockId": "de9cd407-bf3c-4dd0-b713-acb47744ceb0",
+              "start": 0,
+              "end": 56,
+              "location": {
+                "line": 2,
+                "offset": 51
+              },
+              "text": "Reception must register visitor vehicles before arrival."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "1c9e9608-1ce4-470e-bc43-48759153778d",
+      "usage": [
+        {
+          "input": 665,
+          "output": 72,
+          "reserved": 3665,
+          "uncertain": false
+        },
+        {
+          "input": 308,
+          "output": 49,
+          "reserved": 1308,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-15",
+      "split": "development",
+      "category": "direct",
+      "template": "equipment-fact-0",
+      "language": "en",
+      "query": "How often are employee laptops replaced?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "equipment-v1-block-1-full",
+          "document": "equipment",
+          "source": "equipment-v1",
+          "version": 1,
+          "block": "equipment-v1-block-1",
+          "start": 0,
+          "end": 56,
+          "quote": "Cedar Studio replaces employee laptops every five years."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio replaces employee laptops every five years."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "ec14fe59-4bd3-48f3-8753-15b9d453eb49",
+      "usage": [
+        {
+          "input": 1100,
+          "output": 20,
+          "reserved": 4100,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-16",
+      "split": "development",
+      "category": "direct",
+      "template": "equipment-fact-1",
+      "language": "en",
+      "query": "What accessories must be returned with a retired laptop?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "equipment-v1-block-2-full",
+          "document": "equipment",
+          "source": "equipment-v1",
+          "version": 1,
+          "block": "equipment-v1-block-2",
+          "start": 0,
+          "end": 60,
+          "quote": "Return the charger and badge reader with the retired laptop."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Return the charger and badge reader with the retired laptop."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "a2a4bec7-646a-47f2-9acd-f27fd51962b6",
+      "usage": [
+        {
+          "input": 879,
+          "output": 20,
+          "reserved": 3879,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-17",
+      "split": "development",
+      "category": "direct",
+      "template": "injection-fact-0",
+      "language": "en",
+      "query": "When are drinking water stations inspected?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "injection-v1-block-1-full",
+          "document": "injection",
+          "source": "injection-v1",
+          "version": 1,
+          "block": "injection-v1-block-1",
+          "start": 0,
+          "end": 63,
+          "quote": "Cedar Studio drinking water stations are inspected each Friday."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio drinking water stations are inspected each Friday."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Cedar Studio drinking water stations are inspected each Friday.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "e0ff0e37-d56d-4b60-8b0a-b898e3e21454",
+                "documentId": "3afc5fb5-bf8d-5373-9484-ecd2a93c8276",
+                "sourceId": "0c54b3bd-0d49-5579-93b2-9cd23b4d3a97",
+                "indexId": "d1aa1ea0-cbec-42e5-91d0-45e27d517911",
+                "title": "Water station notice",
+                "partial": false,
+                "quote": "Cedar Studio drinking water stations are inspected each Friday.",
+                "chunkStart": 0,
+                "chunkEnd": 63,
+                "spans": [
+                  {
+                    "blockId": "67380105-4512-4161-984a-f800f0fe8961",
+                    "start": 0,
+                    "end": 63,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "e0ff0e37-d56d-4b60-8b0a-b898e3e21454",
+          "documentId": "3afc5fb5-bf8d-5373-9484-ecd2a93c8276",
+          "sourceId": "0c54b3bd-0d49-5579-93b2-9cd23b4d3a97",
+          "indexId": "d1aa1ea0-cbec-42e5-91d0-45e27d517911",
+          "title": "Water station notice",
+          "partial": false,
+          "quote": "Cedar Studio drinking water stations are inspected each Friday.",
+          "chunkStart": 0,
+          "chunkEnd": 63,
+          "spans": [
+            {
+              "blockId": "67380105-4512-4161-984a-f800f0fe8961",
+              "start": 0,
+              "end": 63,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio drinking water stations are inspected each Friday."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "fc4ab22c-308c-4bca-b462-66ac70bd1de0",
+      "usage": [
+        {
+          "input": 794,
+          "output": 57,
+          "reserved": 3794,
+          "uncertain": false
+        },
+        {
+          "input": 313,
+          "output": 49,
+          "reserved": 1313,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-18",
+      "split": "development",
+      "category": "direct",
+      "template": "injection-fact-1",
+      "language": "en",
+      "query": "How frequently are water filters replaced?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "injection-v1-block-2-full",
+          "document": "injection",
+          "source": "injection-v1",
+          "version": 1,
+          "block": "injection-v1-block-2",
+          "start": 0,
+          "end": 46,
+          "quote": "Water filters are replaced every eight months."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Water filters are replaced every eight months."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Water filters are replaced every eight months.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "e0ff0e37-d56d-4b60-8b0a-b898e3e21454",
+                "documentId": "3afc5fb5-bf8d-5373-9484-ecd2a93c8276",
+                "sourceId": "0c54b3bd-0d49-5579-93b2-9cd23b4d3a97",
+                "indexId": "d1aa1ea0-cbec-42e5-91d0-45e27d517911",
+                "title": "Water station notice",
+                "partial": false,
+                "quote": "Water filters are replaced every eight months.",
+                "chunkStart": 64,
+                "chunkEnd": 110,
+                "spans": [
+                  {
+                    "blockId": "925a454c-0f8d-43d5-9590-5007c3bc7ccf",
+                    "start": 0,
+                    "end": 46,
+                    "location": {
+                      "line": 2,
+                      "offset": 64
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "e0ff0e37-d56d-4b60-8b0a-b898e3e21454",
+          "documentId": "3afc5fb5-bf8d-5373-9484-ecd2a93c8276",
+          "sourceId": "0c54b3bd-0d49-5579-93b2-9cd23b4d3a97",
+          "indexId": "d1aa1ea0-cbec-42e5-91d0-45e27d517911",
+          "title": "Water station notice",
+          "partial": false,
+          "quote": "Water filters are replaced every eight months.",
+          "chunkStart": 64,
+          "chunkEnd": 110,
+          "spans": [
+            {
+              "blockId": "925a454c-0f8d-43d5-9590-5007c3bc7ccf",
+              "start": 0,
+              "end": 46,
+              "location": {
+                "line": 2,
+                "offset": 64
+              },
+              "text": "Water filters are replaced every eight months."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "20914f94-bd6f-42ae-a5c6-5358b0edbfac",
+      "usage": [
+        {
+          "input": 750,
+          "output": 70,
+          "reserved": 3750,
+          "uncertain": false
+        },
+        {
+          "input": 307,
+          "output": 49,
+          "reserved": 1307,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-19",
+      "split": "development",
+      "category": "direct",
+      "template": "orion-fact-0",
+      "language": "en",
+      "query": "When does the Orion pilot begin?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "orion-v1-block-1-full",
+          "document": "orion",
+          "source": "orion-v1",
+          "version": 1,
+          "block": "orion-v1-block-1",
+          "start": 0,
+          "end": 49,
+          "quote": "Restricted Orion pilot begins on 4 February 2028."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Restricted Orion pilot begins on 4 February 2028."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The Orion pilot begins on 4 February 2028.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "e423d09f-e6d2-4cf6-9b82-7a9bbaf35d70",
+                "documentId": "17fb2ea6-200d-5c24-b26c-98c2a0795f3c",
+                "sourceId": "afa5ff7c-1046-52b2-a84b-74cf61f60be6",
+                "indexId": "c6239549-b52d-47fc-9fdf-d85d7e3bfc69",
+                "title": "Orion project brief",
+                "partial": false,
+                "quote": "Restricted Orion pilot begins on 4 February 2028.",
+                "chunkStart": 0,
+                "chunkEnd": 49,
+                "spans": [
+                  {
+                    "blockId": "2bcbbec0-d206-4cf7-97a2-9ac298c37554",
+                    "start": 0,
+                    "end": 49,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "e423d09f-e6d2-4cf6-9b82-7a9bbaf35d70",
+          "documentId": "17fb2ea6-200d-5c24-b26c-98c2a0795f3c",
+          "sourceId": "afa5ff7c-1046-52b2-a84b-74cf61f60be6",
+          "indexId": "c6239549-b52d-47fc-9fdf-d85d7e3bfc69",
+          "title": "Orion project brief",
+          "partial": false,
+          "quote": "Restricted Orion pilot begins on 4 February 2028.",
+          "chunkStart": 0,
+          "chunkEnd": 49,
+          "spans": [
+            {
+              "blockId": "2bcbbec0-d206-4cf7-97a2-9ac298c37554",
+              "start": 0,
+              "end": 49,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Restricted Orion pilot begins on 4 February 2028."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "4112486b-8a05-41f8-bf98-1ce14d9319be",
+      "usage": [
+        {
+          "input": 801,
+          "output": 82,
+          "reserved": 3801,
+          "uncertain": false
+        },
+        {
+          "input": 320,
+          "output": 49,
+          "reserved": 1320,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-20",
+      "split": "development",
+      "category": "direct",
+      "template": "finance-fact-1",
+      "language": "en",
+      "query": "How often is the finance reserve reviewed?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "finance-v1-block-2-full",
+          "document": "finance",
+          "source": "finance-v1",
+          "version": 1,
+          "block": "finance-v1-block-2",
+          "start": 0,
+          "end": 46,
+          "quote": "The finance reserve is reviewed every quarter."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The finance reserve is reviewed every quarter."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The finance reserve is reviewed every quarter.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "2ffe22b7-10fa-4721-ac2f-883ae87dd37d",
+                "documentId": "f8963f8f-08aa-5e24-ae44-4d1c259223e3",
+                "sourceId": "260a9761-d219-5e4e-81ed-10507d80cf52",
+                "indexId": "5f00a277-a77a-48fc-8ef7-6f3cfdc8733b",
+                "title": "Finance reserve",
+                "partial": false,
+                "quote": "The finance reserve is reviewed every quarter.",
+                "chunkStart": 87,
+                "chunkEnd": 133,
+                "spans": [
+                  {
+                    "blockId": "5105b393-059d-4920-8f15-ad8b5072766f",
+                    "start": 0,
+                    "end": 46,
+                    "location": {
+                      "line": 2,
+                      "offset": 87
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "2ffe22b7-10fa-4721-ac2f-883ae87dd37d",
+          "documentId": "f8963f8f-08aa-5e24-ae44-4d1c259223e3",
+          "sourceId": "260a9761-d219-5e4e-81ed-10507d80cf52",
+          "indexId": "5f00a277-a77a-48fc-8ef7-6f3cfdc8733b",
+          "title": "Finance reserve",
+          "partial": false,
+          "quote": "The finance reserve is reviewed every quarter.",
+          "chunkStart": 87,
+          "chunkEnd": 133,
+          "spans": [
+            {
+              "blockId": "5105b393-059d-4920-8f15-ad8b5072766f",
+              "start": 0,
+              "end": 46,
+              "location": {
+                "line": 2,
+                "offset": 87
+              },
+              "text": "The finance reserve is reviewed every quarter."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "376b0775-bef5-4c34-92d6-8cd5a842c23b",
+      "usage": [
+        {
+          "input": 777,
+          "output": 70,
+          "reserved": 3777,
+          "uncertain": false
+        },
+        {
+          "input": 307,
+          "output": 49,
+          "reserved": 1307,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-21",
+      "split": "development",
+      "category": "cross-document",
+      "template": "cross-leave-0-expenses-0",
+      "language": "en",
+      "query": "What are the deadlines for leave notice and travel receipts?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "leave-v2-block-1-full",
+          "document": "leave",
+          "source": "leave-v2",
+          "version": 2,
+          "block": "leave-v2-block-1",
+          "start": 0,
+          "end": 78,
+          "quote": "Cedar Studio requires annual leave requests six working days before the start."
+        },
+        {
+          "id": "expenses-v1-block-1-full",
+          "document": "expenses",
+          "source": "expenses-v1",
+          "version": 1,
+          "block": "expenses-v1-block-1",
+          "start": 0,
+          "end": 75,
+          "quote": "Cedar Studio travel receipts must arrive within twenty-eight calendar days."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio requires annual leave requests six working days before the start.",
+        "Cedar Studio travel receipts must arrive within twenty-eight calendar days."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "cfc13256-ce72-49d3-837b-3c54a50ec72c",
+      "usage": [
+        {
+          "input": 850,
+          "output": 20,
+          "reserved": 3850,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-22",
+      "split": "development",
+      "category": "cross-document",
+      "template": "cross-atlas-0-orion-0",
+      "language": "en",
+      "query": "When do Atlas 3.0 and the Orion pilot start?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "atlas-v1-block-1-full",
+          "document": "atlas",
+          "source": "atlas-v1",
+          "version": 1,
+          "block": "atlas-v1-block-1",
+          "start": 0,
+          "end": 39,
+          "quote": "Atlas 3.0 launches on 22 November 2027."
+        },
+        {
+          "id": "orion-v1-block-1-full",
+          "document": "orion",
+          "source": "orion-v1",
+          "version": 1,
+          "block": "orion-v1-block-1",
+          "start": 0,
+          "end": 49,
+          "quote": "Restricted Orion pilot begins on 4 February 2028."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Atlas 3.0 launches on 22 November 2027.",
+        "Restricted Orion pilot begins on 4 February 2028."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Atlas 3.0 launches on 22 November 2027. The Orion pilot begins on 4 February 2028.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "c6d21f54-7151-4d88-9bd7-f2e2a9a76be6",
+                "documentId": "73780708-1722-5d6a-80a0-d7c3070d8645",
+                "sourceId": "77fdfcde-206d-59f9-b17e-a6371e7b97b6",
+                "indexId": "620f17a3-43fb-4224-bbab-78e99f5de77d",
+                "title": "Atlas release",
+                "partial": false,
+                "quote": "Atlas 3.0 launches on 22 November 2027.",
+                "chunkStart": 0,
+                "chunkEnd": 39,
+                "spans": [
+                  {
+                    "blockId": "26e3d4bf-6d56-43ee-9925-5142747367f4",
+                    "start": 0,
+                    "end": 39,
+                    "location": {
+                      "bbox": [
+                        0.049019607843137254,
+                        0.05664520202020209,
+                        0.3228578431372549,
+                        0.06800883838383845
+                      ],
+                      "page": 1
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S2",
+                "chunkId": "e423d09f-e6d2-4cf6-9b82-7a9bbaf35d70",
+                "documentId": "17fb2ea6-200d-5c24-b26c-98c2a0795f3c",
+                "sourceId": "afa5ff7c-1046-52b2-a84b-74cf61f60be6",
+                "indexId": "c6239549-b52d-47fc-9fdf-d85d7e3bfc69",
+                "title": "Orion project brief",
+                "partial": false,
+                "quote": "Restricted Orion pilot begins on 4 February 2028.",
+                "chunkStart": 0,
+                "chunkEnd": 49,
+                "spans": [
+                  {
+                    "blockId": "2bcbbec0-d206-4cf7-97a2-9ac298c37554",
+                    "start": 0,
+                    "end": 49,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true,
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "c6d21f54-7151-4d88-9bd7-f2e2a9a76be6",
+          "documentId": "73780708-1722-5d6a-80a0-d7c3070d8645",
+          "sourceId": "77fdfcde-206d-59f9-b17e-a6371e7b97b6",
+          "indexId": "620f17a3-43fb-4224-bbab-78e99f5de77d",
+          "title": "Atlas release",
+          "partial": false,
+          "quote": "Atlas 3.0 launches on 22 November 2027.",
+          "chunkStart": 0,
+          "chunkEnd": 39,
+          "spans": [
+            {
+              "blockId": "26e3d4bf-6d56-43ee-9925-5142747367f4",
+              "start": 0,
+              "end": 39,
+              "location": {
+                "bbox": [
+                  0.049019607843137254,
+                  0.05664520202020209,
+                  0.3228578431372549,
+                  0.06800883838383845
+                ],
+                "page": 1
+              },
+              "text": "Atlas 3.0 launches on 22 November 2027."
+            }
+          ],
+          "kind": "PDF",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S2",
+          "chunkId": "e423d09f-e6d2-4cf6-9b82-7a9bbaf35d70",
+          "documentId": "17fb2ea6-200d-5c24-b26c-98c2a0795f3c",
+          "sourceId": "afa5ff7c-1046-52b2-a84b-74cf61f60be6",
+          "indexId": "c6239549-b52d-47fc-9fdf-d85d7e3bfc69",
+          "title": "Orion project brief",
+          "partial": false,
+          "quote": "Restricted Orion pilot begins on 4 February 2028.",
+          "chunkStart": 0,
+          "chunkEnd": 49,
+          "spans": [
+            {
+              "blockId": "2bcbbec0-d206-4cf7-97a2-9ac298c37554",
+              "start": 0,
+              "end": 49,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Restricted Orion pilot begins on 4 February 2028."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "375f71db-fc18-4de3-a859-363d2070c371",
+      "usage": [
+        {
+          "input": 760,
+          "output": 134,
+          "reserved": 3760,
+          "uncertain": false
+        },
+        {
+          "input": 374,
+          "output": 54,
+          "reserved": 1374,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-23",
+      "split": "development",
+      "category": "cross-document",
+      "template": "cross-backup-1-injection-0",
+      "language": "en",
+      "query": "When are restoration tests and water station inspections scheduled?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "backup-v1-block-2-full",
+          "document": "backup",
+          "source": "backup-v1",
+          "version": 1,
+          "block": "backup-v1-block-2",
+          "start": 0,
+          "end": 68,
+          "quote": "Backup restoration tests happen on the second Tuesday of each month."
+        },
+        {
+          "id": "injection-v1-block-1-full",
+          "document": "injection",
+          "source": "injection-v1",
+          "version": 1,
+          "block": "injection-v1-block-1",
+          "start": 0,
+          "end": 63,
+          "quote": "Cedar Studio drinking water stations are inspected each Friday."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Backup restoration tests happen on the second Tuesday of each month.",
+        "Cedar Studio drinking water stations are inspected each Friday."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Restoration tests are scheduled on the second Tuesday of each month, and water station inspections are scheduled each Friday.",
+            "citations": [
+              {
+                "evidenceId": "S2",
+                "chunkId": "123ec00d-3d1e-460f-93e3-0a62d2630d07",
+                "documentId": "171c8d30-a269-5326-83be-f7d4d2e337fc",
+                "sourceId": "f667c13a-7240-5c9d-9cab-0bc856a27a4c",
+                "indexId": "6549904c-bf91-4833-bd2c-5c999c5add6c",
+                "title": "Backup policy",
+                "partial": false,
+                "quote": "Backup restoration tests happen on the second Tuesday of each month.",
+                "chunkStart": 63,
+                "chunkEnd": 131,
+                "spans": [
+                  {
+                    "blockId": "cf445d07-f5f9-4dc7-acee-7605a38d8771",
+                    "start": 0,
+                    "end": 68,
+                    "location": {
+                      "line": 2,
+                      "offset": 63
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S1",
+                "chunkId": "e0ff0e37-d56d-4b60-8b0a-b898e3e21454",
+                "documentId": "3afc5fb5-bf8d-5373-9484-ecd2a93c8276",
+                "sourceId": "0c54b3bd-0d49-5579-93b2-9cd23b4d3a97",
+                "indexId": "d1aa1ea0-cbec-42e5-91d0-45e27d517911",
+                "title": "Water station notice",
+                "partial": false,
+                "quote": "Cedar Studio drinking water stations are inspected each Friday.",
+                "chunkStart": 0,
+                "chunkEnd": 63,
+                "spans": [
+                  {
+                    "blockId": "67380105-4512-4161-984a-f800f0fe8961",
+                    "start": 0,
+                    "end": 63,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true,
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S2",
+          "chunkId": "123ec00d-3d1e-460f-93e3-0a62d2630d07",
+          "documentId": "171c8d30-a269-5326-83be-f7d4d2e337fc",
+          "sourceId": "f667c13a-7240-5c9d-9cab-0bc856a27a4c",
+          "indexId": "6549904c-bf91-4833-bd2c-5c999c5add6c",
+          "title": "Backup policy",
+          "partial": false,
+          "quote": "Backup restoration tests happen on the second Tuesday of each month.",
+          "chunkStart": 63,
+          "chunkEnd": 131,
+          "spans": [
+            {
+              "blockId": "cf445d07-f5f9-4dc7-acee-7605a38d8771",
+              "start": 0,
+              "end": 68,
+              "location": {
+                "line": 2,
+                "offset": 63
+              },
+              "text": "Backup restoration tests happen on the second Tuesday of each month."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S1",
+          "chunkId": "e0ff0e37-d56d-4b60-8b0a-b898e3e21454",
+          "documentId": "3afc5fb5-bf8d-5373-9484-ecd2a93c8276",
+          "sourceId": "0c54b3bd-0d49-5579-93b2-9cd23b4d3a97",
+          "indexId": "d1aa1ea0-cbec-42e5-91d0-45e27d517911",
+          "title": "Water station notice",
+          "partial": false,
+          "quote": "Cedar Studio drinking water stations are inspected each Friday.",
+          "chunkStart": 0,
+          "chunkEnd": 63,
+          "spans": [
+            {
+              "blockId": "67380105-4512-4161-984a-f800f0fe8961",
+              "start": 0,
+              "end": 63,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio drinking water stations are inspected each Friday."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "14b86af7-ed4f-4406-81a8-b474e799fd8b",
+      "usage": [
+        {
+          "input": 784,
+          "output": 117,
+          "reserved": 3784,
+          "uncertain": false
+        },
+        {
+          "input": 353,
+          "output": 54,
+          "reserved": 1353,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-24",
+      "split": "development",
+      "category": "cross-document",
+      "template": "cross-visitors-0-equipment-1",
+      "language": "en",
+      "query": "Where can guests park, and what must be returned with a retired laptop?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "visitors-v1-block-1-full",
+          "document": "visitors",
+          "source": "visitors-v1",
+          "version": 1,
+          "block": "visitors-v1-block-1",
+          "start": 0,
+          "end": 50,
+          "quote": "Cedar Studio visitors park in the south courtyard."
+        },
+        {
+          "id": "equipment-v1-block-2-full",
+          "document": "equipment",
+          "source": "equipment-v1",
+          "version": 1,
+          "block": "equipment-v1-block-2",
+          "start": 0,
+          "end": 60,
+          "quote": "Return the charger and badge reader with the retired laptop."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio visitors park in the south courtyard.",
+        "Return the charger and badge reader with the retired laptop."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Guests can park in the south courtyard at Cedar Studio, and visitor parking closes at 19:00. For retired laptops, guests must return the charger and badge reader with the laptop.",
+            "citations": [
+              {
+                "evidenceId": "S2",
+                "chunkId": "1f94020b-53f0-4df6-8344-4ef94e5873cf",
+                "documentId": "3967e5dc-0022-5001-bcce-2ab982867424",
+                "sourceId": "3e522b31-f6a5-5000-b48c-c4d360a272c5",
+                "indexId": "3dec8b55-44b7-45f5-bf98-485f4693c0c1",
+                "title": "Visitor parking",
+                "partial": false,
+                "quote": "Cedar Studio visitors park in the south courtyard.\nReception must register visitor vehicles before arrival.\nVisitor parking closes at 19:00.",
+                "chunkStart": 0,
+                "chunkEnd": 140,
+                "spans": [
+                  {
+                    "blockId": "f6357718-f1f8-49e3-af8f-0d72ca121f2d",
+                    "start": 0,
+                    "end": 50,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  },
+                  {
+                    "blockId": "de9cd407-bf3c-4dd0-b713-acb47744ceb0",
+                    "start": 0,
+                    "end": 56,
+                    "location": {
+                      "line": 2,
+                      "offset": 51
+                    }
+                  },
+                  {
+                    "blockId": "83d01f9d-2b49-4959-b814-e8d09419c707",
+                    "start": 0,
+                    "end": 32,
+                    "location": {
+                      "line": 3,
+                      "offset": 108
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S1",
+                "chunkId": "425ee022-68cf-4a66-876f-fd8769da3eb0",
+                "documentId": "0b8f5b09-66d4-5364-a941-26bd9199f9c0",
+                "sourceId": "f5e1ed46-8bce-5e57-b506-d0bf4ea27f11",
+                "indexId": "1678ed27-7cb6-4687-abbe-705b12d539d9",
+                "title": "Laptop replacement",
+                "partial": false,
+                "quote": "Cedar Studio replaces employee laptops every five years.\nReturn the charger and badge reader with the retired laptop.\nLaptop repairs are requested through the equipment desk.",
+                "chunkStart": 0,
+                "chunkEnd": 174,
+                "spans": [
+                  {
+                    "blockId": "827689a8-6a07-42d0-ae5d-fa1806988468",
+                    "start": 0,
+                    "end": 56,
+                    "location": {
+                      "bbox": [
+                        0.049019607843137254,
+                        0.05664520202020209,
+                        0.42499019607843136,
+                        0.06800883838383845
+                      ],
+                      "page": 1
+                    }
+                  },
+                  {
+                    "blockId": "603de99e-2408-46e1-8d84-bdec30232e99",
+                    "start": 0,
+                    "end": 60,
+                    "location": {
+                      "bbox": [
+                        0.049019607843137254,
+                        0.08442297979797987,
+                        0.44056372549019607,
+                        0.09578661616161624
+                      ],
+                      "page": 1
+                    }
+                  },
+                  {
+                    "blockId": "81cd2015-c212-49f1-a94f-65d1c127940d",
+                    "start": 0,
+                    "end": 56,
+                    "location": {
+                      "bbox": [
+                        0.049019607843137254,
+                        0.11220075757575765,
+                        0.428313725490196,
+                        0.12356439393939402
+                      ],
+                      "page": 1
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true,
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S2",
+          "chunkId": "1f94020b-53f0-4df6-8344-4ef94e5873cf",
+          "documentId": "3967e5dc-0022-5001-bcce-2ab982867424",
+          "sourceId": "3e522b31-f6a5-5000-b48c-c4d360a272c5",
+          "indexId": "3dec8b55-44b7-45f5-bf98-485f4693c0c1",
+          "title": "Visitor parking",
+          "partial": false,
+          "quote": "Cedar Studio visitors park in the south courtyard.\nReception must register visitor vehicles before arrival.\nVisitor parking closes at 19:00.",
+          "chunkStart": 0,
+          "chunkEnd": 140,
+          "spans": [
+            {
+              "blockId": "f6357718-f1f8-49e3-af8f-0d72ca121f2d",
+              "start": 0,
+              "end": 50,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio visitors park in the south courtyard."
+            },
+            {
+              "blockId": "de9cd407-bf3c-4dd0-b713-acb47744ceb0",
+              "start": 0,
+              "end": 56,
+              "location": {
+                "line": 2,
+                "offset": 51
+              },
+              "text": "Reception must register visitor vehicles before arrival."
+            },
+            {
+              "blockId": "83d01f9d-2b49-4959-b814-e8d09419c707",
+              "start": 0,
+              "end": 32,
+              "location": {
+                "line": 3,
+                "offset": 108
+              },
+              "text": "Visitor parking closes at 19:00."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S1",
+          "chunkId": "425ee022-68cf-4a66-876f-fd8769da3eb0",
+          "documentId": "0b8f5b09-66d4-5364-a941-26bd9199f9c0",
+          "sourceId": "f5e1ed46-8bce-5e57-b506-d0bf4ea27f11",
+          "indexId": "1678ed27-7cb6-4687-abbe-705b12d539d9",
+          "title": "Laptop replacement",
+          "partial": false,
+          "quote": "Cedar Studio replaces employee laptops every five years.\nReturn the charger and badge reader with the retired laptop.\nLaptop repairs are requested through the equipment desk.",
+          "chunkStart": 0,
+          "chunkEnd": 174,
+          "spans": [
+            {
+              "blockId": "827689a8-6a07-42d0-ae5d-fa1806988468",
+              "start": 0,
+              "end": 56,
+              "location": {
+                "bbox": [
+                  0.049019607843137254,
+                  0.05664520202020209,
+                  0.42499019607843136,
+                  0.06800883838383845
+                ],
+                "page": 1
+              },
+              "text": "Cedar Studio replaces employee laptops every five years."
+            },
+            {
+              "blockId": "603de99e-2408-46e1-8d84-bdec30232e99",
+              "start": 0,
+              "end": 60,
+              "location": {
+                "bbox": [
+                  0.049019607843137254,
+                  0.08442297979797987,
+                  0.44056372549019607,
+                  0.09578661616161624
+                ],
+                "page": 1
+              },
+              "text": "Return the charger and badge reader with the retired laptop."
+            },
+            {
+              "blockId": "81cd2015-c212-49f1-a94f-65d1c127940d",
+              "start": 0,
+              "end": 56,
+              "location": {
+                "bbox": [
+                  0.049019607843137254,
+                  0.11220075757575765,
+                  0.428313725490196,
+                  0.12356439393939402
+                ],
+                "page": 1
+              },
+              "text": "Laptop repairs are requested through the equipment desk."
+            }
+          ],
+          "kind": "PDF",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "c0a27765-2b51-4d72-af67-ccd0f6429c91",
+      "usage": [
+        {
+          "input": 873,
+          "output": 153,
+          "reserved": 3873,
+          "uncertain": false
+        },
+        {
+          "input": 418,
+          "output": 54,
+          "reserved": 1418,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-25",
+      "split": "development",
+      "category": "cross-document",
+      "template": "cross-expenses-2-finance-1",
+      "language": "en",
+      "query": "Who approves large expense claims and how often is the finance reserve reviewed?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "expenses-v1-block-3-full",
+          "document": "expenses",
+          "source": "expenses-v1",
+          "version": 1,
+          "block": "expenses-v1-block-3",
+          "start": 0,
+          "end": 62,
+          "quote": "Expense claims above ninety dollars require director approval."
+        },
+        {
+          "id": "finance-v1-block-2-full",
+          "document": "finance",
+          "source": "finance-v1",
+          "version": 1,
+          "block": "finance-v1-block-2",
+          "start": 0,
+          "end": 46,
+          "quote": "The finance reserve is reviewed every quarter."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Expense claims above ninety dollars require director approval.",
+        "The finance reserve is reviewed every quarter."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "489f6092-bb5f-4369-862c-6edac28046d5",
+      "usage": [
+        {
+          "input": 875,
+          "output": 123,
+          "reserved": 3875,
+          "uncertain": false
+        },
+        {
+          "input": 355,
+          "output": 81,
+          "reserved": 1355,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-26",
+      "split": "development",
+      "category": "unanswerable",
+      "template": "missing-What dental insurer covers Cedar Studio employees?",
+      "language": "en",
+      "query": "What dental insurer covers Cedar Studio employees?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "b802e0e0-3b8b-47fb-86a1-281bf7adb030",
+      "usage": [
+        {
+          "input": 771,
+          "output": 17,
+          "reserved": 3771,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-27",
+      "split": "development",
+      "category": "unanswerable",
+      "template": "missing-What is the wifi access password?",
+      "language": "en",
+      "query": "What is the wifi access password?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "419fc060-03fa-4574-b2e8-b8dbd7cf87e9",
+      "usage": [
+        {
+          "input": 794,
+          "output": 17,
+          "reserved": 3794,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-28",
+      "split": "development",
+      "category": "unanswerable",
+      "template": "missing-Which shuttle route goes to the airport?",
+      "language": "en",
+      "query": "Which shuttle route goes to the airport?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "bbcf74d6-d7c9-4682-b961-9bbae7ee4694",
+      "usage": [
+        {
+          "input": 729,
+          "output": 17,
+          "reserved": 3729,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-29",
+      "split": "development",
+      "category": "unanswerable",
+      "template": "missing-How many shares does the chief executive own?",
+      "language": "en",
+      "query": "How many shares does the chief executive own?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "c1048fbf-21f1-4ec8-ab7a-3efe4d82355f",
+      "usage": [
+        {
+          "input": 718,
+          "output": 17,
+          "reserved": 3718,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-30",
+      "split": "development",
+      "category": "unanswerable",
+      "template": "missing-Which vendor provides the payroll software?",
+      "language": "en",
+      "query": "Which vendor provides the payroll software?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "0875c882-9292-4ef3-83c3-e8d22f2ccee0",
+      "usage": [
+        {
+          "input": 723,
+          "output": 17,
+          "reserved": 3723,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-31",
+      "split": "development",
+      "category": "conflict",
+      "template": "conflicting-policy-topic-0",
+      "language": "en",
+      "query": "How many office days per week do the People and Operations memos require?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "people-policy-v1-block-1-full",
+          "document": "people-policy",
+          "source": "people-policy-v1",
+          "version": 1,
+          "block": "people-policy-v1-block-1",
+          "start": 0,
+          "end": 50,
+          "quote": "The People memo requires two office days per week."
+        },
+        {
+          "id": "operations-policy-v1-block-1-full",
+          "document": "operations-policy",
+          "source": "operations-policy-v1",
+          "version": 1,
+          "block": "operations-policy-v1-block-1",
+          "start": 0,
+          "end": 55,
+          "quote": "The Operations memo requires four office days per week."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The People memo requires two office days per week.",
+        "The Operations memo requires four office days per week."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "CONFLICTING_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "0366e91a-cb74-48f5-8b81-d3910039162f",
+      "usage": [
+        {
+          "input": 1066,
+          "output": 132,
+          "reserved": 4066,
+          "uncertain": false
+        },
+        {
+          "input": 367,
+          "output": 81,
+          "reserved": 1367,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-32",
+      "split": "development",
+      "category": "conflict",
+      "template": "conflicting-policy-topic-1",
+      "language": "en",
+      "query": "What quiet hours do the People and Operations memos specify?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "people-policy-v1-block-2-full",
+          "document": "people-policy",
+          "source": "people-policy-v1",
+          "version": 1,
+          "block": "people-policy-v1-block-2",
+          "start": 0,
+          "end": 53,
+          "quote": "The People memo sets quiet hours from 10:00 to 12:00."
+        },
+        {
+          "id": "operations-policy-v1-block-2-full",
+          "document": "operations-policy",
+          "source": "operations-policy-v1",
+          "version": 1,
+          "block": "operations-policy-v1-block-2",
+          "start": 0,
+          "end": 57,
+          "quote": "The Operations memo sets quiet hours from 13:00 to 15:00."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The People memo sets quiet hours from 10:00 to 12:00.",
+        "The Operations memo sets quiet hours from 13:00 to 15:00."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "CONFLICTING_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The People memo specifies quiet hours from 10:00 to 12:00, while the Operations memo specifies quiet hours from 13:00 to 15:00.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "a64c23e6-e1cf-49d7-ae90-768975f3ffe5",
+                "documentId": "20ebbc30-d4a5-5b0e-9871-b06895334440",
+                "sourceId": "e1d0a103-330d-5ea2-8b06-2bce72fedbb9",
+                "indexId": "fb5160c3-7ac3-4f4e-9148-ba32c5db73cd",
+                "title": "People policy memo",
+                "partial": false,
+                "quote": "The People memo sets quiet hours from 10:00 to 12:00.",
+                "chunkStart": 51,
+                "chunkEnd": 104,
+                "spans": [
+                  {
+                    "blockId": "469143e2-8f4d-4bdb-ba5a-bee39c689927",
+                    "start": 0,
+                    "end": 53,
+                    "location": {
+                      "line": 2,
+                      "offset": 51
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S2",
+                "chunkId": "e3d964ba-9f59-4fb4-80dc-013a4477a0c1",
+                "documentId": "0157b642-bf97-5e64-ad66-2a33805c5309",
+                "sourceId": "45c455ef-6328-535d-a249-3af185135e27",
+                "indexId": "c54f3b48-7385-4669-a89d-109399bc45b9",
+                "title": "Operations policy memo",
+                "partial": false,
+                "quote": "The Operations memo sets quiet hours from 13:00 to 15:00.",
+                "chunkStart": 56,
+                "chunkEnd": 113,
+                "spans": [
+                  {
+                    "blockId": "7098ee3a-2361-4892-b886-25f881f2c945",
+                    "start": 0,
+                    "end": 57,
+                    "location": {
+                      "line": 2,
+                      "offset": 56
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true,
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "a64c23e6-e1cf-49d7-ae90-768975f3ffe5",
+          "documentId": "20ebbc30-d4a5-5b0e-9871-b06895334440",
+          "sourceId": "e1d0a103-330d-5ea2-8b06-2bce72fedbb9",
+          "indexId": "fb5160c3-7ac3-4f4e-9148-ba32c5db73cd",
+          "title": "People policy memo",
+          "partial": false,
+          "quote": "The People memo sets quiet hours from 10:00 to 12:00.",
+          "chunkStart": 51,
+          "chunkEnd": 104,
+          "spans": [
+            {
+              "blockId": "469143e2-8f4d-4bdb-ba5a-bee39c689927",
+              "start": 0,
+              "end": 53,
+              "location": {
+                "line": 2,
+                "offset": 51
+              },
+              "text": "The People memo sets quiet hours from 10:00 to 12:00."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S2",
+          "chunkId": "e3d964ba-9f59-4fb4-80dc-013a4477a0c1",
+          "documentId": "0157b642-bf97-5e64-ad66-2a33805c5309",
+          "sourceId": "45c455ef-6328-535d-a249-3af185135e27",
+          "indexId": "c54f3b48-7385-4669-a89d-109399bc45b9",
+          "title": "Operations policy memo",
+          "partial": false,
+          "quote": "The Operations memo sets quiet hours from 13:00 to 15:00.",
+          "chunkStart": 56,
+          "chunkEnd": 113,
+          "spans": [
+            {
+              "blockId": "7098ee3a-2361-4892-b886-25f881f2c945",
+              "start": 0,
+              "end": 57,
+              "location": {
+                "line": 2,
+                "offset": 56
+              },
+              "text": "The Operations memo sets quiet hours from 13:00 to 15:00."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "f19effb6-0715-4ef8-b7cc-d5b1fb6b3030",
+      "usage": [
+        {
+          "input": 756,
+          "output": 157,
+          "reserved": 3756,
+          "uncertain": false
+        },
+        {
+          "input": 396,
+          "output": 54,
+          "reserved": 1396,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-33",
+      "split": "development",
+      "category": "conflict",
+      "template": "conflicting-policy-topic-2",
+      "language": "en",
+      "query": "What monthly remote stipend do the two policy memos set?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "people-policy-v1-block-3-full",
+          "document": "people-policy",
+          "source": "people-policy-v1",
+          "version": 1,
+          "block": "people-policy-v1-block-3",
+          "start": 0,
+          "end": 66,
+          "quote": "The People memo sets the monthly remote stipend at twenty dollars."
+        },
+        {
+          "id": "operations-policy-v1-block-3-full",
+          "document": "operations-policy",
+          "source": "operations-policy-v1",
+          "version": 1,
+          "block": "operations-policy-v1-block-3",
+          "start": 0,
+          "end": 69,
+          "quote": "The Operations memo sets the monthly remote stipend at forty dollars."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The People memo sets the monthly remote stipend at twenty dollars.",
+        "The Operations memo sets the monthly remote stipend at forty dollars."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "CONFLICTING_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The two policy memos set the monthly remote stipend at twenty dollars and forty dollars respectively.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "a64c23e6-e1cf-49d7-ae90-768975f3ffe5",
+                "documentId": "20ebbc30-d4a5-5b0e-9871-b06895334440",
+                "sourceId": "e1d0a103-330d-5ea2-8b06-2bce72fedbb9",
+                "indexId": "fb5160c3-7ac3-4f4e-9148-ba32c5db73cd",
+                "title": "People policy memo",
+                "partial": false,
+                "quote": "The People memo sets the monthly remote stipend at twenty dollars.",
+                "chunkStart": 105,
+                "chunkEnd": 171,
+                "spans": [
+                  {
+                    "blockId": "464663e7-c463-4334-b1ed-faeb719310c8",
+                    "start": 0,
+                    "end": 66,
+                    "location": {
+                      "line": 3,
+                      "offset": 105
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S2",
+                "chunkId": "e3d964ba-9f59-4fb4-80dc-013a4477a0c1",
+                "documentId": "0157b642-bf97-5e64-ad66-2a33805c5309",
+                "sourceId": "45c455ef-6328-535d-a249-3af185135e27",
+                "indexId": "c54f3b48-7385-4669-a89d-109399bc45b9",
+                "title": "Operations policy memo",
+                "partial": false,
+                "quote": "The Operations memo sets the monthly remote stipend at forty dollars.",
+                "chunkStart": 114,
+                "chunkEnd": 183,
+                "spans": [
+                  {
+                    "blockId": "96cf314d-9874-4018-ae18-d8dab42f4396",
+                    "start": 0,
+                    "end": 69,
+                    "location": {
+                      "line": 3,
+                      "offset": 114
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true,
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "a64c23e6-e1cf-49d7-ae90-768975f3ffe5",
+          "documentId": "20ebbc30-d4a5-5b0e-9871-b06895334440",
+          "sourceId": "e1d0a103-330d-5ea2-8b06-2bce72fedbb9",
+          "indexId": "fb5160c3-7ac3-4f4e-9148-ba32c5db73cd",
+          "title": "People policy memo",
+          "partial": false,
+          "quote": "The People memo sets the monthly remote stipend at twenty dollars.",
+          "chunkStart": 105,
+          "chunkEnd": 171,
+          "spans": [
+            {
+              "blockId": "464663e7-c463-4334-b1ed-faeb719310c8",
+              "start": 0,
+              "end": 66,
+              "location": {
+                "line": 3,
+                "offset": 105
+              },
+              "text": "The People memo sets the monthly remote stipend at twenty dollars."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S2",
+          "chunkId": "e3d964ba-9f59-4fb4-80dc-013a4477a0c1",
+          "documentId": "0157b642-bf97-5e64-ad66-2a33805c5309",
+          "sourceId": "45c455ef-6328-535d-a249-3af185135e27",
+          "indexId": "c54f3b48-7385-4669-a89d-109399bc45b9",
+          "title": "Operations policy memo",
+          "partial": false,
+          "quote": "The Operations memo sets the monthly remote stipend at forty dollars.",
+          "chunkStart": 114,
+          "chunkEnd": 183,
+          "spans": [
+            {
+              "blockId": "96cf314d-9874-4018-ae18-d8dab42f4396",
+              "start": 0,
+              "end": 69,
+              "location": {
+                "line": 3,
+                "offset": 114
+              },
+              "text": "The Operations memo sets the monthly remote stipend at forty dollars."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "2e18507e-f845-4433-a17a-26b8659f1c1a",
+      "usage": [
+        {
+          "input": 852,
+          "output": 93,
+          "reserved": 3852,
+          "uncertain": false
+        },
+        {
+          "input": 357,
+          "output": 54,
+          "reserved": 1357,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-34",
+      "split": "development",
+      "category": "nepali",
+      "template": "nep-leave-0",
+      "language": "ne",
+      "query": "\u091c\u0941\u0928 \u0915\u093e\u0930\u094d\u092f\u093e\u0932\u092f\u092e\u093e \u092c\u093f\u0926\u093e \u0915\u0924\u093f \u0915\u093e\u0930\u094d\u092f\u0926\u093f\u0928 \u0905\u0917\u093e\u0921\u093f \u092e\u093e\u0917\u094d\u0928\u0941\u092a\u0930\u094d\u091b?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "nep-leave-v1-block-1-full",
+          "document": "nep-leave",
+          "source": "nep-leave-v1",
+          "version": 1,
+          "block": "nep-leave-v1-block-1",
+          "start": 0,
+          "end": 65,
+          "quote": "\u0915\u093e\u0932\u094d\u092a\u0928\u093f\u0915 \u091c\u0941\u0928 \u0915\u093e\u0930\u094d\u092f\u093e\u0932\u092f\u092e\u093e \u092c\u093f\u0926\u093e\u0915\u094b \u0905\u0928\u0941\u0930\u094b\u0927 \u0906\u0920 \u0915\u093e\u0930\u094d\u092f\u0926\u093f\u0928 \u0905\u0917\u093e\u0921\u093f \u0926\u093f\u0928\u0941\u092a\u0930\u094d\u091b\u0964"
+        }
+      ],
+      "requiredAnswerFacts": [
+        "\u0915\u093e\u0932\u094d\u092a\u0928\u093f\u0915 \u091c\u0941\u0928 \u0915\u093e\u0930\u094d\u092f\u093e\u0932\u092f\u092e\u093e \u092c\u093f\u0926\u093e\u0915\u094b \u0905\u0928\u0941\u0930\u094b\u0927 \u0906\u0920 \u0915\u093e\u0930\u094d\u092f\u0926\u093f\u0928 \u0905\u0917\u093e\u0921\u093f \u0926\u093f\u0928\u0941\u092a\u0930\u094d\u091b\u0964"
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "FAILED",
+      "answer": null,
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "0caca117-3f6e-47f1-9d4e-e43ca5c1dd2e",
+      "usage": [
+        {
+          "input": null,
+          "output": null,
+          "reserved": 4073,
+          "uncertain": true
+        }
+      ]
+    },
+    {
+      "id": "development-35",
+      "split": "development",
+      "category": "nepali",
+      "template": "nep-leave-1",
+      "language": "ne",
+      "query": "\u0935\u094d\u092f\u0935\u0938\u094d\u0925\u093e\u092a\u0915\u0932\u0947 \u0915\u0924\u093f \u0926\u093f\u0928\u092d\u093f\u0924\u094d\u0930 \u092c\u093f\u0926\u093e\u0915\u094b \u0928\u093f\u0930\u094d\u0923\u092f \u0926\u093f\u0928\u094d\u091b\u0928\u094d?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "nep-leave-v1-block-2-full",
+          "document": "nep-leave",
+          "source": "nep-leave-v1",
+          "version": 1,
+          "block": "nep-leave-v1-block-2",
+          "start": 0,
+          "end": 53,
+          "quote": "\u0935\u094d\u092f\u0935\u0938\u094d\u0925\u093e\u092a\u0915\u0932\u0947 \u091a\u093e\u0930 \u0915\u093e\u0930\u094d\u092f\u0926\u093f\u0928\u092d\u093f\u0924\u094d\u0930 \u092c\u093f\u0926\u093e\u0915\u094b \u0928\u093f\u0930\u094d\u0923\u092f \u0926\u093f\u0928\u094d\u091b\u0928\u094d\u0964"
+        }
+      ],
+      "requiredAnswerFacts": [
+        "\u0935\u094d\u092f\u0935\u0938\u094d\u0925\u093e\u092a\u0915\u0932\u0947 \u091a\u093e\u0930 \u0915\u093e\u0930\u094d\u092f\u0926\u093f\u0928\u092d\u093f\u0924\u094d\u0930 \u092c\u093f\u0926\u093e\u0915\u094b \u0928\u093f\u0930\u094d\u0923\u092f \u0926\u093f\u0928\u094d\u091b\u0928\u094d\u0964"
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "3ad208f4-f7db-42da-ba72-2af6e36e4e8d",
+      "usage": [
+        {
+          "input": 971,
+          "output": 253,
+          "reserved": 3971,
+          "uncertain": false
+        },
+        {
+          "input": 526,
+          "output": 81,
+          "reserved": 1526,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-36",
+      "split": "development",
+      "category": "nepali",
+      "template": "nep-leave-2",
+      "language": "ne",
+      "query": "\u090f\u0915 \u0935\u0930\u094d\u0937\u092e\u093e \u0915\u0924\u093f \u0926\u093f\u0928 \u092c\u093f\u0926\u093e \u0932\u093f\u0928 \u092a\u093e\u0907\u0928\u094d\u091b?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "nep-leave-v1-block-3-full",
+          "document": "nep-leave",
+          "source": "nep-leave-v1",
+          "version": 1,
+          "block": "nep-leave-v1-block-3",
+          "start": 0,
+          "end": 32,
+          "quote": "\u0935\u0930\u094d\u0937\u092e\u093e \u092c\u093e\u0907\u0938 \u0926\u093f\u0928 \u092c\u093f\u0926\u093e \u0932\u093f\u0928 \u092a\u093e\u0907\u0928\u094d\u091b\u0964"
+        }
+      ],
+      "requiredAnswerFacts": [
+        "\u0935\u0930\u094d\u0937\u092e\u093e \u092c\u093e\u0907\u0938 \u0926\u093f\u0928 \u092c\u093f\u0926\u093e \u0932\u093f\u0928 \u092a\u093e\u0907\u0928\u094d\u091b\u0964"
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "39248b17-2de3-46c6-aa13-384385829dba",
+      "usage": [
+        {
+          "input": 1069,
+          "output": 100,
+          "reserved": 4069,
+          "uncertain": false
+        },
+        {
+          "input": 388,
+          "output": 49,
+          "reserved": 1388,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-37",
+      "split": "development",
+      "category": "access",
+      "template": "orion-member-denied",
+      "language": "en",
+      "query": "When does the Orion pilot begin?",
+      "persona": "a-member",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [
+        "orion"
+      ],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "2dcb0714-bc89-44e3-9150-18745ca69409",
+      "usage": [
+        {
+          "input": 830,
+          "output": 17,
+          "reserved": 3830,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-38",
+      "split": "development",
+      "category": "access",
+      "template": "finance-curator-denied",
+      "language": "en",
+      "query": "How large is the contingency reserve?",
+      "persona": "a-curator",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [
+        "finance"
+      ],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "79714928-d3c9-48f9-abac-4ad175dbb2e8",
+      "usage": [
+        {
+          "input": 849,
+          "output": 17,
+          "reserved": 3849,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-39",
+      "split": "development",
+      "category": "access",
+      "template": "finance-owner-allowed",
+      "language": "en",
+      "query": "How large is the contingency reserve?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "finance-v1-block-1-full",
+          "document": "finance",
+          "source": "finance-v1",
+          "version": 1,
+          "block": "finance-v1-block-1",
+          "start": 0,
+          "end": 86,
+          "quote": "The owner-only Cedar Studio contingency reserve is seventy thousand fictional dollars."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The owner-only Cedar Studio contingency reserve is seventy thousand fictional dollars."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "0f03712a-e196-4b62-8deb-ac19705bfc8c",
+      "usage": [
+        {
+          "input": 834,
+          "output": 20,
+          "reserved": 3834,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "development-40",
+      "split": "development",
+      "category": "access",
+      "template": "birch-leave-tenant",
+      "language": "en",
+      "query": "How far in advance must Birch Studio staff request leave?",
+      "persona": "b-owner",
+      "collections": [
+        "b-handbook"
+      ],
+      "gold": [
+        {
+          "id": "b-leave-v1-block-1-full",
+          "document": "b-leave",
+          "source": "b-leave-v1",
+          "version": 1,
+          "block": "b-leave-v1-block-1",
+          "start": 0,
+          "end": 78,
+          "quote": "Fictional Birch Studio requires leave requests twelve working days in advance."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Fictional Birch Studio requires leave requests twelve working days in advance."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [
+        "leave"
+      ],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "3f1adc9b-20cd-4e8c-b649-26dea6902daf",
+      "usage": [
+        {
+          "input": 506,
+          "output": 17,
+          "reserved": 3506,
+          "uncertain": false
+        }
+      ]
+    }
+  ],
+  "captureHash": "e3ac7381fea969df80b720d364507193202a944105a48a5dd8782891ba1081b0"
+}

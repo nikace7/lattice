@@ -1,9 +1,10 @@
 # R8 acceptance workflow
 
-The local implementation is present. Docker, database execution, worker/OCR integration,
-live Qwen answers, human labelling, restore, performance and fresh setup remain unverified.
-This document describes the commands to run when that deferral is lifted. Do not replace
-the frozen corpus or existing offline report to make a run pass.
+Docker deferral was lifted on 10 October 2026. Database tests, real worker/OCR
+ingestion, live Qwen evaluation, backup restore and fresh-checkout setup have now
+run. [Observed results](../EVAL-RESULTS.md) distinguish passing checks from answer
+quality failures and human review still required. The commands below reproduce the
+workflow. Do not replace the frozen corpus or existing reports to make a run pass.
 
 ## PostgreSQL comparison
 

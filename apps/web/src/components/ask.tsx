@@ -91,13 +91,30 @@ function Composer({ workspace, conversationId, enabled, onAccepted }: { workspac
 function ConversationThread({ workspace, id, enabled }: { workspace: Workspace; id: string; enabled: boolean }) {
   const [path, setPath] = useState(`/conversations/${id}/turns`);
   const turns = useResource<Page<Turn>>(path);
+  const download = useAction();
   const running = turns.data?.results.some((turn) => active(turn.state)) ?? true;
   // The API enforces the active-turn constraint even while viewing an older history page.
   return <>
+    <button disabled={running || download.busy || !!turns.error} onClick={() => void download.run(async () => {
+      let result: components["schemas"]["ConversationExportData"];
+      try {
+        result = await api<components["schemas"]["ConversationExportData"]>(`/conversations/${id}/export`, "POST");
+      } catch (cause) {
+        if (cause instanceof ApiError && [401, 403, 404].includes(cause.status)) turns.reload();
+        throw cause;
+      }
+      const url = URL.createObjectURL(new Blob([result.markdown], { type: "text/markdown;charset=utf-8" }));
+      const link = document.createElement("a");
+      link.href = url; link.download = result.filename; link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      turns.reload();
+    })}>{download.busy ? "Preparing download…" : "Download conversation"}</button>
+    <p className="field-note">Markdown includes answers and citations you can access now.</p>
+    <ErrorNotice error={download.error} />
     <ErrorNotice error={turns.error} retry={turns.reload} />
     {!turns.data && !turns.error && <Loading>Loading the conversation…</Loading>}
     {turns.data && <>
-      <div className="conversation-turns">{[...turns.data.results].reverse().map((turn) => <TurnCard key={turn.id} initial={turn} workspace={workspace} enabled={enabled && !running} onSettled={turns.reload} />)}</div>
+      <div className="conversation-turns">{[...turns.data.results].reverse().map((turn) => <TurnCard key={`${turn.id}:${turn.sequence}:${turn.unavailable}:${turn.helpful}`} initial={turn} workspace={workspace} enabled={enabled && !running} onSettled={turns.reload} />)}</div>
       <Pagination page={turns.data} onPage={setPath} />
     </>}
     <Composer workspace={workspace} conversationId={id} enabled={enabled && !running && !turns.error} onAccepted={() => { setPath(`/conversations/${id}/turns`); turns.reload(); }} />
@@ -173,6 +190,15 @@ export function TurnCard({ initial, workspace, enabled, onSettled }: { initial: 
           }} aria-label={`Inspect source ${b + 1}.${c + 1}: ${cite.title}`} aria-expanded={citation?.block === b && citation?.index === c}>[{b + 1}.{c + 1}] {cite.title}{cite.partial ? " · Partial source" : ""}</button>)}</div>
         </div>)}
         {!!turn.answer.blocks.length && <p className="field-note">Quoted passages were checked. Model grounding can still be wrong; review the original evidence.</p>}
+        <div className="citation-buttons" role="group" aria-label="Was this answer useful?">
+          {[true, false].map((helpful) => <button key={String(helpful)} aria-pressed={turn.helpful === helpful} disabled={action.busy} onClick={() => void action.run(async () => {
+            try { setTurn(await api<Turn>(`/turns/${turn.id}/feedback`, "POST", { helpful })); }
+            catch (cause) {
+              if (cause instanceof ApiError && [401, 403, 404].includes(cause.status)) { setCitation(undefined); setTurn((old) => ({ ...old, answer: null, unavailable: true })); }
+              throw cause;
+            }
+          })}>{helpful ? "Helpful" : "Needs review"}</button>)}
+        </div>
       </>}
       {active(turn.state) && <button disabled={action.busy} onClick={() => void action.run(async () => { const next = await api<Turn>(`/turns/${turn.id}/cancel`, "POST"); setTurn(next); onSettled(); })}>Stop answer</button>}
       {!active(turn.state) && enabled && <button disabled={action.busy} onClick={() => void action.run(async () => {

@@ -1,0 +1,322 @@
+[
+  {
+    "case": "development-01",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 36.81,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-02",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 49.36,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-03",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 38.98,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-04",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 20.55,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-05",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 26.69,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-06",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 30.81,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-07",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 32.83,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-08",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 32.89,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-09",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 28.77,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-10",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 28.84,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-11",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 30.8,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-12",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 34.94,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-13",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 30.81,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-14",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 32.36,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-15",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 24.66,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-16",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 14.41,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-17",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 22.55,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-18",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 28.72,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-19",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 30.8,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-20",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 28.76,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-21",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 20.52,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-22",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 26.7,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-23",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 32.84,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-24",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 41.06,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-25",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 38.99,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-26",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 18.53,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-27",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 12.31,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-28",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 10.28,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-29",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 10.26,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-30",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 10.28,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-31",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 36.89,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-32",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 46.23,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-33",
+    "state": "COMPLETED",
+    "status": "ANSWERED",
+    "elapsedSeconds": 37.0,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-34",
+    "state": "FAILED",
+    "status": null,
+    "elapsedSeconds": null,
+    "resumed": true,
+    "error": "Answer generation failed. Check local models and workers before retrying."
+  },
+  {
+    "case": "development-35",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 49.27,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-36",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 41.14,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-37",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 20.5,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-38",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 15.09,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-39",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 14.41,
+    "resumed": false,
+    "error": ""
+  },
+  {
+    "case": "development-40",
+    "state": "COMPLETED",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "elapsedSeconds": 6.2,
+    "resumed": false,
+    "error": ""
+  }
+]

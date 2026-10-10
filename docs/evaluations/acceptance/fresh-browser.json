@@ -1,0 +1,12 @@
+{
+  "freshCheckout": true,
+  "newComposeVolumes": true,
+  "mode": "RETRIEVAL_ONLY",
+  "actualWorkers": true,
+  "register": true,
+  "nativeEnglishNepaliExtraction": true,
+  "index": "READY/NONE",
+  "keywordHit": true,
+  "anonymousOriginalStatus": 401,
+  "cloudCalls": false
+}

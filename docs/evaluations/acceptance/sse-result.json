@@ -1,0 +1,72 @@
+{
+  "firstAcceptedMs": 109,
+  "events": [
+    {
+      "elapsedMs": 109,
+      "event": "progress",
+      "data": {
+        "turnId": "19d93a97-71f8-485f-8f4b-7ede7c88c393",
+        "sequence": 1,
+        "phase": "accepted",
+        "createdAt": "2026-10-10T16:33:52.895794+00:00"
+      }
+    },
+    {
+      "elapsedMs": 109,
+      "event": "progress",
+      "data": {
+        "turnId": "19d93a97-71f8-485f-8f4b-7ede7c88c393",
+        "sequence": 2,
+        "phase": "retrieving",
+        "createdAt": "2026-10-10T16:33:52.937087+00:00"
+      }
+    },
+    {
+      "elapsedMs": 18453,
+      "event": "progress",
+      "data": {
+        "turnId": "19d93a97-71f8-485f-8f4b-7ede7c88c393",
+        "sequence": 3,
+        "phase": "generating",
+        "createdAt": "2026-10-10T16:34:11.185567+00:00"
+      }
+    },
+    {
+      "elapsedMs": 70469,
+      "event": "progress",
+      "data": {
+        "turnId": "19d93a97-71f8-485f-8f4b-7ede7c88c393",
+        "sequence": 4,
+        "phase": "validating",
+        "createdAt": "2026-10-10T16:35:02.618377+00:00"
+      }
+    },
+    {
+      "elapsedMs": 91281,
+      "event": "progress",
+      "data": {
+        "turnId": "19d93a97-71f8-485f-8f4b-7ede7c88c393",
+        "sequence": 5,
+        "phase": "answer",
+        "createdAt": "2026-10-10T16:35:23.918751+00:00"
+      }
+    },
+    {
+      "elapsedMs": 91281,
+      "event": "progress",
+      "data": {
+        "turnId": "19d93a97-71f8-485f-8f4b-7ede7c88c393",
+        "sequence": 6,
+        "phase": "completed",
+        "createdAt": "2026-10-10T16:35:23.919406+00:00"
+      }
+    },
+    {
+      "elapsedMs": 91281,
+      "event": "settled",
+      "data": {}
+    }
+  ],
+  "state": "COMPLETED",
+  "scope": "One actual POST and authenticated SSE with55-second reconnect; after API/worker image restart, prepared cached model files, no API mocks. Not a warm latency sample."
+}

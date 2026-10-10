@@ -243,7 +243,8 @@ def test_uncited_retrieved_dependency_revocation_also_withholds_answer(library, 
     other = Collection.objects.create(
         workspace=collection.workspace, title="Private notes", access="RESTRICTED"
     )
-    indexed(other, "Another source about the building.")
+    # Keep the mock generator's S1 leave passage first, regardless of random UUID ties.
+    indexed(other, "Another source about the building.", vector=[0.0, 1.0] + [0.0] * 382)
     member = Membership.objects.get(user=reader, workspace=collection.workspace)
     member.role = "MEMBER"
     member.save()
