@@ -1,0 +1,63 @@
+{
+  "development": {
+    "total": 40,
+    "states": {
+      "INSUFFICIENT_EVIDENCE": 19,
+      "ANSWERED": 20,
+      "FAILED": 1
+    },
+    "elapsedSamples": 39,
+    "p95Seconds": 49.27,
+    "maxSeconds": 49.36,
+    "inputTokens": 40883,
+    "outputTokens": 4316,
+    "uncertainReservations": 4073,
+    "answerableAbstentions": [
+      "development-01",
+      "development-02",
+      "development-04",
+      "development-15",
+      "development-16",
+      "development-21",
+      "development-25",
+      "development-31",
+      "development-35",
+      "development-36",
+      "development-39",
+      "development-40"
+    ],
+    "conflictStatuses": {
+      "development-31": "INSUFFICIENT_EVIDENCE",
+      "development-32": "ANSWERED",
+      "development-33": "ANSWERED"
+    }
+  },
+  "held-out": {
+    "total": 40,
+    "states": {
+      "ANSWERED": 25,
+      "INSUFFICIENT_EVIDENCE": 15
+    },
+    "elapsedSamples": 40,
+    "p95Seconds": 44.09,
+    "maxSeconds": 47.61,
+    "inputTokens": 41866,
+    "outputTokens": 4085,
+    "uncertainReservations": 0,
+    "answerableAbstentions": [
+      "held-out-07",
+      "held-out-12",
+      "held-out-15",
+      "held-out-16",
+      "held-out-20",
+      "held-out-21",
+      "held-out-25",
+      "held-out-40"
+    ],
+    "conflictStatuses": {
+      "held-out-31": "ANSWERED",
+      "held-out-32": "ANSWERED",
+      "held-out-33": "ANSWERED"
+    }
+  }
+}

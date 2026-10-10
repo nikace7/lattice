@@ -17,8 +17,11 @@ offline E5 exact-span retrieval, and includes an illustrated demo/handoff guide.
 R8 now includes guarded demo tooling, a rollback-only PostgreSQL comparison runner
 and actual-answer capture/human-review commands. The refreshed interface adds clearer
 typography, document filters, upload disclosure and keyboard navigation.
-Live Qwen generation and R2–R7 database/worker/browser integration validation remain
-deferred while Docker is skipped.
+Docker acceptance now includes real worker/OCR ingestion, 80 live question attempts,
+database/browser tests, backup restore and fresh-checkout setup. Private feedback
+and permission-checked Markdown conversation downloads are implemented. Human
+answer review remains open, and the local model has recorded false abstentions and
+conflict-classification failures; see [current results](docs/EVAL-RESULTS.md).
 The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
 observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).
 Read [R8 evidence](docs/evaluations/R8.md) for measured counts and open acceptance
@@ -166,7 +169,7 @@ docs/           Blueprint, progress, design and operating notes
 - The optional `local-models` Compose profile starts Ollama only. It does not pull a
   model. Model preparation and reconciliation/purge commands are explicit. Automated
   `seed_demo` and guarded `demo:reset` are implemented for the dedicated marked
-  demo only; PostgreSQL execution remains pending. Follow the demo guide.
+  demo only; PostgreSQL seed/reset interruption recovery has been exercised. Follow the demo guide.
 - Checked-in sources/results are original synthetic artifacts. Offline recall does
   not establish answer quality, production isolation or full-stack acceptance.
 

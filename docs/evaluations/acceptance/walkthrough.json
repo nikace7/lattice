@@ -1,0 +1,14 @@
+{
+  "realAPI": true,
+  "liveWorkers": true,
+  "sourcePages": 20,
+  "extractionMs": 5887,
+  "uploadToIndexMs": 24139,
+  "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+  "citedTurn": "d63dd21f-6b95-4d13-83a6-71aa526d75b7",
+  "sourceDeletionDeniesDownload": true,
+  "durationMs": 120016,
+  "pauses": "Explicit reading pauses; video duration is not a latency measurement",
+  "videoDurationSeconds": 123.76,
+  "videoPlaybackVerified": "Chromium:1440x1000,no media error"
+}

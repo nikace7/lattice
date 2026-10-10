@@ -1,0 +1,4568 @@
+{
+  "suite": "r8-v1",
+  "suiteHash": "f8653ad9deb5cb73429d7f70b6737198f1dd680373ce541a3a05b98958e3ce4e",
+  "split": "held-out",
+  "capturedAt": "2026-10-10T16:28:27.956054+00:00",
+  "cases": [
+    {
+      "id": "held-out-01",
+      "split": "held-out",
+      "category": "direct",
+      "template": "rooms-fact-0",
+      "language": "en",
+      "query": "How many people can Juniper seat?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "rooms-v1-block-2-full",
+          "document": "rooms",
+          "source": "rooms-v1",
+          "version": 1,
+          "block": "rooms-v1-block-2",
+          "start": 0,
+          "end": 47,
+          "quote": "The Juniper meeting room seats fourteen people."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The Juniper meeting room seats fourteen people."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The Juniper meeting room seats fourteen people.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "0c440179-a430-486a-ae34-fb91eb7cf84f",
+                "documentId": "1b392f66-ad90-53d6-9424-8bf7f0e70de8",
+                "sourceId": "c51cb6bd-c099-5164-bb3d-a90fb2501b20",
+                "indexId": "30f76e46-75b1-41f6-bc0e-78b81a12fe09",
+                "title": "Meeting rooms",
+                "partial": false,
+                "quote": "The Juniper meeting room seats fourteen people.",
+                "chunkStart": 0,
+                "chunkEnd": 47,
+                "spans": [
+                  {
+                    "blockId": "8bd2c954-29cd-43c4-ab74-98779ab5abc6",
+                    "start": 0,
+                    "end": 47,
+                    "location": {
+                      "row": 1,
+                      "cell": 1,
+                      "table": 1,
+                      "paragraph": 2,
+                      "headingPath": [
+                        "Meeting rooms"
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S2",
+                "chunkId": "6d511d0d-1d7d-436c-b8d4-8022a6f2c65f",
+                "documentId": "1b392f66-ad90-53d6-9424-8bf7f0e70de8",
+                "sourceId": "c51cb6bd-c099-5164-bb3d-a90fb2501b20",
+                "indexId": "30f76e46-75b1-41f6-bc0e-78b81a12fe09",
+                "title": "Meeting rooms",
+                "partial": false,
+                "quote": "The Juniper meeting room seats fourteen people.",
+                "chunkStart": 0,
+                "chunkEnd": 47,
+                "spans": [
+                  {
+                    "blockId": "8bd2c954-29cd-43c4-ab74-98779ab5abc6",
+                    "start": 0,
+                    "end": 47,
+                    "location": {
+                      "row": 1,
+                      "cell": 1,
+                      "table": 1,
+                      "paragraph": 2,
+                      "headingPath": [
+                        "Meeting rooms"
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S3",
+                "chunkId": "6f315090-b0db-4f49-aa66-a2d4abbba64e",
+                "documentId": "1b392f66-ad90-53d6-9424-8bf7f0e70de8",
+                "sourceId": "c51cb6bd-c099-5164-bb3d-a90fb2501b20",
+                "indexId": "30f76e46-75b1-41f6-bc0e-78b81a12fe09",
+                "title": "Meeting rooms",
+                "partial": false,
+                "quote": "The Juniper meeting room seats fourteen people.",
+                "chunkStart": 0,
+                "chunkEnd": 47,
+                "spans": [
+                  {
+                    "blockId": "8bd2c954-29cd-43c4-ab74-98779ab5abc6",
+                    "start": 0,
+                    "end": 47,
+                    "location": {
+                      "row": 1,
+                      "cell": 1,
+                      "table": 1,
+                      "paragraph": 2,
+                      "headingPath": [
+                        "Meeting rooms"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true,
+        true,
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "0c440179-a430-486a-ae34-fb91eb7cf84f",
+          "documentId": "1b392f66-ad90-53d6-9424-8bf7f0e70de8",
+          "sourceId": "c51cb6bd-c099-5164-bb3d-a90fb2501b20",
+          "indexId": "30f76e46-75b1-41f6-bc0e-78b81a12fe09",
+          "title": "Meeting rooms",
+          "partial": false,
+          "quote": "The Juniper meeting room seats fourteen people.",
+          "chunkStart": 0,
+          "chunkEnd": 47,
+          "spans": [
+            {
+              "blockId": "8bd2c954-29cd-43c4-ab74-98779ab5abc6",
+              "start": 0,
+              "end": 47,
+              "location": {
+                "row": 1,
+                "cell": 1,
+                "table": 1,
+                "paragraph": 2,
+                "headingPath": [
+                  "Meeting rooms"
+                ]
+              },
+              "text": "The Juniper meeting room seats fourteen people."
+            }
+          ],
+          "kind": "DOCX",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S2",
+          "chunkId": "6d511d0d-1d7d-436c-b8d4-8022a6f2c65f",
+          "documentId": "1b392f66-ad90-53d6-9424-8bf7f0e70de8",
+          "sourceId": "c51cb6bd-c099-5164-bb3d-a90fb2501b20",
+          "indexId": "30f76e46-75b1-41f6-bc0e-78b81a12fe09",
+          "title": "Meeting rooms",
+          "partial": false,
+          "quote": "The Juniper meeting room seats fourteen people.",
+          "chunkStart": 0,
+          "chunkEnd": 47,
+          "spans": [
+            {
+              "blockId": "8bd2c954-29cd-43c4-ab74-98779ab5abc6",
+              "start": 0,
+              "end": 47,
+              "location": {
+                "row": 1,
+                "cell": 1,
+                "table": 1,
+                "paragraph": 2,
+                "headingPath": [
+                  "Meeting rooms"
+                ]
+              },
+              "text": "The Juniper meeting room seats fourteen people."
+            }
+          ],
+          "kind": "DOCX",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S3",
+          "chunkId": "6f315090-b0db-4f49-aa66-a2d4abbba64e",
+          "documentId": "1b392f66-ad90-53d6-9424-8bf7f0e70de8",
+          "sourceId": "c51cb6bd-c099-5164-bb3d-a90fb2501b20",
+          "indexId": "30f76e46-75b1-41f6-bc0e-78b81a12fe09",
+          "title": "Meeting rooms",
+          "partial": false,
+          "quote": "The Juniper meeting room seats fourteen people.",
+          "chunkStart": 0,
+          "chunkEnd": 47,
+          "spans": [
+            {
+              "blockId": "8bd2c954-29cd-43c4-ab74-98779ab5abc6",
+              "start": 0,
+              "end": 47,
+              "location": {
+                "row": 1,
+                "cell": 1,
+                "table": 1,
+                "paragraph": 2,
+                "headingPath": [
+                  "Meeting rooms"
+                ]
+              },
+              "text": "The Juniper meeting room seats fourteen people."
+            }
+          ],
+          "kind": "DOCX",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "bf0d9d2c-e149-402e-8aed-f0402b1e17c4",
+      "usage": [
+        {
+          "input": 811,
+          "output": 97,
+          "reserved": 3811,
+          "uncertain": false
+        },
+        {
+          "input": 355,
+          "output": 59,
+          "reserved": 1355,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-02",
+      "split": "held-out",
+      "category": "direct",
+      "template": "rooms-fact-1",
+      "language": "en",
+      "query": "Which calendar is used to book Juniper?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "rooms-v1-block-3-full",
+          "document": "rooms",
+          "source": "rooms-v1",
+          "version": 1,
+          "block": "rooms-v1-block-3",
+          "start": 0,
+          "end": 44,
+          "quote": "Juniper room bookings use the room calendar."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Juniper room bookings use the room calendar."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The Juniper meeting room bookings use the room calendar.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "0c440179-a430-486a-ae34-fb91eb7cf84f",
+                "documentId": "1b392f66-ad90-53d6-9424-8bf7f0e70de8",
+                "sourceId": "c51cb6bd-c099-5164-bb3d-a90fb2501b20",
+                "indexId": "30f76e46-75b1-41f6-bc0e-78b81a12fe09",
+                "title": "Meeting rooms",
+                "partial": false,
+                "quote": "The Juniper meeting room seats fourteen people.\nJuniper room bookings use the room calendar.",
+                "chunkStart": 0,
+                "chunkEnd": 92,
+                "spans": [
+                  {
+                    "blockId": "8bd2c954-29cd-43c4-ab74-98779ab5abc6",
+                    "start": 0,
+                    "end": 47,
+                    "location": {
+                      "row": 1,
+                      "cell": 1,
+                      "table": 1,
+                      "paragraph": 2,
+                      "headingPath": [
+                        "Meeting rooms"
+                      ]
+                    }
+                  },
+                  {
+                    "blockId": "ddd75cc4-e0ea-4e2f-a08a-c2d14f4e1d6a",
+                    "start": 0,
+                    "end": 44,
+                    "location": {
+                      "row": 2,
+                      "cell": 1,
+                      "table": 1,
+                      "paragraph": 3,
+                      "headingPath": [
+                        "Meeting rooms"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "0c440179-a430-486a-ae34-fb91eb7cf84f",
+          "documentId": "1b392f66-ad90-53d6-9424-8bf7f0e70de8",
+          "sourceId": "c51cb6bd-c099-5164-bb3d-a90fb2501b20",
+          "indexId": "30f76e46-75b1-41f6-bc0e-78b81a12fe09",
+          "title": "Meeting rooms",
+          "partial": false,
+          "quote": "The Juniper meeting room seats fourteen people.\nJuniper room bookings use the room calendar.",
+          "chunkStart": 0,
+          "chunkEnd": 92,
+          "spans": [
+            {
+              "blockId": "8bd2c954-29cd-43c4-ab74-98779ab5abc6",
+              "start": 0,
+              "end": 47,
+              "location": {
+                "row": 1,
+                "cell": 1,
+                "table": 1,
+                "paragraph": 2,
+                "headingPath": [
+                  "Meeting rooms"
+                ]
+              },
+              "text": "The Juniper meeting room seats fourteen people."
+            },
+            {
+              "blockId": "ddd75cc4-e0ea-4e2f-a08a-c2d14f4e1d6a",
+              "start": 0,
+              "end": 44,
+              "location": {
+                "row": 2,
+                "cell": 1,
+                "table": 1,
+                "paragraph": 3,
+                "headingPath": [
+                  "Meeting rooms"
+                ]
+              },
+              "text": "Juniper room bookings use the room calendar."
+            }
+          ],
+          "kind": "DOCX",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "c3e935f4-037f-4758-a561-ace8b9ea7ad4",
+      "usage": [
+        {
+          "input": 825,
+          "output": 84,
+          "reserved": 3825,
+          "uncertain": false
+        },
+        {
+          "input": 322,
+          "output": 49,
+          "reserved": 1322,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-03",
+      "split": "held-out",
+      "category": "direct",
+      "template": "rooms-fact-2",
+      "language": "en",
+      "query": "How early should an unused room booking be cancelled?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "rooms-v1-block-4-full",
+          "document": "rooms",
+          "source": "rooms-v1",
+          "version": 1,
+          "block": "rooms-v1-block-4",
+          "start": 0,
+          "end": 61,
+          "quote": "Cancel unused room bookings fifteen minutes before the start."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cancel unused room bookings fifteen minutes before the start."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Unused room bookings should be cancelled fifteen minutes before the start time.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "6d511d0d-1d7d-436c-b8d4-8022a6f2c65f",
+                "documentId": "1b392f66-ad90-53d6-9424-8bf7f0e70de8",
+                "sourceId": "c51cb6bd-c099-5164-bb3d-a90fb2501b20",
+                "indexId": "30f76e46-75b1-41f6-bc0e-78b81a12fe09",
+                "title": "Meeting rooms",
+                "partial": false,
+                "quote": "Cancel unused room bookings fifteen minutes before the start.",
+                "chunkStart": 48,
+                "chunkEnd": 109,
+                "spans": [
+                  {
+                    "blockId": "3727aac2-7ea0-4656-8d4b-67fdae7fd081",
+                    "start": 0,
+                    "end": 61,
+                    "location": {
+                      "row": 3,
+                      "cell": 1,
+                      "table": 1,
+                      "paragraph": 4,
+                      "headingPath": [
+                        "Meeting rooms"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "6d511d0d-1d7d-436c-b8d4-8022a6f2c65f",
+          "documentId": "1b392f66-ad90-53d6-9424-8bf7f0e70de8",
+          "sourceId": "c51cb6bd-c099-5164-bb3d-a90fb2501b20",
+          "indexId": "30f76e46-75b1-41f6-bc0e-78b81a12fe09",
+          "title": "Meeting rooms",
+          "partial": false,
+          "quote": "Cancel unused room bookings fifteen minutes before the start.",
+          "chunkStart": 48,
+          "chunkEnd": 109,
+          "spans": [
+            {
+              "blockId": "3727aac2-7ea0-4656-8d4b-67fdae7fd081",
+              "start": 0,
+              "end": 61,
+              "location": {
+                "row": 3,
+                "cell": 1,
+                "table": 1,
+                "paragraph": 4,
+                "headingPath": [
+                  "Meeting rooms"
+                ]
+              },
+              "text": "Cancel unused room bookings fifteen minutes before the start."
+            }
+          ],
+          "kind": "DOCX",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "56a6650f-a863-4cb6-84f8-c4a23897fc8d",
+      "usage": [
+        {
+          "input": 745,
+          "output": 59,
+          "reserved": 3745,
+          "uncertain": false
+        },
+        {
+          "input": 316,
+          "output": 49,
+          "reserved": 1316,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-04",
+      "split": "held-out",
+      "category": "direct",
+      "template": "training-fact-0",
+      "language": "en",
+      "query": "How much training allowance does each Cedar Studio employee receive annually?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "training-v1-block-1-full",
+          "document": "training",
+          "source": "training-v1",
+          "version": 1,
+          "block": "training-v1-block-1",
+          "start": 0,
+          "end": 81,
+          "quote": "Cedar Studio annual training allowance is two hundred forty dollars per employee."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio annual training allowance is two hundred forty dollars per employee."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Cedar Studio employees receive a training allowance of $240 annually.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "3318b1c4-97ad-490f-bac3-4819585dfe98",
+                "documentId": "d396d152-2f5f-596e-97f4-e43e7057231e",
+                "sourceId": "09c158ed-b123-5c47-8234-d650d143d52f",
+                "indexId": "cf8e2fff-80d4-45b4-90d1-099259ea4dd5",
+                "title": "Training allowance",
+                "partial": false,
+                "quote": "Cedar Studio annual training allowance is two hundred forty dollars per employee.",
+                "chunkStart": 0,
+                "chunkEnd": 81,
+                "spans": [
+                  {
+                    "blockId": "a00bc1fe-71da-4c6f-b34c-bf5fb9bead22",
+                    "start": 0,
+                    "end": 81,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "3318b1c4-97ad-490f-bac3-4819585dfe98",
+          "documentId": "d396d152-2f5f-596e-97f4-e43e7057231e",
+          "sourceId": "09c158ed-b123-5c47-8234-d650d143d52f",
+          "indexId": "cf8e2fff-80d4-45b4-90d1-099259ea4dd5",
+          "title": "Training allowance",
+          "partial": false,
+          "quote": "Cedar Studio annual training allowance is two hundred forty dollars per employee.",
+          "chunkStart": 0,
+          "chunkEnd": 81,
+          "spans": [
+            {
+              "blockId": "a00bc1fe-71da-4c6f-b34c-bf5fb9bead22",
+              "start": 0,
+              "end": 81,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio annual training allowance is two hundred forty dollars per employee."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "94bd3ee2-0b2f-4023-87ee-c5cac9ab1502",
+      "usage": [
+        {
+          "input": 747,
+          "output": 64,
+          "reserved": 3747,
+          "uncertain": false
+        },
+        {
+          "input": 324,
+          "output": 49,
+          "reserved": 1324,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-05",
+      "split": "held-out",
+      "category": "direct",
+      "template": "training-fact-1",
+      "language": "en",
+      "query": "Who approves training purchases?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "training-v1-block-2-full",
+          "document": "training",
+          "source": "training-v1",
+          "version": 1,
+          "block": "training-v1-block-2",
+          "start": 0,
+          "end": 55,
+          "quote": "A team lead must approve training purchases in advance."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "A team lead must approve training purchases in advance."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "A team lead must approve training purchases in advance.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "3318b1c4-97ad-490f-bac3-4819585dfe98",
+                "documentId": "d396d152-2f5f-596e-97f4-e43e7057231e",
+                "sourceId": "09c158ed-b123-5c47-8234-d650d143d52f",
+                "indexId": "cf8e2fff-80d4-45b4-90d1-099259ea4dd5",
+                "title": "Training allowance",
+                "partial": false,
+                "quote": "Cedar Studio annual training allowance is two hundred forty dollars per employee.\nA team lead must approve training purchases in advance.\nUnused training allowance expires on 31 December.",
+                "chunkStart": 0,
+                "chunkEnd": 187,
+                "spans": [
+                  {
+                    "blockId": "a00bc1fe-71da-4c6f-b34c-bf5fb9bead22",
+                    "start": 0,
+                    "end": 81,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  },
+                  {
+                    "blockId": "7bf44645-c2ac-47ad-a45b-b3dfb4c8fefb",
+                    "start": 0,
+                    "end": 55,
+                    "location": {
+                      "line": 2,
+                      "offset": 82
+                    }
+                  },
+                  {
+                    "blockId": "c9e31950-dc92-40f5-b9f4-1a6a077857bc",
+                    "start": 0,
+                    "end": 49,
+                    "location": {
+                      "line": 3,
+                      "offset": 138
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "3318b1c4-97ad-490f-bac3-4819585dfe98",
+          "documentId": "d396d152-2f5f-596e-97f4-e43e7057231e",
+          "sourceId": "09c158ed-b123-5c47-8234-d650d143d52f",
+          "indexId": "cf8e2fff-80d4-45b4-90d1-099259ea4dd5",
+          "title": "Training allowance",
+          "partial": false,
+          "quote": "Cedar Studio annual training allowance is two hundred forty dollars per employee.\nA team lead must approve training purchases in advance.\nUnused training allowance expires on 31 December.",
+          "chunkStart": 0,
+          "chunkEnd": 187,
+          "spans": [
+            {
+              "blockId": "a00bc1fe-71da-4c6f-b34c-bf5fb9bead22",
+              "start": 0,
+              "end": 81,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio annual training allowance is two hundred forty dollars per employee."
+            },
+            {
+              "blockId": "7bf44645-c2ac-47ad-a45b-b3dfb4c8fefb",
+              "start": 0,
+              "end": 55,
+              "location": {
+                "line": 2,
+                "offset": 82
+              },
+              "text": "A team lead must approve training purchases in advance."
+            },
+            {
+              "blockId": "c9e31950-dc92-40f5-b9f4-1a6a077857bc",
+              "start": 0,
+              "end": 49,
+              "location": {
+                "line": 3,
+                "offset": 138
+              },
+              "text": "Unused training allowance expires on 31 December."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "bac1f979-4332-49bb-a1a9-cc2b363f93a4",
+      "usage": [
+        {
+          "input": 711,
+          "output": 81,
+          "reserved": 3711,
+          "uncertain": false
+        },
+        {
+          "input": 334,
+          "output": 49,
+          "reserved": 1334,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-06",
+      "split": "held-out",
+      "category": "direct",
+      "template": "training-fact-2",
+      "language": "en",
+      "query": "On which date does unused training allowance expire?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "training-v1-block-3-full",
+          "document": "training",
+          "source": "training-v1",
+          "version": 1,
+          "block": "training-v1-block-3",
+          "start": 0,
+          "end": 49,
+          "quote": "Unused training allowance expires on 31 December."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Unused training allowance expires on 31 December."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Unused training allowance expires on 31 December.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "3318b1c4-97ad-490f-bac3-4819585dfe98",
+                "documentId": "d396d152-2f5f-596e-97f4-e43e7057231e",
+                "sourceId": "09c158ed-b123-5c47-8234-d650d143d52f",
+                "indexId": "cf8e2fff-80d4-45b4-90d1-099259ea4dd5",
+                "title": "Training allowance",
+                "partial": false,
+                "quote": "Cedar Studio annual training allowance is two hundred forty dollars per employee.\nA team lead must approve training purchases in advance.\nUnused training allowance expires on 31 December.",
+                "chunkStart": 0,
+                "chunkEnd": 187,
+                "spans": [
+                  {
+                    "blockId": "a00bc1fe-71da-4c6f-b34c-bf5fb9bead22",
+                    "start": 0,
+                    "end": 81,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  },
+                  {
+                    "blockId": "7bf44645-c2ac-47ad-a45b-b3dfb4c8fefb",
+                    "start": 0,
+                    "end": 55,
+                    "location": {
+                      "line": 2,
+                      "offset": 82
+                    }
+                  },
+                  {
+                    "blockId": "c9e31950-dc92-40f5-b9f4-1a6a077857bc",
+                    "start": 0,
+                    "end": 49,
+                    "location": {
+                      "line": 3,
+                      "offset": 138
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "3318b1c4-97ad-490f-bac3-4819585dfe98",
+          "documentId": "d396d152-2f5f-596e-97f4-e43e7057231e",
+          "sourceId": "09c158ed-b123-5c47-8234-d650d143d52f",
+          "indexId": "cf8e2fff-80d4-45b4-90d1-099259ea4dd5",
+          "title": "Training allowance",
+          "partial": false,
+          "quote": "Cedar Studio annual training allowance is two hundred forty dollars per employee.\nA team lead must approve training purchases in advance.\nUnused training allowance expires on 31 December.",
+          "chunkStart": 0,
+          "chunkEnd": 187,
+          "spans": [
+            {
+              "blockId": "a00bc1fe-71da-4c6f-b34c-bf5fb9bead22",
+              "start": 0,
+              "end": 81,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio annual training allowance is two hundred forty dollars per employee."
+            },
+            {
+              "blockId": "7bf44645-c2ac-47ad-a45b-b3dfb4c8fefb",
+              "start": 0,
+              "end": 55,
+              "location": {
+                "line": 2,
+                "offset": 82
+              },
+              "text": "A team lead must approve training purchases in advance."
+            },
+            {
+              "blockId": "c9e31950-dc92-40f5-b9f4-1a6a077857bc",
+              "start": 0,
+              "end": 49,
+              "location": {
+                "line": 3,
+                "offset": 138
+              },
+              "text": "Unused training allowance expires on 31 December."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "57ab05c6-2e72-4772-8055-11aa9463aaec",
+      "usage": [
+        {
+          "input": 844,
+          "output": 100,
+          "reserved": 3844,
+          "uncertain": false
+        },
+        {
+          "input": 338,
+          "output": 49,
+          "reserved": 1338,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-07",
+      "split": "held-out",
+      "category": "direct",
+      "template": "delivery-fact-0",
+      "language": "en",
+      "query": "Which entrance receives deliveries?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "delivery-v1-block-1-full",
+          "document": "delivery",
+          "source": "delivery-v1",
+          "version": 1,
+          "block": "delivery-v1-block-1",
+          "start": 0,
+          "end": 57,
+          "quote": "Cedar Studio deliveries use the eastern loading entrance."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio deliveries use the eastern loading entrance."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "202e0c8f-7122-43d0-bdca-d929ba475954",
+      "usage": [
+        {
+          "input": 696,
+          "output": 17,
+          "reserved": 3696,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-08",
+      "split": "held-out",
+      "category": "direct",
+      "template": "delivery-fact-1",
+      "language": "en",
+      "query": "Within how many days should personal deliveries be collected?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "delivery-v1-block-2-full",
+          "document": "delivery",
+          "source": "delivery-v1",
+          "version": 1,
+          "block": "delivery-v1-block-2",
+          "start": 0,
+          "end": 55,
+          "quote": "Employees collect personal deliveries within four days."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Employees collect personal deliveries within four days."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Personal deliveries should be collected within four days.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "e401a3c3-291c-48f8-816d-9b4469d4c09b",
+                "documentId": "b1978140-79f2-5bb7-bc05-5c0cfaf7724d",
+                "sourceId": "34f73c32-bf7c-5de4-9a9d-85ef8e261eb8",
+                "indexId": "eaa9cfd5-02df-4753-8f1b-c92438bbee5a",
+                "title": "Delivery collection",
+                "partial": false,
+                "quote": "Employees collect personal deliveries within four days.",
+                "chunkStart": 58,
+                "chunkEnd": 113,
+                "spans": [
+                  {
+                    "blockId": "4b8df465-caec-423f-b35b-ba5911abcd81",
+                    "start": 0,
+                    "end": 55,
+                    "location": {
+                      "line": 2,
+                      "offset": 58
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "e401a3c3-291c-48f8-816d-9b4469d4c09b",
+          "documentId": "b1978140-79f2-5bb7-bc05-5c0cfaf7724d",
+          "sourceId": "34f73c32-bf7c-5de4-9a9d-85ef8e261eb8",
+          "indexId": "eaa9cfd5-02df-4753-8f1b-c92438bbee5a",
+          "title": "Delivery collection",
+          "partial": false,
+          "quote": "Employees collect personal deliveries within four days.",
+          "chunkStart": 58,
+          "chunkEnd": 113,
+          "spans": [
+            {
+              "blockId": "4b8df465-caec-423f-b35b-ba5911abcd81",
+              "start": 0,
+              "end": 55,
+              "location": {
+                "line": 2,
+                "offset": 58
+              },
+              "text": "Employees collect personal deliveries within four days."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "6f90578c-f43f-4e52-982b-568f33d6f9b2",
+      "usage": [
+        {
+          "input": 1061,
+          "output": 71,
+          "reserved": 4061,
+          "uncertain": false
+        },
+        {
+          "input": 310,
+          "output": 49,
+          "reserved": 1310,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-09",
+      "split": "held-out",
+      "category": "direct",
+      "template": "delivery-fact-2",
+      "language": "en",
+      "query": "Who maintains the delivery log?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "delivery-v1-block-3-full",
+          "document": "delivery",
+          "source": "delivery-v1",
+          "version": 1,
+          "block": "delivery-v1-block-3",
+          "start": 0,
+          "end": 55,
+          "quote": "The delivery log is maintained by the facilities clerk."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The delivery log is maintained by the facilities clerk."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The delivery log is maintained by the facilities clerk.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "e401a3c3-291c-48f8-816d-9b4469d4c09b",
+                "documentId": "b1978140-79f2-5bb7-bc05-5c0cfaf7724d",
+                "sourceId": "34f73c32-bf7c-5de4-9a9d-85ef8e261eb8",
+                "indexId": "eaa9cfd5-02df-4753-8f1b-c92438bbee5a",
+                "title": "Delivery collection",
+                "partial": false,
+                "quote": "Cedar Studio deliveries use the eastern loading entrance.\nEmployees collect personal deliveries within four days.\nThe delivery log is maintained by the facilities clerk.",
+                "chunkStart": 0,
+                "chunkEnd": 169,
+                "spans": [
+                  {
+                    "blockId": "bce16e8d-82f0-4d0d-b93c-35b1b4703a2e",
+                    "start": 0,
+                    "end": 57,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  },
+                  {
+                    "blockId": "4b8df465-caec-423f-b35b-ba5911abcd81",
+                    "start": 0,
+                    "end": 55,
+                    "location": {
+                      "line": 2,
+                      "offset": 58
+                    }
+                  },
+                  {
+                    "blockId": "c81d181e-ac8f-4621-8713-39a61599bf4d",
+                    "start": 0,
+                    "end": 55,
+                    "location": {
+                      "line": 3,
+                      "offset": 114
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "e401a3c3-291c-48f8-816d-9b4469d4c09b",
+          "documentId": "b1978140-79f2-5bb7-bc05-5c0cfaf7724d",
+          "sourceId": "34f73c32-bf7c-5de4-9a9d-85ef8e261eb8",
+          "indexId": "eaa9cfd5-02df-4753-8f1b-c92438bbee5a",
+          "title": "Delivery collection",
+          "partial": false,
+          "quote": "Cedar Studio deliveries use the eastern loading entrance.\nEmployees collect personal deliveries within four days.\nThe delivery log is maintained by the facilities clerk.",
+          "chunkStart": 0,
+          "chunkEnd": 169,
+          "spans": [
+            {
+              "blockId": "bce16e8d-82f0-4d0d-b93c-35b1b4703a2e",
+              "start": 0,
+              "end": 57,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio deliveries use the eastern loading entrance."
+            },
+            {
+              "blockId": "4b8df465-caec-423f-b35b-ba5911abcd81",
+              "start": 0,
+              "end": 55,
+              "location": {
+                "line": 2,
+                "offset": 58
+              },
+              "text": "Employees collect personal deliveries within four days."
+            },
+            {
+              "blockId": "c81d181e-ac8f-4621-8713-39a61599bf4d",
+              "start": 0,
+              "end": 55,
+              "location": {
+                "line": 3,
+                "offset": 114
+              },
+              "text": "The delivery log is maintained by the facilities clerk."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "6d6d8962-17a8-4bf4-9e13-6bfbd561af47",
+      "usage": [
+        {
+          "input": 736,
+          "output": 74,
+          "reserved": 3736,
+          "uncertain": false
+        },
+        {
+          "input": 328,
+          "output": 49,
+          "reserved": 1328,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-10",
+      "split": "held-out",
+      "category": "direct",
+      "template": "cafe-fact-0",
+      "language": "en",
+      "query": "What are the cafe opening hours?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "cafe-v1-block-1-full",
+          "document": "cafe",
+          "source": "cafe-v1",
+          "version": 1,
+          "block": "cafe-v1-block-1",
+          "start": 0,
+          "end": 44,
+          "quote": "Cedar Studio cafe opens from 11:30 to 14:30."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio cafe opens from 11:30 to 14:30."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Cedar Studio cafe opens from 11:30 to 14:30.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "67e96504-5f10-45f5-b36e-d3b031f44d19",
+                "documentId": "bcad7ae1-ac2e-5548-befa-aa240a0b5ac2",
+                "sourceId": "6da71794-4e94-5f74-a95c-219b50529d78",
+                "indexId": "918961c3-d766-41f1-a972-9df72e67b72c",
+                "title": "Cafe service",
+                "partial": false,
+                "quote": "Cedar Studio cafe opens from 11:30 to 14:30.",
+                "chunkStart": 0,
+                "chunkEnd": 44,
+                "spans": [
+                  {
+                    "blockId": "1defdee1-2392-46fc-a366-64ec40904b65",
+                    "start": 0,
+                    "end": 44,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "67e96504-5f10-45f5-b36e-d3b031f44d19",
+          "documentId": "bcad7ae1-ac2e-5548-befa-aa240a0b5ac2",
+          "sourceId": "6da71794-4e94-5f74-a95c-219b50529d78",
+          "indexId": "918961c3-d766-41f1-a972-9df72e67b72c",
+          "title": "Cafe service",
+          "partial": false,
+          "quote": "Cedar Studio cafe opens from 11:30 to 14:30.",
+          "chunkStart": 0,
+          "chunkEnd": 44,
+          "spans": [
+            {
+              "blockId": "1defdee1-2392-46fc-a366-64ec40904b65",
+              "start": 0,
+              "end": 44,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio cafe opens from 11:30 to 14:30."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "a0a3c6da-2c06-422c-ab20-e636638a1ec8",
+      "usage": [
+        {
+          "input": 845,
+          "output": 94,
+          "reserved": 3845,
+          "uncertain": false
+        },
+        {
+          "input": 331,
+          "output": 49,
+          "reserved": 1331,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-11",
+      "split": "held-out",
+      "category": "direct",
+      "template": "cafe-fact-1",
+      "language": "en",
+      "query": "Which weekday has vegetarian meals?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "cafe-v1-block-2-full",
+          "document": "cafe",
+          "source": "cafe-v1",
+          "version": 1,
+          "block": "cafe-v1-block-2",
+          "start": 0,
+          "end": 46,
+          "quote": "The cafe serves vegetarian meals on Wednesday."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The cafe serves vegetarian meals on Wednesday."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Wednesday",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "67e96504-5f10-45f5-b36e-d3b031f44d19",
+                "documentId": "bcad7ae1-ac2e-5548-befa-aa240a0b5ac2",
+                "sourceId": "6da71794-4e94-5f74-a95c-219b50529d78",
+                "indexId": "918961c3-d766-41f1-a972-9df72e67b72c",
+                "title": "Cafe service",
+                "partial": false,
+                "quote": "Cedar Studio cafe opens from 11:30 to 14:30.\nThe cafe serves vegetarian meals on Wednesday.\nEmployees return cafe dishes to the blue rack.",
+                "chunkStart": 0,
+                "chunkEnd": 138,
+                "spans": [
+                  {
+                    "blockId": "1defdee1-2392-46fc-a366-64ec40904b65",
+                    "start": 0,
+                    "end": 44,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  },
+                  {
+                    "blockId": "aaa2c269-b8b0-490a-9797-541b380826ee",
+                    "start": 0,
+                    "end": 46,
+                    "location": {
+                      "line": 2,
+                      "offset": 45
+                    }
+                  },
+                  {
+                    "blockId": "afe6e1c5-135f-4637-b78e-36b190733da1",
+                    "start": 0,
+                    "end": 46,
+                    "location": {
+                      "line": 3,
+                      "offset": 92
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "67e96504-5f10-45f5-b36e-d3b031f44d19",
+          "documentId": "bcad7ae1-ac2e-5548-befa-aa240a0b5ac2",
+          "sourceId": "6da71794-4e94-5f74-a95c-219b50529d78",
+          "indexId": "918961c3-d766-41f1-a972-9df72e67b72c",
+          "title": "Cafe service",
+          "partial": false,
+          "quote": "Cedar Studio cafe opens from 11:30 to 14:30.\nThe cafe serves vegetarian meals on Wednesday.\nEmployees return cafe dishes to the blue rack.",
+          "chunkStart": 0,
+          "chunkEnd": 138,
+          "spans": [
+            {
+              "blockId": "1defdee1-2392-46fc-a366-64ec40904b65",
+              "start": 0,
+              "end": 44,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio cafe opens from 11:30 to 14:30."
+            },
+            {
+              "blockId": "aaa2c269-b8b0-490a-9797-541b380826ee",
+              "start": 0,
+              "end": 46,
+              "location": {
+                "line": 2,
+                "offset": 45
+              },
+              "text": "The cafe serves vegetarian meals on Wednesday."
+            },
+            {
+              "blockId": "afe6e1c5-135f-4637-b78e-36b190733da1",
+              "start": 0,
+              "end": 46,
+              "location": {
+                "line": 3,
+                "offset": 92
+              },
+              "text": "Employees return cafe dishes to the blue rack."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "02ac6390-c1bf-4830-a732-f9c3de9b0e63",
+      "usage": [
+        {
+          "input": 849,
+          "output": 94,
+          "reserved": 3849,
+          "uncertain": false
+        },
+        {
+          "input": 330,
+          "output": 49,
+          "reserved": 1330,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-12",
+      "split": "held-out",
+      "category": "direct",
+      "template": "cafe-fact-2",
+      "language": "en",
+      "query": "Where should cafe dishes be returned?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "cafe-v1-block-3-full",
+          "document": "cafe",
+          "source": "cafe-v1",
+          "version": 1,
+          "block": "cafe-v1-block-3",
+          "start": 0,
+          "end": 46,
+          "quote": "Employees return cafe dishes to the blue rack."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Employees return cafe dishes to the blue rack."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "de5b18f4-d925-4076-b962-c9840c37a8d1",
+      "usage": [
+        {
+          "input": 857,
+          "output": 17,
+          "reserved": 3857,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-13",
+      "split": "held-out",
+      "category": "direct",
+      "template": "garden-fact-0",
+      "language": "en",
+      "query": "At what time is the garden watered?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "garden-v1-block-1-full",
+          "document": "garden",
+          "source": "garden-v1",
+          "version": 1,
+          "block": "garden-v1-block-1",
+          "start": 0,
+          "end": 53,
+          "quote": "Cedar Studio garden is watered at 07:00 each morning."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio garden is watered at 07:00 each morning."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The garden is watered at 07:00 each morning.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "251d816f-2ffa-4a44-bd03-1002417d0fe5",
+                "documentId": "8c06fa5a-a4c1-58dc-ac1c-a4dc08e8def8",
+                "sourceId": "7f99ea98-0716-54d1-9867-4301e996d2f7",
+                "indexId": "dc3d54a4-2c4e-4371-9da5-d15ab2396aa5",
+                "title": "Garden care",
+                "partial": false,
+                "quote": "Cedar Studio garden is watered at 07:00 each morning.",
+                "chunkStart": 0,
+                "chunkEnd": 53,
+                "spans": [
+                  {
+                    "blockId": "f9f0d21b-ac75-499a-b9c3-5e53568728f2",
+                    "start": 0,
+                    "end": 53,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "251d816f-2ffa-4a44-bd03-1002417d0fe5",
+          "documentId": "8c06fa5a-a4c1-58dc-ac1c-a4dc08e8def8",
+          "sourceId": "7f99ea98-0716-54d1-9867-4301e996d2f7",
+          "indexId": "dc3d54a4-2c4e-4371-9da5-d15ab2396aa5",
+          "title": "Garden care",
+          "partial": false,
+          "quote": "Cedar Studio garden is watered at 07:00 each morning.",
+          "chunkStart": 0,
+          "chunkEnd": 53,
+          "spans": [
+            {
+              "blockId": "f9f0d21b-ac75-499a-b9c3-5e53568728f2",
+              "start": 0,
+              "end": 53,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio garden is watered at 07:00 each morning."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "33394a61-2062-4457-9627-e0a11b50bf27",
+      "usage": [
+        {
+          "input": 769,
+          "output": 86,
+          "reserved": 3769,
+          "uncertain": false
+        },
+        {
+          "input": 325,
+          "output": 49,
+          "reserved": 1325,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-14",
+      "split": "held-out",
+      "category": "direct",
+      "template": "garden-fact-1",
+      "language": "en",
+      "query": "When do garden volunteers meet?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "garden-v1-block-2-full",
+          "document": "garden",
+          "source": "garden-v1",
+          "version": 1,
+          "block": "garden-v1-block-2",
+          "start": 0,
+          "end": 35,
+          "quote": "Garden volunteers meet on Thursday."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Garden volunteers meet on Thursday."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Garden volunteers meet on Thursday.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "251d816f-2ffa-4a44-bd03-1002417d0fe5",
+                "documentId": "8c06fa5a-a4c1-58dc-ac1c-a4dc08e8def8",
+                "sourceId": "7f99ea98-0716-54d1-9867-4301e996d2f7",
+                "indexId": "dc3d54a4-2c4e-4371-9da5-d15ab2396aa5",
+                "title": "Garden care",
+                "partial": false,
+                "quote": "Garden volunteers meet on Thursday.",
+                "chunkStart": 54,
+                "chunkEnd": 89,
+                "spans": [
+                  {
+                    "blockId": "b0c7462d-114b-466f-92ad-d2972ba80b70",
+                    "start": 0,
+                    "end": 35,
+                    "location": {
+                      "line": 2,
+                      "offset": 54
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "251d816f-2ffa-4a44-bd03-1002417d0fe5",
+          "documentId": "8c06fa5a-a4c1-58dc-ac1c-a4dc08e8def8",
+          "sourceId": "7f99ea98-0716-54d1-9867-4301e996d2f7",
+          "indexId": "dc3d54a4-2c4e-4371-9da5-d15ab2396aa5",
+          "title": "Garden care",
+          "partial": false,
+          "quote": "Garden volunteers meet on Thursday.",
+          "chunkStart": 54,
+          "chunkEnd": 89,
+          "spans": [
+            {
+              "blockId": "b0c7462d-114b-466f-92ad-d2972ba80b70",
+              "start": 0,
+              "end": 35,
+              "location": {
+                "line": 2,
+                "offset": 54
+              },
+              "text": "Garden volunteers meet on Thursday."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "7b6c5b13-3749-409e-b943-9aeb7ba3240e",
+      "usage": [
+        {
+          "input": 710,
+          "output": 49,
+          "reserved": 3710,
+          "uncertain": false
+        },
+        {
+          "input": 304,
+          "output": 49,
+          "reserved": 1304,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-15",
+      "split": "held-out",
+      "category": "direct",
+      "template": "drill-fact-0",
+      "language": "en",
+      "query": "How often are fire safety drills held?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "drill-v1-block-1-full",
+          "document": "drill",
+          "source": "drill-v1",
+          "version": 1,
+          "block": "drill-v1-block-1",
+          "start": 0,
+          "end": 57,
+          "quote": "Cedar Studio fire safety drills happen every four months."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio fire safety drills happen every four months."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "0689f404-29a0-4ec1-a961-9baaefa24f38",
+      "usage": [
+        {
+          "input": 797,
+          "output": 20,
+          "reserved": 3797,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-16",
+      "split": "held-out",
+      "category": "direct",
+      "template": "drill-fact-1",
+      "language": "en",
+      "query": "Which exit should employees use in a fire?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "drill-v1-block-2-full",
+          "document": "drill",
+          "source": "drill-v1",
+          "version": 1,
+          "block": "drill-v1-block-2",
+          "start": 0,
+          "end": 56,
+          "quote": "During a fire, employees leave through the western exit."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "During a fire, employees leave through the western exit."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "11ddc124-6973-4824-9a78-b3fe8f532519",
+      "usage": [
+        {
+          "input": 783,
+          "output": 17,
+          "reserved": 3783,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-17",
+      "split": "held-out",
+      "category": "direct",
+      "template": "onboarding-fact-0",
+      "language": "en",
+      "query": "How long does curator onboarding last?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "onboarding-v1-block-2-full",
+          "document": "onboarding",
+          "source": "onboarding-v1",
+          "version": 1,
+          "block": "onboarding-v1-block-2",
+          "start": 0,
+          "end": 35,
+          "quote": "Curator onboarding lasts nine days."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Curator onboarding lasts nine days."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Curator onboarding lasts nine days.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "97bbfa71-b3b5-44de-8807-4ba4a350e152",
+                "documentId": "209c39ec-7d01-5eca-b43f-fd04d455954b",
+                "sourceId": "65dc0da0-a5a2-5a1c-9e5f-f8c657f5a69b",
+                "indexId": "e8696262-cd04-4c08-b795-68ccda8725f3",
+                "title": "Curator onboarding",
+                "partial": false,
+                "quote": "Curator onboarding lasts nine days.",
+                "chunkStart": 0,
+                "chunkEnd": 35,
+                "spans": [
+                  {
+                    "blockId": "631cd182-0661-428b-9aa7-7a0c3e1914b6",
+                    "start": 0,
+                    "end": 35,
+                    "location": {
+                      "row": 1,
+                      "cell": 1,
+                      "table": 1,
+                      "paragraph": 2,
+                      "headingPath": [
+                        "Curator onboarding"
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S2",
+                "chunkId": "38445353-c302-4b1a-9b1b-1df2b4ced5fe",
+                "documentId": "209c39ec-7d01-5eca-b43f-fd04d455954b",
+                "sourceId": "65dc0da0-a5a2-5a1c-9e5f-f8c657f5a69b",
+                "indexId": "e8696262-cd04-4c08-b795-68ccda8725f3",
+                "title": "Curator onboarding",
+                "partial": false,
+                "quote": "Curator onboarding lasts nine days.",
+                "chunkStart": 0,
+                "chunkEnd": 35,
+                "spans": [
+                  {
+                    "blockId": "631cd182-0661-428b-9aa7-7a0c3e1914b6",
+                    "start": 0,
+                    "end": 35,
+                    "location": {
+                      "row": 1,
+                      "cell": 1,
+                      "table": 1,
+                      "paragraph": 2,
+                      "headingPath": [
+                        "Curator onboarding"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true,
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "97bbfa71-b3b5-44de-8807-4ba4a350e152",
+          "documentId": "209c39ec-7d01-5eca-b43f-fd04d455954b",
+          "sourceId": "65dc0da0-a5a2-5a1c-9e5f-f8c657f5a69b",
+          "indexId": "e8696262-cd04-4c08-b795-68ccda8725f3",
+          "title": "Curator onboarding",
+          "partial": false,
+          "quote": "Curator onboarding lasts nine days.",
+          "chunkStart": 0,
+          "chunkEnd": 35,
+          "spans": [
+            {
+              "blockId": "631cd182-0661-428b-9aa7-7a0c3e1914b6",
+              "start": 0,
+              "end": 35,
+              "location": {
+                "row": 1,
+                "cell": 1,
+                "table": 1,
+                "paragraph": 2,
+                "headingPath": [
+                  "Curator onboarding"
+                ]
+              },
+              "text": "Curator onboarding lasts nine days."
+            }
+          ],
+          "kind": "DOCX",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S2",
+          "chunkId": "38445353-c302-4b1a-9b1b-1df2b4ced5fe",
+          "documentId": "209c39ec-7d01-5eca-b43f-fd04d455954b",
+          "sourceId": "65dc0da0-a5a2-5a1c-9e5f-f8c657f5a69b",
+          "indexId": "e8696262-cd04-4c08-b795-68ccda8725f3",
+          "title": "Curator onboarding",
+          "partial": false,
+          "quote": "Curator onboarding lasts nine days.",
+          "chunkStart": 0,
+          "chunkEnd": 35,
+          "spans": [
+            {
+              "blockId": "631cd182-0661-428b-9aa7-7a0c3e1914b6",
+              "start": 0,
+              "end": 35,
+              "location": {
+                "row": 1,
+                "cell": 1,
+                "table": 1,
+                "paragraph": 2,
+                "headingPath": [
+                  "Curator onboarding"
+                ]
+              },
+              "text": "Curator onboarding lasts nine days."
+            }
+          ],
+          "kind": "DOCX",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "c75b184b-1bbd-47cb-90ba-7598fff170c5",
+      "usage": [
+        {
+          "input": 752,
+          "output": 72,
+          "reserved": 3752,
+          "uncertain": false
+        },
+        {
+          "input": 333,
+          "output": 54,
+          "reserved": 1333,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-18",
+      "split": "held-out",
+      "category": "direct",
+      "template": "onboarding-fact-1",
+      "language": "en",
+      "query": "Who leads curator onboarding?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "onboarding-v1-block-3-full",
+          "document": "onboarding",
+          "source": "onboarding-v1",
+          "version": 1,
+          "block": "onboarding-v1-block-3",
+          "start": 0,
+          "end": 34,
+          "quote": "Curator onboarding is led by Arun."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Curator onboarding is led by Arun."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Arun leads curator onboarding.",
+            "citations": [
+              {
+                "evidenceId": "S2",
+                "chunkId": "97bbfa71-b3b5-44de-8807-4ba4a350e152",
+                "documentId": "209c39ec-7d01-5eca-b43f-fd04d455954b",
+                "sourceId": "65dc0da0-a5a2-5a1c-9e5f-f8c657f5a69b",
+                "indexId": "e8696262-cd04-4c08-b795-68ccda8725f3",
+                "title": "Curator onboarding",
+                "partial": false,
+                "quote": "Curator onboarding is led by Arun.",
+                "chunkStart": 36,
+                "chunkEnd": 70,
+                "spans": [
+                  {
+                    "blockId": "f2152037-1f4b-4bef-bc7b-72b0841383ce",
+                    "start": 0,
+                    "end": 34,
+                    "location": {
+                      "row": 2,
+                      "cell": 1,
+                      "table": 1,
+                      "paragraph": 3,
+                      "headingPath": [
+                        "Curator onboarding"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S2",
+          "chunkId": "97bbfa71-b3b5-44de-8807-4ba4a350e152",
+          "documentId": "209c39ec-7d01-5eca-b43f-fd04d455954b",
+          "sourceId": "65dc0da0-a5a2-5a1c-9e5f-f8c657f5a69b",
+          "indexId": "e8696262-cd04-4c08-b795-68ccda8725f3",
+          "title": "Curator onboarding",
+          "partial": false,
+          "quote": "Curator onboarding is led by Arun.",
+          "chunkStart": 36,
+          "chunkEnd": 70,
+          "spans": [
+            {
+              "blockId": "f2152037-1f4b-4bef-bc7b-72b0841383ce",
+              "start": 0,
+              "end": 34,
+              "location": {
+                "row": 2,
+                "cell": 1,
+                "table": 1,
+                "paragraph": 3,
+                "headingPath": [
+                  "Curator onboarding"
+                ]
+              },
+              "text": "Curator onboarding is led by Arun."
+            }
+          ],
+          "kind": "DOCX",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "a7134a3c-f8e9-42b7-be0e-2061bbcb9cfd",
+      "usage": [
+        {
+          "input": 732,
+          "output": 71,
+          "reserved": 3732,
+          "uncertain": false
+        },
+        {
+          "input": 308,
+          "output": 49,
+          "reserved": 1308,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-19",
+      "split": "held-out",
+      "category": "direct",
+      "template": "salary-fact-0",
+      "language": "en",
+      "query": "In which month does the salary review occur?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "salary-v1-block-1-full",
+          "document": "salary",
+          "source": "salary-v1",
+          "version": 1,
+          "block": "salary-v1-block-1",
+          "start": 0,
+          "end": 63,
+          "quote": "The owner-only Cedar Studio salary review happens in September."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The owner-only Cedar Studio salary review happens in September."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The salary review occurs in September.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "cf5ab991-e531-4e83-a7dd-77c1f0c2763e",
+                "documentId": "9a694366-7ca8-504c-8210-2580839a208f",
+                "sourceId": "c5b97126-9ece-544e-9851-41a4cf0b86f7",
+                "indexId": "db4e489d-5eb9-4fdb-8cf1-e5de29e73c7e",
+                "title": "Salary review",
+                "partial": false,
+                "quote": "The owner-only Cedar Studio salary review happens in September.",
+                "chunkStart": 0,
+                "chunkEnd": 63,
+                "spans": [
+                  {
+                    "blockId": "13f269db-4353-459c-9a61-f53bab79fed7",
+                    "start": 0,
+                    "end": 63,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "cf5ab991-e531-4e83-a7dd-77c1f0c2763e",
+          "documentId": "9a694366-7ca8-504c-8210-2580839a208f",
+          "sourceId": "c5b97126-9ece-544e-9851-41a4cf0b86f7",
+          "indexId": "db4e489d-5eb9-4fdb-8cf1-e5de29e73c7e",
+          "title": "Salary review",
+          "partial": false,
+          "quote": "The owner-only Cedar Studio salary review happens in September.",
+          "chunkStart": 0,
+          "chunkEnd": 63,
+          "spans": [
+            {
+              "blockId": "13f269db-4353-459c-9a61-f53bab79fed7",
+              "start": 0,
+              "end": 63,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "The owner-only Cedar Studio salary review happens in September."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "dd9818f2-150c-4612-aa1a-75a81b643fb6",
+      "usage": [
+        {
+          "input": 836,
+          "output": 72,
+          "reserved": 3836,
+          "uncertain": false
+        },
+        {
+          "input": 310,
+          "output": 49,
+          "reserved": 1310,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-20",
+      "split": "held-out",
+      "category": "direct",
+      "template": "salary-fact-1",
+      "language": "en",
+      "query": "How long are salary review records retained?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "salary-v1-block-2-full",
+          "document": "salary",
+          "source": "salary-v1",
+          "version": 1,
+          "block": "salary-v1-block-2",
+          "start": 0,
+          "end": 51,
+          "quote": "Salary review records are retained for seven years."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Salary review records are retained for seven years."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "8ec0f9e7-6bed-48ca-ae99-2e330439857b",
+      "usage": [
+        {
+          "input": 844,
+          "output": 20,
+          "reserved": 3844,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-21",
+      "split": "held-out",
+      "category": "cross-document",
+      "template": "cross-rooms-0-training-0",
+      "language": "en",
+      "query": "What are Juniper room capacity and the employee training allowance?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "rooms-v1-block-2-full",
+          "document": "rooms",
+          "source": "rooms-v1",
+          "version": 1,
+          "block": "rooms-v1-block-2",
+          "start": 0,
+          "end": 47,
+          "quote": "The Juniper meeting room seats fourteen people."
+        },
+        {
+          "id": "training-v1-block-1-full",
+          "document": "training",
+          "source": "training-v1",
+          "version": 1,
+          "block": "training-v1-block-1",
+          "start": 0,
+          "end": 81,
+          "quote": "Cedar Studio annual training allowance is two hundred forty dollars per employee."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The Juniper meeting room seats fourteen people.",
+        "Cedar Studio annual training allowance is two hundred forty dollars per employee."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "7aceabf3-6d7e-4e8f-92d2-61922346689e",
+      "usage": [
+        {
+          "input": 800,
+          "output": 159,
+          "reserved": 3800,
+          "uncertain": false
+        },
+        {
+          "input": 385,
+          "output": 86,
+          "reserved": 1385,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-22",
+      "split": "held-out",
+      "category": "cross-document",
+      "template": "cross-delivery-0-drill-1",
+      "language": "en",
+      "query": "Which entrances are used for deliveries and for fire evacuation?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "delivery-v1-block-1-full",
+          "document": "delivery",
+          "source": "delivery-v1",
+          "version": 1,
+          "block": "delivery-v1-block-1",
+          "start": 0,
+          "end": 57,
+          "quote": "Cedar Studio deliveries use the eastern loading entrance."
+        },
+        {
+          "id": "drill-v1-block-2-full",
+          "document": "drill",
+          "source": "drill-v1",
+          "version": 1,
+          "block": "drill-v1-block-2",
+          "start": 0,
+          "end": 56,
+          "quote": "During a fire, employees leave through the western exit."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Cedar Studio deliveries use the eastern loading entrance.",
+        "During a fire, employees leave through the western exit."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Cedar Studio deliveries use the eastern loading entrance for deliveries and the western exit for fire evacuation.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "e401a3c3-291c-48f8-816d-9b4469d4c09b",
+                "documentId": "b1978140-79f2-5bb7-bc05-5c0cfaf7724d",
+                "sourceId": "34f73c32-bf7c-5de4-9a9d-85ef8e261eb8",
+                "indexId": "eaa9cfd5-02df-4753-8f1b-c92438bbee5a",
+                "title": "Delivery collection",
+                "partial": false,
+                "quote": "Cedar Studio deliveries use the eastern loading entrance.",
+                "chunkStart": 0,
+                "chunkEnd": 57,
+                "spans": [
+                  {
+                    "blockId": "bce16e8d-82f0-4d0d-b93c-35b1b4703a2e",
+                    "start": 0,
+                    "end": 57,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S2",
+                "chunkId": "88250297-7bd7-4082-b421-8b7fbfffc5cf",
+                "documentId": "55583674-464f-5d8e-aca4-4d02c63eac16",
+                "sourceId": "5c0b6589-27e0-547a-bd00-07c8978d3f8b",
+                "indexId": "14b2ba40-5831-4681-9201-58f640682358",
+                "title": "Fire safety drill",
+                "partial": false,
+                "quote": "During a fire, employees leave through the western exit.",
+                "chunkStart": 58,
+                "chunkEnd": 114,
+                "spans": [
+                  {
+                    "blockId": "a02d0be9-72a4-4f22-85d0-f21da663da7b",
+                    "start": 0,
+                    "end": 56,
+                    "location": {
+                      "bbox": [
+                        0.034509803921568626,
+                        0.288915808600848,
+                        0.42196078431372547,
+                        0.3052695336159903
+                      ],
+                      "page": 1,
+                      "method": "OCR",
+                      "confidence": 96.42
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true,
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "e401a3c3-291c-48f8-816d-9b4469d4c09b",
+          "documentId": "b1978140-79f2-5bb7-bc05-5c0cfaf7724d",
+          "sourceId": "34f73c32-bf7c-5de4-9a9d-85ef8e261eb8",
+          "indexId": "eaa9cfd5-02df-4753-8f1b-c92438bbee5a",
+          "title": "Delivery collection",
+          "partial": false,
+          "quote": "Cedar Studio deliveries use the eastern loading entrance.",
+          "chunkStart": 0,
+          "chunkEnd": 57,
+          "spans": [
+            {
+              "blockId": "bce16e8d-82f0-4d0d-b93c-35b1b4703a2e",
+              "start": 0,
+              "end": 57,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "Cedar Studio deliveries use the eastern loading entrance."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S2",
+          "chunkId": "88250297-7bd7-4082-b421-8b7fbfffc5cf",
+          "documentId": "55583674-464f-5d8e-aca4-4d02c63eac16",
+          "sourceId": "5c0b6589-27e0-547a-bd00-07c8978d3f8b",
+          "indexId": "14b2ba40-5831-4681-9201-58f640682358",
+          "title": "Fire safety drill",
+          "partial": false,
+          "quote": "During a fire, employees leave through the western exit.",
+          "chunkStart": 58,
+          "chunkEnd": 114,
+          "spans": [
+            {
+              "blockId": "a02d0be9-72a4-4f22-85d0-f21da663da7b",
+              "start": 0,
+              "end": 56,
+              "location": {
+                "bbox": [
+                  0.034509803921568626,
+                  0.288915808600848,
+                  0.42196078431372547,
+                  0.3052695336159903
+                ],
+                "page": 1,
+                "method": "OCR",
+                "confidence": 96.42
+              },
+              "text": "During a fire, employees leave through the western exit."
+            }
+          ],
+          "kind": "PDF",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "d7a63ebb-2d17-4401-a0e7-ad1c2a48340f",
+      "usage": [
+        {
+          "input": 703,
+          "output": 88,
+          "reserved": 3703,
+          "uncertain": false
+        },
+        {
+          "input": 349,
+          "output": 54,
+          "reserved": 1349,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-23",
+      "split": "held-out",
+      "category": "cross-document",
+      "template": "cross-cafe-1-garden-1",
+      "language": "en",
+      "query": "Which days have vegetarian meals and garden volunteering?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "cafe-v1-block-2-full",
+          "document": "cafe",
+          "source": "cafe-v1",
+          "version": 1,
+          "block": "cafe-v1-block-2",
+          "start": 0,
+          "end": 46,
+          "quote": "The cafe serves vegetarian meals on Wednesday."
+        },
+        {
+          "id": "garden-v1-block-2-full",
+          "document": "garden",
+          "source": "garden-v1",
+          "version": 1,
+          "block": "garden-v1-block-2",
+          "start": 0,
+          "end": 35,
+          "quote": "Garden volunteers meet on Thursday."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The cafe serves vegetarian meals on Wednesday.",
+        "Garden volunteers meet on Thursday."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Vegetarian meals are served on Wednesday and garden volunteering occurs on Thursday.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "251d816f-2ffa-4a44-bd03-1002417d0fe5",
+                "documentId": "8c06fa5a-a4c1-58dc-ac1c-a4dc08e8def8",
+                "sourceId": "7f99ea98-0716-54d1-9867-4301e996d2f7",
+                "indexId": "dc3d54a4-2c4e-4371-9da5-d15ab2396aa5",
+                "title": "Garden care",
+                "partial": false,
+                "quote": "Garden volunteers meet on Thursday.",
+                "chunkStart": 54,
+                "chunkEnd": 89,
+                "spans": [
+                  {
+                    "blockId": "b0c7462d-114b-466f-92ad-d2972ba80b70",
+                    "start": 0,
+                    "end": 35,
+                    "location": {
+                      "line": 2,
+                      "offset": 54
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S2",
+                "chunkId": "67e96504-5f10-45f5-b36e-d3b031f44d19",
+                "documentId": "bcad7ae1-ac2e-5548-befa-aa240a0b5ac2",
+                "sourceId": "6da71794-4e94-5f74-a95c-219b50529d78",
+                "indexId": "918961c3-d766-41f1-a972-9df72e67b72c",
+                "title": "Cafe service",
+                "partial": false,
+                "quote": "The cafe serves vegetarian meals on Wednesday.",
+                "chunkStart": 45,
+                "chunkEnd": 91,
+                "spans": [
+                  {
+                    "blockId": "aaa2c269-b8b0-490a-9797-541b380826ee",
+                    "start": 0,
+                    "end": 46,
+                    "location": {
+                      "line": 2,
+                      "offset": 45
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true,
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "251d816f-2ffa-4a44-bd03-1002417d0fe5",
+          "documentId": "8c06fa5a-a4c1-58dc-ac1c-a4dc08e8def8",
+          "sourceId": "7f99ea98-0716-54d1-9867-4301e996d2f7",
+          "indexId": "dc3d54a4-2c4e-4371-9da5-d15ab2396aa5",
+          "title": "Garden care",
+          "partial": false,
+          "quote": "Garden volunteers meet on Thursday.",
+          "chunkStart": 54,
+          "chunkEnd": 89,
+          "spans": [
+            {
+              "blockId": "b0c7462d-114b-466f-92ad-d2972ba80b70",
+              "start": 0,
+              "end": 35,
+              "location": {
+                "line": 2,
+                "offset": 54
+              },
+              "text": "Garden volunteers meet on Thursday."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S2",
+          "chunkId": "67e96504-5f10-45f5-b36e-d3b031f44d19",
+          "documentId": "bcad7ae1-ac2e-5548-befa-aa240a0b5ac2",
+          "sourceId": "6da71794-4e94-5f74-a95c-219b50529d78",
+          "indexId": "918961c3-d766-41f1-a972-9df72e67b72c",
+          "title": "Cafe service",
+          "partial": false,
+          "quote": "The cafe serves vegetarian meals on Wednesday.",
+          "chunkStart": 45,
+          "chunkEnd": 91,
+          "spans": [
+            {
+              "blockId": "aaa2c269-b8b0-490a-9797-541b380826ee",
+              "start": 0,
+              "end": 46,
+              "location": {
+                "line": 2,
+                "offset": 45
+              },
+              "text": "The cafe serves vegetarian meals on Wednesday."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "3634e27e-7119-45ec-ba44-880554ddabc6",
+      "usage": [
+        {
+          "input": 752,
+          "output": 102,
+          "reserved": 3752,
+          "uncertain": false
+        },
+        {
+          "input": 338,
+          "output": 54,
+          "reserved": 1338,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-24",
+      "split": "held-out",
+      "category": "cross-document",
+      "template": "cross-onboarding-0-salary-1",
+      "language": "en",
+      "query": "How long is curator onboarding and how long are salary review records kept?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "onboarding-v1-block-2-full",
+          "document": "onboarding",
+          "source": "onboarding-v1",
+          "version": 1,
+          "block": "onboarding-v1-block-2",
+          "start": 0,
+          "end": 35,
+          "quote": "Curator onboarding lasts nine days."
+        },
+        {
+          "id": "salary-v1-block-2-full",
+          "document": "salary",
+          "source": "salary-v1",
+          "version": 1,
+          "block": "salary-v1-block-2",
+          "start": 0,
+          "end": 51,
+          "quote": "Salary review records are retained for seven years."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Curator onboarding lasts nine days.",
+        "Salary review records are retained for seven years."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "Curator onboarding lasts nine days.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "38445353-c302-4b1a-9b1b-1df2b4ced5fe",
+                "documentId": "209c39ec-7d01-5eca-b43f-fd04d455954b",
+                "sourceId": "65dc0da0-a5a2-5a1c-9e5f-f8c657f5a69b",
+                "indexId": "e8696262-cd04-4c08-b795-68ccda8725f3",
+                "title": "Curator onboarding",
+                "partial": false,
+                "quote": "Curator onboarding lasts nine days.\nCurators complete the catalogue checklist before publishing.",
+                "chunkStart": 0,
+                "chunkEnd": 96,
+                "spans": [
+                  {
+                    "blockId": "631cd182-0661-428b-9aa7-7a0c3e1914b6",
+                    "start": 0,
+                    "end": 35,
+                    "location": {
+                      "row": 1,
+                      "cell": 1,
+                      "table": 1,
+                      "paragraph": 2,
+                      "headingPath": [
+                        "Curator onboarding"
+                      ]
+                    }
+                  },
+                  {
+                    "blockId": "8f9f9860-4d00-448e-a671-4098820cbcf3",
+                    "start": 0,
+                    "end": 60,
+                    "location": {
+                      "row": 3,
+                      "cell": 1,
+                      "table": 1,
+                      "paragraph": 4,
+                      "headingPath": [
+                        "Curator onboarding"
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S2",
+                "chunkId": "97bbfa71-b3b5-44de-8807-4ba4a350e152",
+                "documentId": "209c39ec-7d01-5eca-b43f-fd04d455954b",
+                "sourceId": "65dc0da0-a5a2-5a1c-9e5f-f8c657f5a69b",
+                "indexId": "e8696262-cd04-4c08-b795-68ccda8725f3",
+                "title": "Curator onboarding",
+                "partial": false,
+                "quote": "Curator onboarding lasts nine days.\nCurator onboarding is led by Arun.",
+                "chunkStart": 0,
+                "chunkEnd": 70,
+                "spans": [
+                  {
+                    "blockId": "631cd182-0661-428b-9aa7-7a0c3e1914b6",
+                    "start": 0,
+                    "end": 35,
+                    "location": {
+                      "row": 1,
+                      "cell": 1,
+                      "table": 1,
+                      "paragraph": 2,
+                      "headingPath": [
+                        "Curator onboarding"
+                      ]
+                    }
+                  },
+                  {
+                    "blockId": "f2152037-1f4b-4bef-bc7b-72b0841383ce",
+                    "start": 0,
+                    "end": 34,
+                    "location": {
+                      "row": 2,
+                      "cell": 1,
+                      "table": 1,
+                      "paragraph": 3,
+                      "headingPath": [
+                        "Curator onboarding"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "text": "Salary review records are retained for seven years.",
+            "citations": [
+              {
+                "evidenceId": "S4",
+                "chunkId": "cf5ab991-e531-4e83-a7dd-77c1f0c2763e",
+                "documentId": "9a694366-7ca8-504c-8210-2580839a208f",
+                "sourceId": "c5b97126-9ece-544e-9851-41a4cf0b86f7",
+                "indexId": "db4e489d-5eb9-4fdb-8cf1-e5de29e73c7e",
+                "title": "Salary review",
+                "partial": false,
+                "quote": "The owner-only Cedar Studio salary review happens in September.\nSalary review records are retained for seven years.",
+                "chunkStart": 0,
+                "chunkEnd": 115,
+                "spans": [
+                  {
+                    "blockId": "13f269db-4353-459c-9a61-f53bab79fed7",
+                    "start": 0,
+                    "end": 63,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  },
+                  {
+                    "blockId": "b60283c3-e53e-4a8f-b87a-0943979429ca",
+                    "start": 0,
+                    "end": 51,
+                    "location": {
+                      "line": 2,
+                      "offset": 64
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true,
+        true,
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "38445353-c302-4b1a-9b1b-1df2b4ced5fe",
+          "documentId": "209c39ec-7d01-5eca-b43f-fd04d455954b",
+          "sourceId": "65dc0da0-a5a2-5a1c-9e5f-f8c657f5a69b",
+          "indexId": "e8696262-cd04-4c08-b795-68ccda8725f3",
+          "title": "Curator onboarding",
+          "partial": false,
+          "quote": "Curator onboarding lasts nine days.\nCurators complete the catalogue checklist before publishing.",
+          "chunkStart": 0,
+          "chunkEnd": 96,
+          "spans": [
+            {
+              "blockId": "631cd182-0661-428b-9aa7-7a0c3e1914b6",
+              "start": 0,
+              "end": 35,
+              "location": {
+                "row": 1,
+                "cell": 1,
+                "table": 1,
+                "paragraph": 2,
+                "headingPath": [
+                  "Curator onboarding"
+                ]
+              },
+              "text": "Curator onboarding lasts nine days."
+            },
+            {
+              "blockId": "8f9f9860-4d00-448e-a671-4098820cbcf3",
+              "start": 0,
+              "end": 60,
+              "location": {
+                "row": 3,
+                "cell": 1,
+                "table": 1,
+                "paragraph": 4,
+                "headingPath": [
+                  "Curator onboarding"
+                ]
+              },
+              "text": "Curators complete the catalogue checklist before publishing."
+            }
+          ],
+          "kind": "DOCX",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S2",
+          "chunkId": "97bbfa71-b3b5-44de-8807-4ba4a350e152",
+          "documentId": "209c39ec-7d01-5eca-b43f-fd04d455954b",
+          "sourceId": "65dc0da0-a5a2-5a1c-9e5f-f8c657f5a69b",
+          "indexId": "e8696262-cd04-4c08-b795-68ccda8725f3",
+          "title": "Curator onboarding",
+          "partial": false,
+          "quote": "Curator onboarding lasts nine days.\nCurator onboarding is led by Arun.",
+          "chunkStart": 0,
+          "chunkEnd": 70,
+          "spans": [
+            {
+              "blockId": "631cd182-0661-428b-9aa7-7a0c3e1914b6",
+              "start": 0,
+              "end": 35,
+              "location": {
+                "row": 1,
+                "cell": 1,
+                "table": 1,
+                "paragraph": 2,
+                "headingPath": [
+                  "Curator onboarding"
+                ]
+              },
+              "text": "Curator onboarding lasts nine days."
+            },
+            {
+              "blockId": "f2152037-1f4b-4bef-bc7b-72b0841383ce",
+              "start": 0,
+              "end": 34,
+              "location": {
+                "row": 2,
+                "cell": 1,
+                "table": 1,
+                "paragraph": 3,
+                "headingPath": [
+                  "Curator onboarding"
+                ]
+              },
+              "text": "Curator onboarding is led by Arun."
+            }
+          ],
+          "kind": "DOCX",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S4",
+          "chunkId": "cf5ab991-e531-4e83-a7dd-77c1f0c2763e",
+          "documentId": "9a694366-7ca8-504c-8210-2580839a208f",
+          "sourceId": "c5b97126-9ece-544e-9851-41a4cf0b86f7",
+          "indexId": "db4e489d-5eb9-4fdb-8cf1-e5de29e73c7e",
+          "title": "Salary review",
+          "partial": false,
+          "quote": "The owner-only Cedar Studio salary review happens in September.\nSalary review records are retained for seven years.",
+          "chunkStart": 0,
+          "chunkEnd": 115,
+          "spans": [
+            {
+              "blockId": "13f269db-4353-459c-9a61-f53bab79fed7",
+              "start": 0,
+              "end": 63,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "The owner-only Cedar Studio salary review happens in September."
+            },
+            {
+              "blockId": "b60283c3-e53e-4a8f-b87a-0943979429ca",
+              "start": 0,
+              "end": 51,
+              "location": {
+                "line": 2,
+                "offset": 64
+              },
+              "text": "Salary review records are retained for seven years."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "81a19ff6-5e77-4747-b605-b9b778b1c70d",
+      "usage": [
+        {
+          "input": 811,
+          "output": 182,
+          "reserved": 3811,
+          "uncertain": false
+        },
+        {
+          "input": 415,
+          "output": 86,
+          "reserved": 1415,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-25",
+      "split": "held-out",
+      "category": "cross-document",
+      "template": "cross-training-2-delivery-1",
+      "language": "en",
+      "query": "When does unused training allowance expire, and when must personal deliveries be collected?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "training-v1-block-3-full",
+          "document": "training",
+          "source": "training-v1",
+          "version": 1,
+          "block": "training-v1-block-3",
+          "start": 0,
+          "end": 49,
+          "quote": "Unused training allowance expires on 31 December."
+        },
+        {
+          "id": "delivery-v1-block-2-full",
+          "document": "delivery",
+          "source": "delivery-v1",
+          "version": 1,
+          "block": "delivery-v1-block-2",
+          "start": 0,
+          "end": 55,
+          "quote": "Employees collect personal deliveries within four days."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Unused training allowance expires on 31 December.",
+        "Employees collect personal deliveries within four days."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "9ec8e2af-63da-4621-aa34-8eeedb95709b",
+      "usage": [
+        {
+          "input": 879,
+          "output": 20,
+          "reserved": 3879,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-26",
+      "split": "held-out",
+      "category": "unanswerable",
+      "template": "missing-What is the exact corporate bank account number?",
+      "language": "en",
+      "query": "What is the exact corporate bank account number?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "f47380a7-8286-438b-b0f3-208215a7f0b4",
+      "usage": [
+        {
+          "input": 795,
+          "output": 17,
+          "reserved": 3795,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-27",
+      "split": "held-out",
+      "category": "unanswerable",
+      "template": "missing-What medical dosage does the company doctor recommend?",
+      "language": "en",
+      "query": "What medical dosage does the company doctor recommend?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "18cf7f73-0f2d-46c8-b724-81f029b6292d",
+      "usage": [
+        {
+          "input": 875,
+          "output": 17,
+          "reserved": 3875,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-28",
+      "split": "held-out",
+      "category": "unanswerable",
+      "template": "missing-Which country issues the staff travel visas?",
+      "language": "en",
+      "query": "Which country issues the staff travel visas?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "93c67ca6-80d1-4363-949a-afb5a4243ca0",
+      "usage": [
+        {
+          "input": 963,
+          "output": 17,
+          "reserved": 3963,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-29",
+      "split": "held-out",
+      "category": "unanswerable",
+      "template": "missing-Who supplies the kitchen coffee beans?",
+      "language": "en",
+      "query": "Who supplies the kitchen coffee beans?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "b785c826-1fef-4fbc-afba-f2dede98f1a6",
+      "usage": [
+        {
+          "input": 711,
+          "output": 17,
+          "reserved": 3711,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-30",
+      "split": "held-out",
+      "category": "unanswerable",
+      "template": "missing-What is the current exchange rate used for foreign invoices?",
+      "language": "en",
+      "query": "What is the current exchange rate used for foreign invoices?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "ab9e7d72-341c-41c3-afb5-d217824e0a71",
+      "usage": [
+        {
+          "input": 846,
+          "output": 17,
+          "reserved": 3846,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-31",
+      "split": "held-out",
+      "category": "conflict",
+      "template": "conflicting-policy-topic-3",
+      "language": "en",
+      "query": "How many leave days can be carried over according to the two memos?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "people-policy-v1-block-4-full",
+          "document": "people-policy",
+          "source": "people-policy-v1",
+          "version": 1,
+          "block": "people-policy-v1-block-4",
+          "start": 0,
+          "end": 66,
+          "quote": "The People memo allows six leave days to carry into the next year."
+        },
+        {
+          "id": "operations-policy-v1-block-4-full",
+          "document": "operations-policy",
+          "source": "operations-policy-v1",
+          "version": 1,
+          "block": "operations-policy-v1-block-4",
+          "start": 0,
+          "end": 70,
+          "quote": "The Operations memo allows two leave days to carry into the next year."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The People memo allows six leave days to carry into the next year.",
+        "The Operations memo allows two leave days to carry into the next year."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "CONFLICTING_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "According to the two memos, the Operations policy memo allows two leave days to carry into the next year, while the People policy memo allows six leave days to carry into the next year.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "e3d964ba-9f59-4fb4-80dc-013a4477a0c1",
+                "documentId": "0157b642-bf97-5e64-ad66-2a33805c5309",
+                "sourceId": "45c455ef-6328-535d-a249-3af185135e27",
+                "indexId": "c54f3b48-7385-4669-a89d-109399bc45b9",
+                "title": "Operations policy memo",
+                "partial": false,
+                "quote": "The Operations memo allows two leave days to carry into the next year.",
+                "chunkStart": 184,
+                "chunkEnd": 254,
+                "spans": [
+                  {
+                    "blockId": "07caaa75-3de9-4e0b-978f-a7568428aabb",
+                    "start": 0,
+                    "end": 70,
+                    "location": {
+                      "line": 4,
+                      "offset": 184
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S2",
+                "chunkId": "a64c23e6-e1cf-49d7-ae90-768975f3ffe5",
+                "documentId": "20ebbc30-d4a5-5b0e-9871-b06895334440",
+                "sourceId": "e1d0a103-330d-5ea2-8b06-2bce72fedbb9",
+                "indexId": "fb5160c3-7ac3-4f4e-9148-ba32c5db73cd",
+                "title": "People policy memo",
+                "partial": false,
+                "quote": "The People memo allows six leave days to carry into the next year.",
+                "chunkStart": 172,
+                "chunkEnd": 238,
+                "spans": [
+                  {
+                    "blockId": "370f1564-485c-498e-afe2-eced51a972dd",
+                    "start": 0,
+                    "end": 66,
+                    "location": {
+                      "line": 4,
+                      "offset": 172
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true,
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "e3d964ba-9f59-4fb4-80dc-013a4477a0c1",
+          "documentId": "0157b642-bf97-5e64-ad66-2a33805c5309",
+          "sourceId": "45c455ef-6328-535d-a249-3af185135e27",
+          "indexId": "c54f3b48-7385-4669-a89d-109399bc45b9",
+          "title": "Operations policy memo",
+          "partial": false,
+          "quote": "The Operations memo allows two leave days to carry into the next year.",
+          "chunkStart": 184,
+          "chunkEnd": 254,
+          "spans": [
+            {
+              "blockId": "07caaa75-3de9-4e0b-978f-a7568428aabb",
+              "start": 0,
+              "end": 70,
+              "location": {
+                "line": 4,
+                "offset": 184
+              },
+              "text": "The Operations memo allows two leave days to carry into the next year."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S2",
+          "chunkId": "a64c23e6-e1cf-49d7-ae90-768975f3ffe5",
+          "documentId": "20ebbc30-d4a5-5b0e-9871-b06895334440",
+          "sourceId": "e1d0a103-330d-5ea2-8b06-2bce72fedbb9",
+          "indexId": "fb5160c3-7ac3-4f4e-9148-ba32c5db73cd",
+          "title": "People policy memo",
+          "partial": false,
+          "quote": "The People memo allows six leave days to carry into the next year.",
+          "chunkStart": 172,
+          "chunkEnd": 238,
+          "spans": [
+            {
+              "blockId": "370f1564-485c-498e-afe2-eced51a972dd",
+              "start": 0,
+              "end": 66,
+              "location": {
+                "line": 4,
+                "offset": 172
+              },
+              "text": "The People memo allows six leave days to carry into the next year."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "156f1cd1-9b35-4e1b-a72f-260bbb517783",
+      "usage": [
+        {
+          "input": 979,
+          "output": 138,
+          "reserved": 3979,
+          "uncertain": false
+        },
+        {
+          "input": 380,
+          "output": 54,
+          "reserved": 1380,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-32",
+      "split": "held-out",
+      "category": "conflict",
+      "template": "conflicting-policy-topic-4",
+      "language": "en",
+      "query": "What probation period does each policy memo specify?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "people-policy-v1-block-5-full",
+          "document": "people-policy",
+          "source": "people-policy-v1",
+          "version": 1,
+          "block": "people-policy-v1-block-5",
+          "start": 0,
+          "end": 47,
+          "quote": "The People memo sets probation at three months."
+        },
+        {
+          "id": "operations-policy-v1-block-5-full",
+          "document": "operations-policy",
+          "source": "operations-policy-v1",
+          "version": 1,
+          "block": "operations-policy-v1-block-5",
+          "start": 0,
+          "end": 49,
+          "quote": "The Operations memo sets probation at six months."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The People memo sets probation at three months.",
+        "The Operations memo sets probation at six months."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "CONFLICTING_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The People policy memo specifies a probation period of three months, while the Operations policy memo specifies a probation period of six months.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "a64c23e6-e1cf-49d7-ae90-768975f3ffe5",
+                "documentId": "20ebbc30-d4a5-5b0e-9871-b06895334440",
+                "sourceId": "e1d0a103-330d-5ea2-8b06-2bce72fedbb9",
+                "indexId": "fb5160c3-7ac3-4f4e-9148-ba32c5db73cd",
+                "title": "People policy memo",
+                "partial": false,
+                "quote": "The People memo sets probation at three months.",
+                "chunkStart": 239,
+                "chunkEnd": 286,
+                "spans": [
+                  {
+                    "blockId": "4a07a943-06a3-4779-b67c-b2e90e9cbcc1",
+                    "start": 0,
+                    "end": 47,
+                    "location": {
+                      "line": 5,
+                      "offset": 239
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S2",
+                "chunkId": "e3d964ba-9f59-4fb4-80dc-013a4477a0c1",
+                "documentId": "0157b642-bf97-5e64-ad66-2a33805c5309",
+                "sourceId": "45c455ef-6328-535d-a249-3af185135e27",
+                "indexId": "c54f3b48-7385-4669-a89d-109399bc45b9",
+                "title": "Operations policy memo",
+                "partial": false,
+                "quote": "The Operations memo sets probation at six months.",
+                "chunkStart": 255,
+                "chunkEnd": 304,
+                "spans": [
+                  {
+                    "blockId": "a264e5c2-8ec8-4210-8794-44c8947bf641",
+                    "start": 0,
+                    "end": 49,
+                    "location": {
+                      "line": 5,
+                      "offset": 255
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true,
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "a64c23e6-e1cf-49d7-ae90-768975f3ffe5",
+          "documentId": "20ebbc30-d4a5-5b0e-9871-b06895334440",
+          "sourceId": "e1d0a103-330d-5ea2-8b06-2bce72fedbb9",
+          "indexId": "fb5160c3-7ac3-4f4e-9148-ba32c5db73cd",
+          "title": "People policy memo",
+          "partial": false,
+          "quote": "The People memo sets probation at three months.",
+          "chunkStart": 239,
+          "chunkEnd": 286,
+          "spans": [
+            {
+              "blockId": "4a07a943-06a3-4779-b67c-b2e90e9cbcc1",
+              "start": 0,
+              "end": 47,
+              "location": {
+                "line": 5,
+                "offset": 239
+              },
+              "text": "The People memo sets probation at three months."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S2",
+          "chunkId": "e3d964ba-9f59-4fb4-80dc-013a4477a0c1",
+          "documentId": "0157b642-bf97-5e64-ad66-2a33805c5309",
+          "sourceId": "45c455ef-6328-535d-a249-3af185135e27",
+          "indexId": "c54f3b48-7385-4669-a89d-109399bc45b9",
+          "title": "Operations policy memo",
+          "partial": false,
+          "quote": "The Operations memo sets probation at six months.",
+          "chunkStart": 255,
+          "chunkEnd": 304,
+          "spans": [
+            {
+              "blockId": "a264e5c2-8ec8-4210-8794-44c8947bf641",
+              "start": 0,
+              "end": 49,
+              "location": {
+                "line": 5,
+                "offset": 255
+              },
+              "text": "The Operations memo sets probation at six months."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "a0727636-ed51-4ba8-b3bd-01c9cfc945e3",
+      "usage": [
+        {
+          "input": 871,
+          "output": 91,
+          "reserved": 3871,
+          "uncertain": false
+        },
+        {
+          "input": 351,
+          "output": 54,
+          "reserved": 1351,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-33",
+      "split": "held-out",
+      "category": "conflict",
+      "template": "conflicting-policy-topic-5",
+      "language": "en",
+      "query": "How many standard weekly working hours does each policy memo specify?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "people-policy-v1-block-6-full",
+          "document": "people-policy",
+          "source": "people-policy-v1",
+          "version": 1,
+          "block": "people-policy-v1-block-6",
+          "start": 0,
+          "end": 68,
+          "quote": "The People memo sets the standard working week at thirty-five hours."
+        },
+        {
+          "id": "operations-policy-v1-block-6-full",
+          "document": "operations-policy",
+          "source": "operations-policy-v1",
+          "version": 1,
+          "block": "operations-policy-v1-block-6",
+          "start": 0,
+          "end": 66,
+          "quote": "The Operations memo sets the standard working week at forty hours."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The People memo sets the standard working week at thirty-five hours.",
+        "The Operations memo sets the standard working week at forty hours."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "CONFLICTING_EVIDENCE",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The People policy memo specifies a standard working week of thirty-five hours, while the Operations policy memo specifies a standard working week of forty hours.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "a64c23e6-e1cf-49d7-ae90-768975f3ffe5",
+                "documentId": "20ebbc30-d4a5-5b0e-9871-b06895334440",
+                "sourceId": "e1d0a103-330d-5ea2-8b06-2bce72fedbb9",
+                "indexId": "fb5160c3-7ac3-4f4e-9148-ba32c5db73cd",
+                "title": "People policy memo",
+                "partial": false,
+                "quote": "The People memo sets the standard working week at thirty-five hours.",
+                "chunkStart": 287,
+                "chunkEnd": 355,
+                "spans": [
+                  {
+                    "blockId": "e5b41185-954d-4d42-b9bc-a3f83ef98e98",
+                    "start": 0,
+                    "end": 68,
+                    "location": {
+                      "line": 6,
+                      "offset": 287
+                    }
+                  }
+                ]
+              },
+              {
+                "evidenceId": "S2",
+                "chunkId": "e3d964ba-9f59-4fb4-80dc-013a4477a0c1",
+                "documentId": "0157b642-bf97-5e64-ad66-2a33805c5309",
+                "sourceId": "45c455ef-6328-535d-a249-3af185135e27",
+                "indexId": "c54f3b48-7385-4669-a89d-109399bc45b9",
+                "title": "Operations policy memo",
+                "partial": false,
+                "quote": "The Operations memo sets the standard working week at forty hours.",
+                "chunkStart": 305,
+                "chunkEnd": 371,
+                "spans": [
+                  {
+                    "blockId": "ea6f4368-d088-41dd-8a65-c5cd47e13991",
+                    "start": 0,
+                    "end": 66,
+                    "location": {
+                      "line": 6,
+                      "offset": 305
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true,
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "a64c23e6-e1cf-49d7-ae90-768975f3ffe5",
+          "documentId": "20ebbc30-d4a5-5b0e-9871-b06895334440",
+          "sourceId": "e1d0a103-330d-5ea2-8b06-2bce72fedbb9",
+          "indexId": "fb5160c3-7ac3-4f4e-9148-ba32c5db73cd",
+          "title": "People policy memo",
+          "partial": false,
+          "quote": "The People memo sets the standard working week at thirty-five hours.",
+          "chunkStart": 287,
+          "chunkEnd": 355,
+          "spans": [
+            {
+              "blockId": "e5b41185-954d-4d42-b9bc-a3f83ef98e98",
+              "start": 0,
+              "end": 68,
+              "location": {
+                "line": 6,
+                "offset": 287
+              },
+              "text": "The People memo sets the standard working week at thirty-five hours."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        },
+        {
+          "evidenceId": "S2",
+          "chunkId": "e3d964ba-9f59-4fb4-80dc-013a4477a0c1",
+          "documentId": "0157b642-bf97-5e64-ad66-2a33805c5309",
+          "sourceId": "45c455ef-6328-535d-a249-3af185135e27",
+          "indexId": "c54f3b48-7385-4669-a89d-109399bc45b9",
+          "title": "Operations policy memo",
+          "partial": false,
+          "quote": "The Operations memo sets the standard working week at forty hours.",
+          "chunkStart": 305,
+          "chunkEnd": 371,
+          "spans": [
+            {
+              "blockId": "ea6f4368-d088-41dd-8a65-c5cd47e13991",
+              "start": 0,
+              "end": 66,
+              "location": {
+                "line": 6,
+                "offset": 305
+              },
+              "text": "The Operations memo sets the standard working week at forty hours."
+            }
+          ],
+          "kind": "MD",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "c7fca9e6-b5c3-4937-a503-ac3295b15a01",
+      "usage": [
+        {
+          "input": 848,
+          "output": 101,
+          "reserved": 3848,
+          "uncertain": false
+        },
+        {
+          "input": 364,
+          "output": 54,
+          "reserved": 1364,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-34",
+      "split": "held-out",
+      "category": "nepali",
+      "template": "nep-library-0",
+      "language": "ne",
+      "query": "\u091c\u0941\u0928 \u0915\u093e\u0930\u094d\u092f\u093e\u0932\u092f\u0915\u094b \u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0915\u0941\u0928 \u0926\u093f\u0928 \u092c\u0928\u094d\u0926 \u0939\u0941\u0928\u094d\u091b?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "nep-library-v1-block-1-full",
+          "document": "nep-library",
+          "source": "nep-library-v1",
+          "version": 1,
+          "block": "nep-library-v1-block-1",
+          "start": 0,
+          "end": 43,
+          "quote": "\u091c\u0941\u0928 \u0915\u093e\u0930\u094d\u092f\u093e\u0932\u092f\u0915\u094b \u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0906\u0907\u0924\u092c\u093e\u0930 \u092c\u0928\u094d\u0926 \u0939\u0941\u0928\u094d\u091b\u0964"
+        }
+      ],
+      "requiredAnswerFacts": [
+        "\u091c\u0941\u0928 \u0915\u093e\u0930\u094d\u092f\u093e\u0932\u092f\u0915\u094b \u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0906\u0907\u0924\u092c\u093e\u0930 \u092c\u0928\u094d\u0926 \u0939\u0941\u0928\u094d\u091b\u0964"
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "\u091c\u0941\u0928 \u0915\u093e\u0930\u094d\u092f\u093e\u0932\u092f\u0915\u094b \u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0906\u0907\u0924\u092c\u093e\u0930 \u092c\u0928\u094d\u0926 \u0939\u0941\u0928\u094d\u091b\u0964",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "3f724ed0-351b-430e-ba44-ba7aee31b3c7",
+                "documentId": "4166cf12-e75c-5b78-9967-3dbedcdb550d",
+                "sourceId": "1e896b19-691e-5e68-944c-e4465fd24cf0",
+                "indexId": "5e7e3d4c-6ef6-4b44-af48-8a76a3916c49",
+                "title": "\u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0938\u092e\u092f",
+                "partial": false,
+                "quote": "\u091c\u0941\u0928 \u0915\u093e\u0930\u094d\u092f\u093e\u0932\u092f\u0915\u094b \u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0906\u0907\u0924\u092c\u093e\u0930 \u092c\u0928\u094d\u0926 \u0939\u0941\u0928\u094d\u091b\u0964",
+                "chunkStart": 0,
+                "chunkEnd": 43,
+                "spans": [
+                  {
+                    "blockId": "92ede9c4-d55b-4645-9815-63248c33d59a",
+                    "start": 0,
+                    "end": 43,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "3f724ed0-351b-430e-ba44-ba7aee31b3c7",
+          "documentId": "4166cf12-e75c-5b78-9967-3dbedcdb550d",
+          "sourceId": "1e896b19-691e-5e68-944c-e4465fd24cf0",
+          "indexId": "5e7e3d4c-6ef6-4b44-af48-8a76a3916c49",
+          "title": "\u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0938\u092e\u092f",
+          "partial": false,
+          "quote": "\u091c\u0941\u0928 \u0915\u093e\u0930\u094d\u092f\u093e\u0932\u092f\u0915\u094b \u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0906\u0907\u0924\u092c\u093e\u0930 \u092c\u0928\u094d\u0926 \u0939\u0941\u0928\u094d\u091b\u0964",
+          "chunkStart": 0,
+          "chunkEnd": 43,
+          "spans": [
+            {
+              "blockId": "92ede9c4-d55b-4645-9815-63248c33d59a",
+              "start": 0,
+              "end": 43,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "\u091c\u0941\u0928 \u0915\u093e\u0930\u094d\u092f\u093e\u0932\u092f\u0915\u094b \u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0906\u0907\u0924\u092c\u093e\u0930 \u092c\u0928\u094d\u0926 \u0939\u0941\u0928\u094d\u091b\u0964"
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "3c839fee-4129-44c4-8f95-f88e26006e7c",
+      "usage": [
+        {
+          "input": 1015,
+          "output": 136,
+          "reserved": 4015,
+          "uncertain": false
+        },
+        {
+          "input": 414,
+          "output": 49,
+          "reserved": 1414,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-35",
+      "split": "held-out",
+      "category": "nepali",
+      "template": "nep-library-1",
+      "language": "ne",
+      "query": "\u090f\u0915 \u092a\u091f\u0915 \u0915\u0924\u093f\u0935\u091f\u093e \u092a\u0941\u0938\u094d\u0924\u0915 \u0932\u093f\u0928 \u0938\u0915\u093f\u0928\u094d\u091b?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "nep-library-v1-block-2-full",
+          "document": "nep-library",
+          "source": "nep-library-v1",
+          "version": 1,
+          "block": "nep-library-v1-block-2",
+          "start": 0,
+          "end": 32,
+          "quote": "\u090f\u0915 \u092a\u091f\u0915 \u091a\u093e\u0930\u0935\u091f\u093e \u092a\u0941\u0938\u094d\u0924\u0915 \u0932\u093f\u0928 \u0938\u0915\u093f\u0928\u094d\u091b\u0964"
+        }
+      ],
+      "requiredAnswerFacts": [
+        "\u090f\u0915 \u092a\u091f\u0915 \u091a\u093e\u0930\u0935\u091f\u093e \u092a\u0941\u0938\u094d\u0924\u0915 \u0932\u093f\u0928 \u0938\u0915\u093f\u0928\u094d\u091b\u0964"
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "\u090f\u0915 \u092a\u091f\u0915 \u091a\u093e\u0930\u0935\u091f\u093e \u092a\u0941\u0938\u094d\u0924\u0915 \u0932\u093f\u0928 \u0938\u0915\u093f\u0928\u094d\u091b\u0964",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "3f724ed0-351b-430e-ba44-ba7aee31b3c7",
+                "documentId": "4166cf12-e75c-5b78-9967-3dbedcdb550d",
+                "sourceId": "1e896b19-691e-5e68-944c-e4465fd24cf0",
+                "indexId": "5e7e3d4c-6ef6-4b44-af48-8a76a3916c49",
+                "title": "\u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0938\u092e\u092f",
+                "partial": false,
+                "quote": "\u090f\u0915 \u092a\u091f\u0915 \u091a\u093e\u0930\u0935\u091f\u093e \u092a\u0941\u0938\u094d\u0924\u0915 \u0932\u093f\u0928 \u0938\u0915\u093f\u0928\u094d\u091b\u0964",
+                "chunkStart": 44,
+                "chunkEnd": 76,
+                "spans": [
+                  {
+                    "blockId": "28e49762-a235-4ecd-ab7a-c649160ec671",
+                    "start": 0,
+                    "end": 32,
+                    "location": {
+                      "line": 2,
+                      "offset": 44
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "3f724ed0-351b-430e-ba44-ba7aee31b3c7",
+          "documentId": "4166cf12-e75c-5b78-9967-3dbedcdb550d",
+          "sourceId": "1e896b19-691e-5e68-944c-e4465fd24cf0",
+          "indexId": "5e7e3d4c-6ef6-4b44-af48-8a76a3916c49",
+          "title": "\u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0938\u092e\u092f",
+          "partial": false,
+          "quote": "\u090f\u0915 \u092a\u091f\u0915 \u091a\u093e\u0930\u0935\u091f\u093e \u092a\u0941\u0938\u094d\u0924\u0915 \u0932\u093f\u0928 \u0938\u0915\u093f\u0928\u094d\u091b\u0964",
+          "chunkStart": 44,
+          "chunkEnd": 76,
+          "spans": [
+            {
+              "blockId": "28e49762-a235-4ecd-ab7a-c649160ec671",
+              "start": 0,
+              "end": 32,
+              "location": {
+                "line": 2,
+                "offset": 44
+              },
+              "text": "\u090f\u0915 \u092a\u091f\u0915 \u091a\u093e\u0930\u0935\u091f\u093e \u092a\u0941\u0938\u094d\u0924\u0915 \u0932\u093f\u0928 \u0938\u0915\u093f\u0928\u094d\u091b\u0964"
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "cae48ff7-4793-4bb7-8b5c-122a33a47abe",
+      "usage": [
+        {
+          "input": 1002,
+          "output": 94,
+          "reserved": 4002,
+          "uncertain": false
+        },
+        {
+          "input": 380,
+          "output": 49,
+          "reserved": 1380,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-36",
+      "split": "held-out",
+      "category": "nepali",
+      "template": "nep-library-2",
+      "language": "ne",
+      "query": "\u092a\u0941\u0938\u094d\u0924\u0915 \u0915\u0924\u093f \u0926\u093f\u0928\u092d\u093f\u0924\u094d\u0930 \u092b\u093f\u0930\u094d\u0924\u093e \u0917\u0930\u094d\u0928\u0941\u092a\u0930\u094d\u091b?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "nep-library-v1-block-3-full",
+          "document": "nep-library",
+          "source": "nep-library-v1",
+          "version": 1,
+          "block": "nep-library-v1-block-3",
+          "start": 0,
+          "end": 37,
+          "quote": "\u092a\u0941\u0938\u094d\u0924\u0915 \u091a\u094c\u0927 \u0926\u093f\u0928\u092d\u093f\u0924\u094d\u0930 \u092b\u093f\u0930\u094d\u0924\u093e \u0917\u0930\u094d\u0928\u0941\u092a\u0930\u094d\u091b\u0964"
+        }
+      ],
+      "requiredAnswerFacts": [
+        "\u092a\u0941\u0938\u094d\u0924\u0915 \u091a\u094c\u0927 \u0926\u093f\u0928\u092d\u093f\u0924\u094d\u0930 \u092b\u093f\u0930\u094d\u0924\u093e \u0917\u0930\u094d\u0928\u0941\u092a\u0930\u094d\u091b\u0964"
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "\u092a\u0941\u0938\u094d\u0924\u0915 \u091a\u094c\u0927 \u0926\u093f\u0928\u092d\u093f\u0924\u094d\u0930 \u092b\u093f\u0930\u094d\u0924\u093e \u0917\u0930\u094d\u0928\u0941\u092a\u0930\u094d\u091b\u0964",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "3f724ed0-351b-430e-ba44-ba7aee31b3c7",
+                "documentId": "4166cf12-e75c-5b78-9967-3dbedcdb550d",
+                "sourceId": "1e896b19-691e-5e68-944c-e4465fd24cf0",
+                "indexId": "5e7e3d4c-6ef6-4b44-af48-8a76a3916c49",
+                "title": "\u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0938\u092e\u092f",
+                "partial": false,
+                "quote": "\u092a\u0941\u0938\u094d\u0924\u0915 \u091a\u094c\u0927 \u0926\u093f\u0928\u092d\u093f\u0924\u094d\u0930 \u092b\u093f\u0930\u094d\u0924\u093e \u0917\u0930\u094d\u0928\u0941\u092a\u0930\u094d\u091b\u0964",
+                "chunkStart": 77,
+                "chunkEnd": 114,
+                "spans": [
+                  {
+                    "blockId": "4f748a9e-ac49-4202-89fb-13e3792d4bcf",
+                    "start": 0,
+                    "end": 37,
+                    "location": {
+                      "line": 3,
+                      "offset": 77
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "3f724ed0-351b-430e-ba44-ba7aee31b3c7",
+          "documentId": "4166cf12-e75c-5b78-9967-3dbedcdb550d",
+          "sourceId": "1e896b19-691e-5e68-944c-e4465fd24cf0",
+          "indexId": "5e7e3d4c-6ef6-4b44-af48-8a76a3916c49",
+          "title": "\u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0938\u092e\u092f",
+          "partial": false,
+          "quote": "\u092a\u0941\u0938\u094d\u0924\u0915 \u091a\u094c\u0927 \u0926\u093f\u0928\u092d\u093f\u0924\u094d\u0930 \u092b\u093f\u0930\u094d\u0924\u093e \u0917\u0930\u094d\u0928\u0941\u092a\u0930\u094d\u091b\u0964",
+          "chunkStart": 77,
+          "chunkEnd": 114,
+          "spans": [
+            {
+              "blockId": "4f748a9e-ac49-4202-89fb-13e3792d4bcf",
+              "start": 0,
+              "end": 37,
+              "location": {
+                "line": 3,
+                "offset": 77
+              },
+              "text": "\u092a\u0941\u0938\u094d\u0924\u0915 \u091a\u094c\u0927 \u0926\u093f\u0928\u092d\u093f\u0924\u094d\u0930 \u092b\u093f\u0930\u094d\u0924\u093e \u0917\u0930\u094d\u0928\u0941\u092a\u0930\u094d\u091b\u0964"
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "35caf276-412b-4019-9134-bb32fc51cc53",
+      "usage": [
+        {
+          "input": 1073,
+          "output": 110,
+          "reserved": 4073,
+          "uncertain": false
+        },
+        {
+          "input": 403,
+          "output": 49,
+          "reserved": 1403,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-37",
+      "split": "held-out",
+      "category": "access",
+      "template": "onboarding-member-denied",
+      "language": "en",
+      "query": "Who leads curator onboarding?",
+      "persona": "a-member",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [
+        "onboarding"
+      ],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "e3e9e241-e110-4fa9-b040-983548d55ae7",
+      "usage": [
+        {
+          "input": 810,
+          "output": 20,
+          "reserved": 3810,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-38",
+      "split": "held-out",
+      "category": "access",
+      "template": "salary-curator-denied",
+      "language": "en",
+      "query": "In which month does the salary review occur?",
+      "persona": "a-curator",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [],
+      "requiredAnswerFacts": [],
+      "abstentionAllowed": true,
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "deniedDocuments": [
+        "salary"
+      ],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "5109be26-dd7a-4931-8ca0-770bc1981b7d",
+      "usage": [
+        {
+          "input": 886,
+          "output": 20,
+          "reserved": 3886,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-39",
+      "split": "held-out",
+      "category": "access",
+      "template": "salary-owner-allowed",
+      "language": "en",
+      "query": "In which month does the salary review occur?",
+      "persona": "a-owner",
+      "collections": [
+        "handbook",
+        "projects",
+        "finance"
+      ],
+      "gold": [
+        {
+          "id": "salary-v1-block-1-full",
+          "document": "salary",
+          "source": "salary-v1",
+          "version": 1,
+          "block": "salary-v1-block-1",
+          "start": 0,
+          "end": 63,
+          "quote": "The owner-only Cedar Studio salary review happens in September."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "The owner-only Cedar Studio salary review happens in September."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "ANSWERED",
+        "blocks": [
+          {
+            "text": "The salary review occurs in September.",
+            "citations": [
+              {
+                "evidenceId": "S1",
+                "chunkId": "cf5ab991-e531-4e83-a7dd-77c1f0c2763e",
+                "documentId": "9a694366-7ca8-504c-8210-2580839a208f",
+                "sourceId": "c5b97126-9ece-544e-9851-41a4cf0b86f7",
+                "indexId": "db4e489d-5eb9-4fdb-8cf1-e5de29e73c7e",
+                "title": "Salary review",
+                "partial": false,
+                "quote": "The owner-only Cedar Studio salary review happens in September.",
+                "chunkStart": 0,
+                "chunkEnd": 63,
+                "spans": [
+                  {
+                    "blockId": "13f269db-4353-459c-9a61-f53bab79fed7",
+                    "start": 0,
+                    "end": 63,
+                    "location": {
+                      "line": 1,
+                      "offset": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [
+        true
+      ],
+      "sourceQuotes": [
+        {
+          "evidenceId": "S1",
+          "chunkId": "cf5ab991-e531-4e83-a7dd-77c1f0c2763e",
+          "documentId": "9a694366-7ca8-504c-8210-2580839a208f",
+          "sourceId": "c5b97126-9ece-544e-9851-41a4cf0b86f7",
+          "indexId": "db4e489d-5eb9-4fdb-8cf1-e5de29e73c7e",
+          "title": "Salary review",
+          "partial": false,
+          "quote": "The owner-only Cedar Studio salary review happens in September.",
+          "chunkStart": 0,
+          "chunkEnd": 63,
+          "spans": [
+            {
+              "blockId": "13f269db-4353-459c-9a61-f53bab79fed7",
+              "start": 0,
+              "end": 63,
+              "location": {
+                "line": 1,
+                "offset": 0
+              },
+              "text": "The owner-only Cedar Studio salary review happens in September."
+            }
+          ],
+          "kind": "TXT",
+          "sourceNumber": 1,
+          "olderVersion": false
+        }
+      ],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "4aace319-70a0-4f4e-a01a-066f2af09d8a",
+      "usage": [
+        {
+          "input": 836,
+          "output": 72,
+          "reserved": 3836,
+          "uncertain": false
+        },
+        {
+          "input": 310,
+          "output": 49,
+          "reserved": 1310,
+          "uncertain": false
+        }
+      ]
+    },
+    {
+      "id": "held-out-40",
+      "split": "held-out",
+      "category": "access",
+      "template": "birch-training-tenant",
+      "language": "en",
+      "query": "How much is Birch Studio annual training allowance?",
+      "persona": "b-owner",
+      "collections": [
+        "b-handbook"
+      ],
+      "gold": [
+        {
+          "id": "b-training-v1-block-1-full",
+          "document": "b-training",
+          "source": "b-training-v1",
+          "version": 1,
+          "block": "b-training-v1-block-1",
+          "start": 0,
+          "end": 72,
+          "quote": "Fictional Birch Studio annual training allowance is six hundred dollars."
+        }
+      ],
+      "requiredAnswerFacts": [
+        "Fictional Birch Studio annual training allowance is six hundred dollars."
+      ],
+      "abstentionAllowed": false,
+      "expectedStatus": "ANSWERED",
+      "deniedDocuments": [
+        "training"
+      ],
+      "state": "COMPLETED",
+      "answer": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "blocks": [],
+        "repaired": false,
+        "omittedPassages": 0
+      },
+      "citationChecks": [],
+      "sourceQuotes": [],
+      "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "turnId": "f0335fcd-a6cb-4b19-b0ad-8130943858c2",
+      "usage": [
+        {
+          "input": 504,
+          "output": 20,
+          "reserved": 3504,
+          "uncertain": false
+        }
+      ]
+    }
+  ],
+  "captureHash": "b44c359052c51d569281ceeb84832e8ca9bfe80323a0005fae2719437e8b1699"
+}

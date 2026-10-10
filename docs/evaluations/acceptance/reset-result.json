@@ -1,0 +1,11 @@
+{
+  "database": "fresh-checkout PostgreSQL5441/lattice_demo",
+  "guardBypassed": false,
+  "seedInterruption": "controlled second source path failure; SQL rolled back, SEEDING retained",
+  "resetInterruption": "controlled filesystem failure after SQL deletion; RESETTING retained",
+  "recovery": true,
+  "idempotentSeed": true,
+  "accounts": 4,
+  "workspaces": 2,
+  "originals": 25
+}

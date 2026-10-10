@@ -1,8 +1,28 @@
 # Progress
 
+## Current state — 10 October 2026
+
+R1–R8 implementation and the UI refresh are present. Docker deferral is lifted.
+The real PostgreSQL suite now passes 192 tests, alongside 30 web tests, the setup
+test, lint/type/build checks and all 16 browser journeys. Feedback and private
+Markdown exports complete the two missing blueprint controls.
+
+Actual Redis workers ingested and indexed all 24 current frozen documents; scan
+OCR was inspected against its preview/reference. Both PostgreSQL evaluation splits,
+all 80 live question attempts, backup/storage/journal restore, guarded seed/reset
+interruption recovery and fresh-checkout/new-volume setup ran. A real two-minute
+walkthrough covers native 20-page ingestion, a cited Qwen answer, mobile source
+inspection and document deletion.
+
+Full quality acceptance remains open: the local model falsely abstains on some
+answerable cases, conflict classification is inconsistent, and human factual claim
+annotations have not been supplied. [Results](EVAL-RESULTS.md) preserve failed and
+unreviewed cases. Earlier dated entries below describe their historical state;
+their Docker deferrals no longer describe current execution.
+
 ## Repository initialization
 
-Scope: initialize the existing `lattice` folder from the supplied plan. The plan's
+Initial scope: initialize the existing `lattice` folder from the supplied plan. The plan's
 alternate destination and full-build prompt are reference material, not a request
 to create another repository or implement all eight milestones in this task.
 

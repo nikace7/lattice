@@ -1,11 +1,30 @@
 # Lattice demo and handoff
 
-R1–R7 features and R8 offline evidence are implemented. Full-stack acceptance is
-still pending. This walkthrough keeps illustrative UI fixtures, measured retrieval
-and a future live application demonstration clearly identified.
+R1–R8 features and the UI refresh are implemented. Docker execution resumed on
+10 October 2026. [Actual results](EVAL-RESULTS.md) record real ingestion, live model
+answers, restore and fresh-checkout checks, with answer-quality failures and human
+review still open. Historical illustrative UI fixtures below remain labelled.
 The [refreshed interface guide](UI.md) shows the current design with fictional preview
 data. The [acceptance workflow](evaluations/ACCEPTANCE.md) covers implemented database
-comparison and actual-answer capture/human-review commands whose live execution is deferred.
+comparison and actual-answer capture/human-review commands.
+
+## Actual local demonstration — 10 October 2026
+
+The following captures use the real API, Redis workers, parser and pinned E5/Qwen
+models on the fictional r8-v1 corpus. The answer is actual `development-03` output;
+its exact highlight is not a substituted fixture. Feedback persistence, current-access
+Markdown download, 360px overflow and source-focus return passed in the live browser.
+
+![Actual Qwen answer and source highlight](assets/acceptance/answer-desktop.png)
+
+![Actual mobile source inspection](assets/acceptance/answer-mobile.png)
+
+[Two-minute walkthrough](assets/acceptance/walkthrough.webm): actual 20-page native
+PDF upload/indexing, a previously generated live cited answer, mobile inspection
+and deletion of the newly uploaded private probe. Explicit reading pauses are
+included; video duration is not a latency measurement. Upload to READY index took
+24.139 seconds, including extraction (5.887 seconds) and UI polling. The recording
+shows the local development server; it is not a production deployment.
 
 ## Review today without Docker
 
@@ -42,10 +61,9 @@ their comparison as a test fixture. None establishes live backend behavior.
 
 ## Live walkthrough after infrastructure validation
 
-This is a **proposed script, not an observed successful run**. Start with a dedicated
-disposable demo database and storage root containing no real documents. The new
-`seed_demo` and guarded `demo:reset` commands have passed host guard checks; their
-PostgreSQL integration and this Compose walkthrough remain unexecuted.
+Use a dedicated disposable demo database and storage root containing no real
+documents. Seed/reset and controlled interruption recovery now passed against an
+isolated real PostgreSQL installation; the acceptance record identifies that scope.
 
 ### Prepare the isolated demo
 

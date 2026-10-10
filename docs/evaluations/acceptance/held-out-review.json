@@ -1,0 +1,519 @@
+{
+  "captureHash": "b44c359052c51d569281ceeb84832e8ca9bfe80323a0005fae2719437e8b1699",
+  "reviewer": "",
+  "cases": [
+    {
+      "id": "held-out-01",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 47,
+          "text": "The Juniper meeting room seats fourteen people.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-02",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 56,
+          "text": "The Juniper meeting room bookings use the room calendar.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-03",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 79,
+          "text": "Unused room bookings should be cancelled fifteen minutes before the start time.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-04",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 69,
+          "text": "Cedar Studio employees receive a training allowance of $240 annually.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-05",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 55,
+          "text": "A team lead must approve training purchases in advance.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-06",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 49,
+          "text": "Unused training allowance expires on 31 December.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-07",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-08",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 57,
+          "text": "Personal deliveries should be collected within four days.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-09",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 55,
+          "text": "The delivery log is maintained by the facilities clerk.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-10",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 44,
+          "text": "Cedar Studio cafe opens from 11:30 to 14:30.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-11",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 9,
+          "text": "Wednesday",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-12",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-13",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 44,
+          "text": "The garden is watered at 07:00 each morning.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-14",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 35,
+          "text": "Garden volunteers meet on Thursday.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-15",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-16",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-17",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 35,
+          "text": "Curator onboarding lasts nine days.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-18",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 30,
+          "text": "Arun leads curator onboarding.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-19",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 38,
+          "text": "The salary review occurs in September.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-20",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-21",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-22",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 113,
+          "text": "Cedar Studio deliveries use the eastern loading entrance for deliveries and the western exit for fire evacuation.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-23",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 84,
+          "text": "Vegetarian meals are served on Wednesday and garden volunteering occurs on Thursday.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-24",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 35,
+          "text": "Curator onboarding lasts nine days.",
+          "supported": null,
+          "note": ""
+        },
+        {
+          "block": 1,
+          "start": 0,
+          "end": 51,
+          "text": "Salary review records are retained for seven years.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-25",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-26",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-27",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-28",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-29",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-30",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-31",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 185,
+          "text": "According to the two memos, the Operations policy memo allows two leave days to carry into the next year, while the People policy memo allows six leave days to carry into the next year.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-32",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 145,
+          "text": "The People policy memo specifies a probation period of three months, while the Operations policy memo specifies a probation period of six months.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-33",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 161,
+          "text": "The People policy memo specifies a standard working week of thirty-five hours, while the Operations policy memo specifies a standard working week of forty hours.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-34",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 43,
+          "text": "\u091c\u0941\u0928 \u0915\u093e\u0930\u094d\u092f\u093e\u0932\u092f\u0915\u094b \u092a\u0941\u0938\u094d\u0924\u0915\u093e\u0932\u092f \u0906\u0907\u0924\u092c\u093e\u0930 \u092c\u0928\u094d\u0926 \u0939\u0941\u0928\u094d\u091b\u0964",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-35",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 32,
+          "text": "\u090f\u0915 \u092a\u091f\u0915 \u091a\u093e\u0930\u0935\u091f\u093e \u092a\u0941\u0938\u094d\u0924\u0915 \u0932\u093f\u0928 \u0938\u0915\u093f\u0928\u094d\u091b\u0964",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-36",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 37,
+          "text": "\u092a\u0941\u0938\u094d\u0924\u0915 \u091a\u094c\u0927 \u0926\u093f\u0928\u092d\u093f\u0924\u094d\u0930 \u092b\u093f\u0930\u094d\u0924\u093e \u0917\u0930\u094d\u0928\u0941\u092a\u0930\u094d\u091b\u0964",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-37",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-38",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-39",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 38,
+          "text": "The salary review occurs in September.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "held-out-40",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    }
+  ]
+}

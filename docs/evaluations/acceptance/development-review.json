@@ -1,0 +1,466 @@
+{
+  "captureHash": "e3ac7381fea969df80b720d364507193202a944105a48a5dd8782891ba1081b0",
+  "reviewer": "",
+  "cases": [
+    {
+      "id": "development-01",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-02",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-03",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 178,
+          "text": "Cedar Studio requires annual leave requests six working days before the start. Leave managers decide within three working days. Annual leave requests go through the staff portal.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-04",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-05",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 63,
+          "text": "The daily meal reimbursement cap is thirty-six dollars per day.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-06",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 62,
+          "text": "Expense claims above ninety dollars require director approval.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-07",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 39,
+          "text": "Atlas 3.0 launches on 22 November 2027.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-08",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 49,
+          "text": "The Atlas code freeze begins on 15 November 2027.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-09",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 38,
+          "text": "The Atlas release coordinator is Nima.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-10",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 62,
+          "text": "Cedar Studio encrypted backups are retained for eighteen days.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-11",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 68,
+          "text": "Backup restoration tests happen on the second Tuesday of each month.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-12",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 44,
+          "text": "Encrypted backups start at 02:30 each night.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-13",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 50,
+          "text": "Cedar Studio visitors park in the south courtyard.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-14",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 56,
+          "text": "Reception must register visitor vehicles before arrival.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-15",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-16",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-17",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 63,
+          "text": "Cedar Studio drinking water stations are inspected each Friday.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-18",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 46,
+          "text": "Water filters are replaced every eight months.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-19",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 42,
+          "text": "The Orion pilot begins on 4 February 2028.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-20",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 46,
+          "text": "The finance reserve is reviewed every quarter.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-21",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-22",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 82,
+          "text": "Atlas 3.0 launches on 22 November 2027. The Orion pilot begins on 4 February 2028.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-23",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 125,
+          "text": "Restoration tests are scheduled on the second Tuesday of each month, and water station inspections are scheduled each Friday.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-24",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 178,
+          "text": "Guests can park in the south courtyard at Cedar Studio, and visitor parking closes at 19:00. For retired laptops, guests must return the charger and badge reader with the laptop.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-25",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-26",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-27",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-28",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-29",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-30",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-31",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-32",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 127,
+          "text": "The People memo specifies quiet hours from 10:00 to 12:00, while the Operations memo specifies quiet hours from 13:00 to 15:00.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-33",
+      "claims": [
+        {
+          "block": 0,
+          "start": 0,
+          "end": 101,
+          "text": "The two policy memos set the monthly remote stipend at twenty dollars and forty dollars respectively.",
+          "supported": null,
+          "note": ""
+        }
+      ],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-34",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-35",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-36",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-37",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-38",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-39",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    },
+    {
+      "id": "development-40",
+      "claims": [],
+      "factsComplete": null,
+      "abstentionCorrect": null,
+      "conflictAttributed": null
+    }
+  ]
+}

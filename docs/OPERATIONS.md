@@ -10,7 +10,15 @@ access. Open local email at `http://localhost:8026`; Mailpit captures messages a
 does not deliver to real inboxes. Invitees sign in or register with the invited
 address before accepting. Forgot password is available on the sign-in screen.
 Collection metadata persists in PostgreSQL; source files and page previews use
-private storage. Answers are not available yet.
+private storage. Answers are available when LOCAL mode and its explicitly prepared
+Qwen model are configured; the default remains retrieval-only.
+
+The [October acceptance record](EVAL-RESULTS.md) includes actual migrations,
+worker/OCR/model runs and backup restore. Private conversation downloads recheck
+current access and omit entire unavailable answers. Markdown exports accept at
+most 100 questions and 2 MiB; wait for any active answer to finish first. Answer
+feedback is private to the conversation creator and requires an available,
+completed answer. Apply conversation migration `0003` before using these controls.
 
 Recovery email requires the ingestion worker; invitations send during the owner
 request and report delivery failure. For host-only development run
@@ -399,7 +407,7 @@ inactive, non-latest versions. UI confirmation is explicit. Source access and
 stored dependent answers become unavailable immediately; a five-minute beat task
 purges at most 100 sources per batch. Retry failures and monitor oldest pending
 `purge_requested_at`; 24 hours is the operational target, not a verified SLA.
-Commands (not executed during Docker deferral):
+Commands (purge/journal replay exercised during October acceptance):
 
 ```sh
 uv run --project backend python backend/manage.py reconcile_jobs
@@ -439,8 +447,10 @@ use the demo for real documents. Interrupted operations keep a recovery state;
 fix the failure and repeat guarded reset before reseeding. Do not remove/forge a
 marker to bypass a refusal. A new seed uses new resource IDs.
 
-The new workspace migration is generated and drift-checked but unapplied. Demo
-PostgreSQL and container execution remain deferred alongside the full R8 gate.
+Workspace and conversation migrations are applied on the isolated demo. Real
+PostgreSQL seed/reset recovery and container execution are recorded in
+[the acceptance results](EVAL-RESULTS.md). Keep normal installations migrated before
+starting their upgraded API/workers.
 
 ## Frozen evaluation and answer review
 
@@ -450,7 +460,9 @@ The comparison creates temporary canonical fixtures only inside a rolled-back
 transaction; it never seeds an application library or dispatches jobs. Answer capture
 is restricted to the matching marked demo and reads current-access delivery APIs.
 Offline review accepts separate UTF-8 operator files and performs no database call.
-No live run or human quality result is claimed until these steps are actually executed.
+Both SQL splits and all 80 live question attempts are now preserved separately from
+the offline report. Human review templates remain blank; no human quality result
+is claimed.
 
 New demo seeds give `demo-a-member` the MEMBER role, so frozen question cases can
 generate when the local model is configured. An existing READY seed is not silently
