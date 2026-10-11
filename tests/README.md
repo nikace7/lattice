@@ -1,5 +1,34 @@
 # Test locations
 
+## Execution status and offline checks
+
+The 10 October full-stack baseline passed 192 backend tests, 30 web tests, one
+setup test and all 16 browser journeys. On 11 October, the expanded backend suite
+passed 111 offline tests with 89 PostgreSQL tests deselected. Docker is currently
+deferred after a WSL data-disk attachment failure. See [recorded results](../docs/EVAL-RESULTS.md)
+for the tested revisions and limits; passing offline checks is not full acceptance.
+
+Run these from the repository root without starting Docker:
+
+```sh
+node --test scripts/project.test.mjs
+pnpm --filter @lattice/web test
+uv run --project backend pytest backend -m "not django_db" -q
+pnpm lint
+uv run --project backend ruff format --check backend
+pnpm typecheck
+uv run --project backend python backend/manage.py check
+uv run --project backend python backend/manage.py run_evaluations --suite r8-v1 --profile local-e5 --validate-only
+pnpm build
+```
+
+For mocked browser coverage after the build, use `pnpm test:ui`. The commands above
+do not run database/migration-history checks, live model inference or the real
+API/worker/parser browser journeys. Keep `pnpm verify` and `pnpm test:e2e` as the
+full-stack checks once the runtime is available.
+
+## Coverage
+
 - `scripts/project.test.mjs`: setup credential consistency and non-overwrite behavior.
 - `backend/tests`: real PostgreSQL/pgvector, health, session rotation, CSRF/origin,
   tenant isolation, role ceilings, revocation, revisions, concurrent owner changes
@@ -34,7 +63,7 @@ OCR tests cover Unicode/quoted TSV text, line boxes/confidence, bounded timeouts
 per-page failures, retained successful pages and worker report validation. Web tests
 cover mandatory exclusions, review notes/revisions and read-only access. PostgreSQL
 review tests additionally cover current permissions, stale/replayed acceptance,
-exclusion rules and reviewer provenance; these remain deferred while Docker is skipped.
+exclusion rules and reviewer provenance; they passed in the 10 October baseline.
 
 `backend/tests/test_job_lifecycle.py` runs without a database and checks retry
 eligibility, lease renewal rejection, cancellation spool cleanup and owned process
@@ -51,8 +80,8 @@ chunks. It is not a retrieval-quality or Nepali-accuracy evaluation.
 `backend/tests/test_indexing.py` uses PostgreSQL for staged batch resume, duplicate/
 stale delivery, cancellation, access revocation, exclusions and explicit NONE mode.
 Those tests do not replace the real-model command; model batches in the DB suite
-are controlled test doubles. PostgreSQL/Compose/browser execution remains deferred
-while Docker is skipped. UI unit tests exercise index actions and partial-ready labels.
+are controlled test doubles. The 10 October baseline includes PostgreSQL, Compose
+and browser checks. UI unit tests exercise index actions and partial-ready labels.
 
 R4: `backend/tests/test_ranking.py` runs without a database and checks deterministic
 RRF/diversity, Unicode query boundaries, PostgreSQL query compilation/parameters,
@@ -85,7 +114,7 @@ tests in `test_conversations.py` cover private/idempotent turns, scoped retrieva
 exact citations, access revocation (including uncited dependencies), cancellation,
 attempt recovery, empty scope and concurrent quota reservations. They use explicit
 model contract doubles and numerical retrieval vectors; collected tests are not a
-live Qwen or database execution result. PostgreSQL execution remains deferred.
+live Qwen result. PostgreSQL execution passed in the 10 October baseline.
 
 Five Ask UI tests cover IME composition, retry idempotency and preserved input,
 disabled generation with readable history, SSE refresh without new generation,
@@ -100,13 +129,13 @@ after a network failure. Nine PostgreSQL tests in `test_document_lifecycle.py`
 cover replacement replay/supersession, old-version retention, all-at-once shadow
 activation, cancelled/failed batches, deletion denial, dependent answer scrubbing,
 tombstone restore replay, concurrent embedding reservations and interrupted purge.
-These tests are collected but not executed while Docker/PostgreSQL is deferred.
+These tests passed with PostgreSQL in the 10 October baseline.
 Model/tokenizer doubles in integration tests establish contracts, not model quality.
 
 R7: `test_evaluation_reports.py` verifies recorded corpus hash matching, expected
 evidence, report ID allowlisting, owner gating and status-query SQL compilation
 without a database. `test_reader_access.py` adds real membership and scoped status
-tests; these are collected but not run with PostgreSQL deferred. Citation integration
+tests; these passed with PostgreSQL in the 10 October baseline. Citation integration
 assertions include source version metadata. Web tests cover incomplete-evidence
 inspection, owner-only diagnostics, retry, role-specific empty actions and source
 focus return. `reader.spec.ts` runs Chromium with mocked API responses and axe at
@@ -130,7 +159,7 @@ results must recompute exactly; changed metrics/out-of-scope hits are rejected.
 The validation command uses no database/model. API tests check R8 gold excerpts
 and denominators; UI tests distinguish unmeasured abstention from retrieval misses.
 Generated contracts make `fullEvidence` nullable and include per-report definitions.
-The PostgreSQL owner test now also covers the R8 artifact; it remains unexecuted.
+The PostgreSQL owner test also covers the R8 artifact and passed in the 10 October baseline.
 
 R8 demo tooling: `test_demo_tools.py` has 14 DB-free checks for disabled mode,
 explicit target, password validation, database configuration, dedicated paths,
@@ -139,7 +168,7 @@ Ten PostgreSQL cases cover seed/reset/reseed, real collection grants, nonempty
 database, unmarked/mismatched targets, unrelated accounts/workspaces, active jobs
 and interrupted marker/seed/storage cleanup recovery. They replace only the
 environment guard's database-name query and use real ORM/SQL for data behavior.
-These ten cases are collected, not executed during Docker deferral.
+These ten cases passed with PostgreSQL in the 10 October baseline.
 
 ```sh
 uv run --project backend pytest backend -m "not django_db" -q
@@ -154,7 +183,7 @@ actual grants, denied-scope retrieval and rollback on both success and injected 
 `test_answer_review.py` covers unmeasured results, capture binding, exact claim offsets,
 duplicate/partial annotations, boolean verdicts and the offline command. Its two
 PostgreSQL cases bind actual demo turns and verify unanswerable/denied scopes. These
-four integration cases remain collected but unexecuted during Docker deferral.
+four integration cases passed with PostgreSQL in the 10 October baseline.
 
 UI refresh: Vitest covers current-page filters and retained upload retry identifiers.
 `ui.spec.ts` covers password visibility, upload disclosure, title/status filters,

@@ -20,6 +20,11 @@ most 100 questions and 2 MiB; wait for any active answer to finish first. Answer
 feedback is private to the conversation creator and requires an available,
 completed answer. Apply conversation migration `0003` before using these controls.
 
+Current host status (11 October): Docker Desktop cannot attach its WSL data disk;
+new Docker work is deferred. The 10 October checks below are recorded baseline
+results, not a claim that services are running now. Human review, model quality and
+cold-start latency remain open; see [completion status](../README.md#completion-status).
+
 Recovery email requires the ingestion worker; invitations send during the owner
 request and report delivery failure. For host-only development run
 `uv run --project backend celery --workdir backend -A config worker --pool=solo --queues=ingestion --loglevel=info`
@@ -277,9 +282,10 @@ These are fixed committed artifacts, not a general report importer or run launch
 To update one, deliberately rerun its host command, review JSON and its versioned
 corpus, then commit the new evidence. The backend image copies only the synthetic
 evaluation folder from docs, evaluation fixtures and the frozen R8 source files.
-Rebuild after artifact changes; existing images retain their prior report. Docker
-image builds remain unverified while Docker is deferred. Demo seeding/reset and the
-database-backed frozen evaluation harness still need implementation/verification.
+Rebuild after artifact changes; existing images retain their prior report. The
+10 October baseline includes successful image builds, guarded demo seed/reset
+recovery and both database-backed frozen evaluation splits. Later offline changes
+have not been rebuilt or checked on the live stack; see [results](EVAL-RESULTS.md).
 
 `GET /api/v1/workspaces/:id/document-status` counts only currently readable,
 nondeleted documents. Searchable and processing counts can overlap while a
@@ -298,7 +304,9 @@ question retrieves fresh evidence; earlier answers are not model context. Genera
 requires `RAG_MODE=LOCAL`, prepared E5 and Qwen artifacts, PostgreSQL migrations,
 Redis, the answers worker and beat. VIEWER and retrieval-only users can read their
 own existing conversations but cannot generate. The current host `.env` remains
-retrieval-only. Docker and live model integration have not been validated for R5.
+retrieval-only. The isolated demo's live model, worker and conversation checks are
+recorded in [the 10 October baseline](EVAL-RESULTS.md); later offline changes still
+need a fresh integration run.
 
 After Docker work resumes, apply migrations through the normal Compose startup or
 `pnpm migrate` for host services. The answers worker uses the ingestion image target
@@ -440,7 +448,11 @@ access restrictions before reopening traffic. A restored source that was purged
 while current in the older backup causes that restored document to be tombstoned.
 Never restore a backup without the current journal. Old backups and already
 exported/downloaded files may retain deleted text until their own retention expires.
-This procedure remains unexecuted; successful restore consistency is still an R6 gate.
+The 10 October isolated restore exercised this procedure, including journal replay
+twice, original checksums, active profiles, citation resolution and forbidden reads.
+See [the restore evidence](evaluations/acceptance/restore-result.json). Repeat the
+procedure for each deployment's backup process; this local check does not establish
+production retention or expiry.
 
 ## Disposable demo commands
 
