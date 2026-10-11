@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+  <title>Lattice answer review · {{ capture.split }}</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f4f3ee; color: #252b28; font: 15px/1.6 system-ui, sans-serif; }
+    main { max-width: 1120px; margin: auto; padding: 40px 24px 80px; }
+    header { border-top: 4px solid #225c48; padding: 20px 0 28px; }
+    .eyebrow { color: #225c48; font-weight: 650; letter-spacing: .07em; font-size: 12px; text-transform: uppercase; }
+    h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.15; letter-spacing: -.035em; margin: 12px 0; }
+    h2 { font-size: 17px; margin: 0 0 12px; }
+    h3 { font-size: 14px; margin: 24px 0 8px; }
+    p { margin: 8px 0 16px; }
+    .muted, .meta { color: #60675f; }
+    .meta { font-size: 13px; }
+    code { font-size: .88em; overflow-wrap: anywhere; }
+    .instructions { margin: 0 0 28px; border: 1px solid #dedfd7; padding: 14px 18px; }
+    summary { cursor: pointer; min-height: 44px; }
+    summary:focus-visible { outline: 3px solid #225c48; outline-offset: 4px; }
+    .case { background: white; border-top: 1px solid #dedfd7; }
+    .case:last-child { border-bottom: 1px solid #dedfd7; }
+    .case > summary { padding: 20px; }
+    .case[open] > summary { border-bottom: 1px solid #dedfd7; background: #edf1eb; }
+    .question { display: block; font-size: 18px; font-weight: 550; margin: 8px 0 0 18px; line-height: 1.4; }
+    .status { display: block; margin-left: 18px; color: #60675f; font-size: 12px; }
+    .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; padding: 24px; }
+    .columns > section { min-width: 0; }
+    .reading { font: 18px/1.65 Georgia, 'Noto Serif Devanagari', serif; white-space: pre-wrap; overflow-wrap: anywhere; }
+    blockquote { margin: 12px 0; padding: 4px 0 4px 16px; border-left: 3px solid #c3aa51; }
+    .fact { margin: 12px 0; }
+    .annotation { margin: 0 24px 24px; padding-top: 16px; border-top: 1px solid #dedfd7; }
+    pre { background: #f4f3ee; padding: 16px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; }
+    footer { padding-top: 28px; }
+    @media (max-width: 700px) {
+      main { padding: 24px 12px 48px; }
+      .columns { grid-template-columns: 1fr; gap: 28px; padding: 20px; }
+      .question { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Lattice / Evidence review</div>
+    <h1>{{ capture.split|capfirst }} answers</h1>
+    <p>{{ report.reviewedCases }} / {{ report.totalCases }} reviewed · {{ report.missingAnswers }} missing answers</p>
+    <p class="meta">Capture {{ capture.capturedAt }}<br>Fingerprint <code>{{ capture.captureHash }}</code></p>
+    <p class="meta">Reviewer: {{ review.reviewer|default:"Not assigned" }}</p>
+  </header>
+  <details class="instructions" open>
+    <summary><strong>Review instructions</strong></summary>
+    <p>Compare every factual claim with its quoted evidence, then check the frozen required facts.
+      Edit the separate review JSON. This packet is a reading aid and does not save edits.</p>
+    <p>Split answer blocks into atomic claims. Offsets count Unicode code points, starting at zero.
+      Cover every non-whitespace character without overlap. Record support as true or false,
+      with a note explaining the evidence or rejection; leave unreviewed values null.</p>
+    <p>For cases with required facts, set <code>factsComplete</code>. For cases without gold evidence,
+      set <code>abstentionCorrect</code>. Conflict cases also need <code>conflictAttributed</code>.
+      Name the human reviewer and run the existing scoring command when finished.</p>
+    <p><strong>No verdicts are assigned by this packet.</strong> Exact citation checks do not establish factual support.
+      Missing answers stay missing and cannot be annotated as completed answers.</p>
+  </details>
+  {% for case, annotation in cases %}
+  <details class="case"{% if forloop.first %} open{% endif %}>
+    <summary>
+      <span class="meta">{{ case.id }} · {{ case.category }} · {{ case.persona }}</span>
+      <span class="question" lang="{{ case.language }}">{{ case.query }}</span>
+      <span class="status">{{ case.state }} · Captured: {{ case.answer.status|default:"No answer" }} · Expected: {{ case.expectedStatus }}</span>
+    </summary>
+    <div class="columns">
+      <section aria-label="Captured answer and citations">
+        <h2>Captured answer</h2>
+        {% if not case.answer %}<p class="muted">No captured answer. Keep this case unreviewed.</p>{% endif %}
+        {% for block in case.answer.blocks %}
+          <h3>Block {{ forloop.counter0 }} · {{ block.text|length }} code points</h3>
+          <p class="reading" lang="{{ case.language }}">{{ block.text }}</p>
+          {% for cite in block.citations %}
+          <blockquote>
+            <p class="meta">{{ cite.title }} · {{ cite.evidenceId }}{% if cite.partial %} · Partial extraction{% endif %}</p>
+            <p class="reading">{{ cite.quote }}</p>
+            <p class="meta">Source <code>{{ cite.sourceId }}</code></p>
+          </blockquote>
+          {% endfor %}
+        {% empty %}{% if case.answer %}<p class="muted">The model returned no factual answer blocks.</p>{% endif %}{% endfor %}
+        <h3>Automatic citation checks at capture time</h3>
+        <p class="meta">{% for check in case.citationChecks %}{{ forloop.counter }}: {{ check|yesno:"passed,failed" }}{% if not forloop.last %} · {% endif %}{% empty %}No citations to check.{% endfor %}</p>
+      </section>
+      <section aria-label="Frozen evaluation reference">
+        <h2>Required facts</h2>
+        {% for fact in case.requiredAnswerFacts %}<p class="reading fact">{{ fact }}</p>{% empty %}<p class="muted">No gold evidence is available within this case's permitted scope.</p>{% endfor %}
+        <h3>Frozen reference evidence</h3>
+        {% for gold in case.gold %}
+        <blockquote>
+          <p class="meta">{{ gold.document }} · Version {{ gold.version }}</p>
+          <p class="reading">{{ gold.quote }}</p>
+          <p class="meta">{{ gold.block }} · Code points {{ gold.start }}–{{ gold.end }}</p>
+        </blockquote>
+        {% empty %}<p class="muted">Check whether the answer appropriately abstains.</p>{% endfor %}
+      </section>
+    </div>
+    <details class="annotation">
+      <summary>Annotation JSON for {{ case.id }}</summary>
+      <pre>{{ annotation }}</pre>
+    </details>
+  </details>
+  {% endfor %}
+  <footer class="meta">Offline snapshot · Keep this file private. Current source access is not rechecked offline.
+    Human review and live model acceptance remain separate.</footer>
+</main>
+</body>
+</html>

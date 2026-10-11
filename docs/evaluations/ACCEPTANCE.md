@@ -60,6 +60,25 @@ citation lookup results. It makes no model call or application data change.
 
 ## Human annotation
 
+Generate a readable offline packet before annotating. Each expandable case brings
+the captured answer, its exact citations, required facts, frozen reference evidence
+and annotation JSON together. It includes failed/missing cases. The packet has no
+scripts, external assets or network requests; all captured text is escaped. It is a
+reading aid, not an editor, and assigns no human verdicts.
+
+```sh
+uv run --project backend python backend/manage.py review_answers --capture docs/evaluations/acceptance/development-capture.json --packet > .data/development-review.html
+uv run --project backend python backend/manage.py review_answers --capture docs/evaluations/acceptance/held-out-capture.json --packet > .data/held-out-review.html
+```
+
+Open each HTML file locally in your browser. Use Tab and Enter/Space to expand a
+case or its annotation scaffold. The standalone layout stacks on narrow screens.
+Output uses ASCII character references so Nepali survives Windows console
+encodings. Save redirected output as UTF-8 (PowerShell 7 or a UTF-8 shell).
+Keep packets private: offline snapshots cannot recheck current source access.
+Pass `--review path/to/review.json --packet` to regenerate a packet showing existing
+validated annotations and the count of completely reviewed cases.
+
 Keep the capture unchanged; edit only its separate review file. Name the human reviewer.
 Template verdicts are null. Split each answer block into atomic factual claims, with
 block index, start/end Unicode code-point offsets and the exact text. All non-whitespace

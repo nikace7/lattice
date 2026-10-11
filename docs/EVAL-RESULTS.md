@@ -191,3 +191,13 @@ tests were deselected. Ruff lint/format, Django system checks and whitespace che
 passed. Python and general code reviews found no blockers. Live model and database
 integration checks were not repeated for this change. The prior 10 October results
 above remain the baseline; human review and model-quality gates stay open.
+
+Offline review tooling now renders both frozen captures into readable standalone
+HTML packets using `review_answers --packet`. A packet groups captured answers and
+citations with frozen facts/reference evidence and separate annotation scaffolds.
+It validates capture integrity and existing review input before rendering, escapes
+all dynamic content, and makes no model/network/database call. No verdicts are
+assigned; human review remains **0/80**. The packet change passed 111 offline backend
+tests, with 89 database tests deselected. Lint/format, Django checks and two static
+reviews passed. Browser visual verification was not performed because the browser
+tool denies local-file URLs. These are tooling checks, not new acceptance results.
