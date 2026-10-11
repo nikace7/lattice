@@ -130,6 +130,80 @@ def test_offline_command_generates_blank_review_and_preserves_missing_answers(tm
     assert report["missingAnswers"] == 40 and report["reviewedCases"] == 0
     assert report["citationValidity"] is None and not report["reviewComplete"]
 
+    call_command("review_answers", capture=str(path), packet=True)
+    packet = capsys.readouterr().out
+    assert packet.startswith("<!doctype html>")
+    assert packet.count('<details class="case"') == 40
+    assert "0 / 40 reviewed" in packet and "No captured answer" in packet
+    assert template["captureHash"] in packet
+
+
+def test_review_packet_escapes_captured_content_and_rejects_changed_capture(tmp_path, capsys):
+    import io
+    import json
+    from html.parser import HTMLParser
+
+    from django.conf import settings
+    from django.core.management import call_command
+    from django.core.management.base import CommandError
+
+    class Tags(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.tags = []
+            self.attributes = []
+            self.text = []
+
+        def handle_starttag(self, tag, attrs):
+            self.tags.append(tag)
+            self.attributes.extend(attrs)
+
+        def handle_data(self, data):
+            self.text.append(data)
+
+    path = settings.REPO_ROOT / "docs/evaluations/acceptance/development-capture.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    row = next(row for row in data["cases"] if row["answer"] and row["answer"]["blocks"])
+    hostile = '<script>alert(1)</script><img src="https://evil.invalid/pixel"> नेपाली 😀'
+    row["answer"]["blocks"][0]["text"] = hostile
+    row["answer"]["blocks"][0]["citations"][0]["title"] = hostile
+    row["answer"]["blocks"][0]["citations"][0]["quote"] = hostile
+    data["captureHash"] = digest({k: v for k, v in data.items() if k != "captureHash"})
+    source = tmp_path / "capture.json"
+    source.write_text(json.dumps(data), encoding="utf-8")
+    output = io.BytesIO()
+    stream = io.TextIOWrapper(output, encoding="cp1252")
+    call_command("review_answers", capture=str(source), packet=True, stdout=stream)
+    stream.flush()
+    packet = output.getvalue().decode("ascii")
+    parsed = Tags()
+    parsed.feed(packet)
+    assert not {"script", "img", "iframe", "form"}.intersection(parsed.tags)
+    assert not any(
+        name.startswith("on") or name in {"src", "href"} for name, _ in parsed.attributes
+    )
+    assert "&lt;script&gt;" in packet and "नेपाली 😀" in "".join(parsed.text)
+    assert "default-src 'none'" in packet
+    assert "No verdicts are assigned by this packet" in packet
+    assert source.read_text(encoding="utf-8") == json.dumps(data)
+
+    review = review_template(data)
+    review["reviewer"] = hostile
+    review["cases"][0]["factsComplete"] = False
+    annotation = tmp_path / "review.json"
+    annotation.write_text(json.dumps(review), encoding="utf-8")
+    call_command("review_answers", capture=str(source), review=str(annotation), packet=True)
+    reviewed_packet = capsys.readouterr().out
+    assert "1 / 40 reviewed" in reviewed_packet and "<script>" not in reviewed_packet
+    assert annotation.read_text(encoding="utf-8") == json.dumps(review)
+
+    data["cases"][0]["state"] = "FAILED"
+    source.write_text(json.dumps(data), encoding="utf-8")
+    with pytest.raises(CommandError, match="Invalid review input"):
+        call_command("review_answers", capture=str(source), packet=True)
+    with pytest.raises(CommandError, match="Invalid review input"):
+        call_command("review_answers", turn_map=str(source), packet=True)
+
 
 def test_capture_requires_demo_mode_before_database(tmp_path, settings):
     from django.core.management import call_command

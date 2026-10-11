@@ -20,8 +20,9 @@ annotations have not been supplied. [Results](EVAL-RESULTS.md) preserve failed a
 unreviewed cases. Earlier dated entries below describe their historical state;
 their Docker deferrals were lifted for the 10 October acceptance run. Docker
 Desktop failed to attach its WSL data disk on 11 October; subsequent work is
-Docker-independent at the user's request. New generation timing diagnostics pass
-110 backend tests without PostgreSQL; 89 database tests were deselected.
+Docker-independent at the user's request. The latest offline changes pass
+111 backend tests without PostgreSQL; 89 database tests were deselected. Readable
+offline packets now support the pending human review without assigning verdicts.
 
 ## Repository initialization
 
@@ -617,3 +618,17 @@ Docker Desktop exited during the first new diagnostic and could not attach its
 WSL data disk after restart. The user requested Docker-independent work. New live
 model checks remain blocked; the [acceptance record](EVAL-RESULTS.md) preserves the
 prior passing checks and open human review/model-quality gates.
+
+## 11 October 2026 — offline human review packets
+
+`review_answers --capture ... --packet` now renders validated captures as standalone
+HTML with expandable cases, captured answers/citations, frozen required facts and
+reference quotes, and per-case annotation JSON. Optional `--review` shows existing
+validated annotations. No database, model, script, network request or new dependency
+is needed. Dynamic text is escaped; ASCII character references preserve Nepali
+through Windows console redirection. Original JSON capture/scoring behavior remains.
+
+Generated both 40-case packets and separate editable blank review copies locally.
+Human review remains 0/80. Verification: 111 offline backend tests passed, 89 database
+tests deselected; lint/format, Django checks and two static code reviews passed.
+The browser tool denied local-file URLs, so visual interaction checks were not run.

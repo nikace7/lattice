@@ -8,6 +8,7 @@ from pathlib import Path
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.http import Http404
+from django.template import Context, Engine
 from django.utils import timezone
 
 from modules.conversations.models import Turn
@@ -41,12 +42,17 @@ class Command(BaseCommand):
         )
         parser.add_argument("--capture", help="Previously exported capture JSON")
         parser.add_argument("--review", help="Human annotation JSON; omit to emit a blank template")
+        parser.add_argument(
+            "--packet", action="store_true", help="Render the validated capture as offline HTML"
+        )
 
     def handle(self, *args, **options):
         try:
             if (
                 bool(options["turn_map"]) == bool(options["capture"])
                 or options["review"]
+                and not options["capture"]
+                or options["packet"]
                 and not options["capture"]
             ):
                 raise ValueError("Choose --turn-map to export or --capture with optional --review")
@@ -70,13 +76,37 @@ class Command(BaseCommand):
                     )
                 ):
                     raise ValueError("Capture must match the entire frozen split and labels")
-                result = (
-                    score_review(capture, read_json(options["review"]))
-                    if options["review"]
-                    else review_template(capture)
+                review = (
+                    read_json(options["review"]) if options["review"] else review_template(capture)
                 )
+                result = score_review(capture, review)
+                if options["packet"]:
+                    annotations = {row["id"]: row for row in review["cases"]}
+                    engine = Engine(dirs=[Path(__file__).parents[2] / "templates"])
+                    context = Context(
+                        {
+                            "capture": capture,
+                            "review": review,
+                            "report": result,
+                            "cases": [
+                                (
+                                    row,
+                                    json.dumps(
+                                        annotations[row["id"]], indent=2, ensure_ascii=False
+                                    ),
+                                )
+                                for row in capture["cases"]
+                            ],
+                        },
+                        autoescape=True,
+                        use_l10n=False,
+                    )
+                    packet = engine.get_template("retrieval/answer_review.html").render(context)
+                    # Character references preserve Nepali through Windows console encodings.
+                    self.stdout.write(packet.encode("ascii", "xmlcharrefreplace").decode("ascii"))
+                    return
                 if not options["review"]:
-                    score_review(capture, result)
+                    result = review
             else:
                 result = self.capture(suite, options["split"], read_json(options["turn_map"]))
             self.stdout.write(json.dumps(result, indent=2, ensure_ascii=True))
