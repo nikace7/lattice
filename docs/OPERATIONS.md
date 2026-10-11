@@ -362,6 +362,18 @@ not prove the server stopped computation. Cancellation/access checks run at call
 boundaries and during HTTP requests; lease heartbeats and final publication also
 recheck the frozen access/index snapshot under the workspace lock.
 
+New local generation usage records also contain `timings`: `requestMs` is measured
+with the client's monotonic clock; `totalMs`, `loadMs`, `promptEvalMs` and
+`generationMs` convert Ollama's reported nanosecond durations to milliseconds.
+Missing, non-integer, negative or over-180-second runtime values remain null;
+optional telemetry cannot reject an otherwise valid answer. Failed requests retain
+elapsed time and their uncertain token reservation, without retrying. These fields
+appear in `generation:check` output and new `review_answers` captures. Old usage
+records remain valid. Request timing excludes retrieval, tokenizer initialization,
+queueing before worker execution and the database writes around the model call;
+retain full POST/SSE timings for end-to-end acceptance. Runtime timings are reported
+measurements, not independent proof of model correctness or server cancellation.
+
 `generation:check` prints real results for an answerable and an unsupported synthetic
 question and exits unsuccessfully if they do not meet the expected statuses. It
 does not establish model quality, end-to-end permissions or the R5 completion gate.
