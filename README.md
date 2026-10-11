@@ -22,6 +22,23 @@ database/browser tests, backup restore and fresh-checkout setup. Private feedbac
 and permission-checked Markdown conversation downloads are implemented. Human
 answer review remains open, and the local model has recorded false abstentions and
 conflict-classification failures; see [current results](docs/EVAL-RESULTS.md).
+
+## Completion status
+
+The local application and UI are implemented. Full quality acceptance is still open:
+
+| Remaining work | Current evidence | Completion condition |
+| --- | --- | --- |
+| Human answer review | 0/80 cases annotated; offline review packets are available | A human reviews the frozen answers and sources; score the separate annotation files using [the review workflow](docs/evaluations/ACCEPTANCE.md#human-annotation) |
+| Model quality | False abstentions and inconsistent conflict handling in the recorded run | Improve using development cases, then evaluate a newly frozen held-out suite without replacing the original results |
+| Cold-start performance | One cold answer took 91.281 s, above the 60 s target | Measure loading, retrieval, generation and validation on the working stack; verify any improvement with actual runs |
+| Current full-stack verification | 10 October integration baseline passed; subsequent changes have offline checks only | Restore the local runtime, then rerun database/browser integration and live generation checks |
+
+Docker Desktop's WSL data disk failed to attach on 11 October. Docker work is
+currently deferred; the earlier passing baseline does not establish current runtime
+health. Production hosting, HTTPS, backup retention/expiry and cloud adapters remain
+outside the completed local scope.
+
 The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
 observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).
 Read [R8 evidence](docs/evaluations/R8.md) for measured counts and open acceptance

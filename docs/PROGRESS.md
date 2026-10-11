@@ -41,23 +41,9 @@ Implemented:
   beat, a migration job, and an optional Ollama service.
 - Foundation tests, formatting/lint/type/build commands and GitHub Actions verification.
 
-R1 is implemented: accounts, workspace membership, collection authorization,
-account recovery and invitations. R2 is implemented with final Docker-dependent
-integration validation deferred by the user. R3 document formats, OCR/review,
-chunking and local embedding/index preparation are implemented, with database/worker
-integration gates still deferred and table/Markdown limitations recorded below.
-R4 scoped search is implemented with PostgreSQL/browser gates deferred. R5's local
-generation, private conversations, durable jobs, validated answer delivery and citation
-reader are implemented; PostgreSQL/worker/browser and live model verification remain
-pending. R6 lifecycle implementation is present with its PostgreSQL, worker, browser
-and restore acceptance gates deferred. R7 responsive reader and owner diagnostics
-are implemented. R8 frozen corpus, offline evaluation evidence and demo handoff are
-present. Guarded demo tooling is implemented but unexecuted on PostgreSQL;
-database comparison and answer-review tooling are implemented. Their PostgreSQL/live
-execution and full-stack acceptance stay open. The UI refresh is implemented and
-verified with mocked responsive browser journeys.
-The ingestion worker handles recovery email and document
-extraction; the answers queue handles private questions in LOCAL mode.
+Subsequent milestone entries below preserve the checks and deferrals observed at
+the time. Use the current-state section above and [acceptance results](EVAL-RESULTS.md)
+for the latest completion status.
 
 ## Verification
 
@@ -632,3 +618,19 @@ Generated both 40-case packets and separate editable blank review copies locally
 Human review remains 0/80. Verification: 111 offline backend tests passed, 89 database
 tests deselected; lint/format, Django checks and two static code reviews passed.
 The browser tool denied local-file URLs, so visual interaction checks were not run.
+
+## 11 October 2026 — acceptance handoff
+
+Corrected stale operations and test notes that still described the completed
+10 October integration, image-build, demo-reset and restore checks as unexecuted.
+The README now lists the four remaining gates: human review, model quality,
+cold-start performance and current full-stack verification. The test guide includes
+existing Docker-independent commands without changing the full verification gate.
+
+Observed verification: 111 offline backend tests, 30 web tests and one setup test
+passed; 89 database tests were deselected. Frozen-suite validation still reports
+24 documents, 80 cases and the original suite hash. Relative links in the four
+changed documents resolve, and Git whitespace checks pass. This documentation-only
+change did not rerun build, browser, live model or database checks. Docker remains
+deferred, human review remains 0/80, and the recorded quality/latency failures remain
+open. No application code, runtime configuration or frozen evidence changed.
