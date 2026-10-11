@@ -261,33 +261,54 @@ class LocalGenerator:
         if self.record_usage is not None:
             self.record_usage(self.usage, starting=True)
         # Do not retry ambiguous failures: computation may already have been incurred.
-        result = request(
-            self.origin,
-            "/api/generate",
-            {
-                "model": MODEL,
-                "prompt": prompt,
-                "raw": True,
-                "think": False,
-                "stream": False,
-                "format": schema,
-                "keep_alive": "5m",
-                "options": {"temperature": 0, "num_ctx": PROFILE["context"], "num_predict": limit},
-            },
-            timeout=min(60, remaining),
-            check=check,
-        )
-        input_count, output_count = result.get("prompt_eval_count"), result.get("eval_count")
-        if (
-            type(input_count) is not int
-            or type(output_count) is not int
-            or input_count < 0
-            or output_count < 0
-        ):
-            raise GenerationUnavailable("The runtime did not report valid generation usage.")
-        usage.update(input=input_count, output=output_count, uncertain=False)
-        if self.record_usage is not None:
-            self.record_usage(self.usage)
+        started, result = time.monotonic(), {}
+        try:
+            result = request(
+                self.origin,
+                "/api/generate",
+                {
+                    "model": MODEL,
+                    "prompt": prompt,
+                    "raw": True,
+                    "think": False,
+                    "stream": False,
+                    "format": schema,
+                    "keep_alive": "5m",
+                    "options": {
+                        "temperature": 0,
+                        "num_ctx": PROFILE["context"],
+                        "num_predict": limit,
+                    },
+                },
+                timeout=min(60, remaining),
+                check=check,
+            )
+            input_count, output_count = result.get("prompt_eval_count"), result.get("eval_count")
+            if (
+                type(input_count) is not int
+                or type(output_count) is not int
+                or input_count < 0
+                or output_count < 0
+            ):
+                raise GenerationUnavailable("The runtime did not report valid generation usage.")
+            usage.update(input=input_count, output=output_count, uncertain=False)
+        finally:
+            timings = {"requestMs": round((time.monotonic() - started) * 1000, 3)}
+            for name, field in {
+                "totalMs": "total_duration",
+                "loadMs": "load_duration",
+                "promptEvalMs": "prompt_eval_duration",
+                "generationMs": "eval_duration",
+            }.items():
+                value = result.get(field)
+                timings[name] = (
+                    round(value / 1000000, 3)
+                    if type(value) is int and 0 <= value <= 180000000000
+                    else None
+                )
+            usage["timings"] = timings
+            if self.record_usage is not None:
+                self.record_usage(self.usage)
         check()
         if time.monotonic() > self.deadline:
             raise GenerationTimeout("The answer deadline expired.")

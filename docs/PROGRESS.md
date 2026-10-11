@@ -1,9 +1,9 @@
 # Progress
 
-## Current state — 10 October 2026
+## Current state — 11 October 2026
 
-R1–R8 implementation and the UI refresh are present. Docker deferral is lifted.
-The real PostgreSQL suite now passes 192 tests, alongside 30 web tests, the setup
+R1–R8 implementation and the UI refresh are present. The 10 October baseline
+passed 192 backend tests with PostgreSQL enabled, alongside 30 web tests, the setup
 test, lint/type/build checks and all 16 browser journeys. Feedback and private
 Markdown exports complete the two missing blueprint controls.
 
@@ -18,7 +18,10 @@ Full quality acceptance remains open: the local model falsely abstains on some
 answerable cases, conflict classification is inconsistent, and human factual claim
 annotations have not been supplied. [Results](EVAL-RESULTS.md) preserve failed and
 unreviewed cases. Earlier dated entries below describe their historical state;
-their Docker deferrals no longer describe current execution.
+their Docker deferrals were lifted for the 10 October acceptance run. Docker
+Desktop failed to attach its WSL data disk on 11 October; subsequent work is
+Docker-independent at the user's request. New generation timing diagnostics pass
+110 backend tests without PostgreSQL; 89 database tests were deselected.
 
 ## Repository initialization
 
@@ -601,3 +604,16 @@ Local-path implementation is ready for acceptance execution. Full-stack acceptan
 remains open: actual PostgreSQL/migrations/demo operations, workers/parser/OCR,
 live generation and human labels, security/lifecycle/restore races, target-size
 performance, fresh setup and live recording. Optional cloud adapters are unimplemented.
+
+## 11 October 2026 — generation timing diagnostics
+
+Added per-call request and optional Ollama load/prompt/generation durations to
+persisted usage, including failed calls. Existing usage records and token charging
+remain compatible. No prompts, model profiles, runtime thread settings or frozen
+evaluation results changed. Verification: 110 Docker-independent backend tests
+passed, 89 PostgreSQL tests deselected; lint/format and Django checks passed.
+
+Docker Desktop exited during the first new diagnostic and could not attach its
+WSL data disk after restart. The user requested Docker-independent work. New live
+model checks remain blocked; the [acceptance record](EVAL-RESULTS.md) preserves the
+prior passing checks and open human review/model-quality gates.

@@ -168,3 +168,26 @@ benchmark. [Walkthrough measurements](evaluations/acceptance/walkthrough.json).
 The [demo guide](DEMO.md) includes actual screenshots and the two-minute recording.
 Production HTTPS deployment, backup retention/expiry and optional cloud adapters
 are outside this local acceptance. No remote CI result is used as the merge gate.
+
+## 11 October 2026 — diagnostic continuation
+
+The next development-only model diagnostic did not produce an answer: Docker
+Desktop exited during its first request. A stale socket directory was preserved
+and moved aside; the subsequent restart failed to attach Docker's WSL data disk.
+A clean WSL restart did not restore the engine. These attempts do not establish
+the cause of the original exit or a model-quality/performance result. The user
+then requested Docker-independent work. No prompt, runtime thread setting, model
+pin, frozen labels or existing reports were changed.
+
+New generation calls now persist optional load, prompt-processing and generation
+durations alongside locally measured request time in their usage records, including
+failed requests. This permits the next live run to separate model loading from
+inference without logging private prompts or adding a model call. Old records
+remain valid and token charging is unchanged. This is diagnostic instrumentation,
+not a latency or answer-quality improvement claim.
+
+Observed verification: 110 Docker-independent backend tests passed; 89 PostgreSQL
+tests were deselected. Ruff lint/format, Django system checks and whitespace checks
+passed. Python and general code reviews found no blockers. Live model and database
+integration checks were not repeated for this change. The prior 10 October results
+above remain the baseline; human review and model-quality gates stay open.
