@@ -3,7 +3,19 @@ from datetime import timedelta
 from celery import shared_task
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
+
+
+@shared_task
+def cleanup_action_tokens():
+    from .models import ActionToken
+
+    cutoff = timezone.now() - timedelta(days=30)
+    deleted, _ = ActionToken.objects.filter(
+        Q(expires_at__lt=cutoff) | Q(consumed_at__lt=cutoff)
+    ).delete()
+    return deleted
 
 
 @shared_task(bind=True, max_retries=3, default_retry_delay=30)

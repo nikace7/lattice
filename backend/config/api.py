@@ -83,3 +83,14 @@ def csrf_failure(request, reason=""):
         },
         status=403,
     )
+
+
+def validated(serializer, request):
+    data = serializer(data=request.data)
+    data.is_valid(raise_exception=True)
+    return data.validated_data
+
+
+def check_revision(instance, data):
+    if instance.revision != data["expectedRevision"]:
+        raise Conflict()

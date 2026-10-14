@@ -32,12 +32,16 @@ The local application and UI are implemented. Full quality acceptance is still o
 | Human answer review | 0/80 cases annotated; offline review packets are available | A human reviews the frozen answers and sources; score the separate annotation files using [the review workflow](docs/evaluations/ACCEPTANCE.md#human-annotation) |
 | Model quality | False abstentions and inconsistent conflict handling in the recorded run | Improve using development cases, then evaluate a newly frozen held-out suite without replacing the original results |
 | Cold-start performance | One cold answer took 91.281 s, above the 60 s target | Measure loading, retrieval, generation and validation on the working stack; verify any improvement with actual runs |
-| Current full-stack verification | 10 October integration baseline passed; subsequent changes have offline checks only | Restore the local runtime, then rerun database/browser integration and live generation checks |
+| Current full-stack verification | 10 October integration baseline passed; later changes have offline and mocked browser checks | Restore the local runtime, apply identity migration 0004, then rerun database/browser integration and live generation checks |
+| Deployment security acceptance | Account verification, nonce CSP, production settings and security scans implemented; one development-only upstream advisory has a tested temporary mitigation | Verify actual TLS/SMTP, database races and migration; replace the braces mitigation before its 12 November audit exception expires |
 
 Docker Desktop's WSL data disk failed to attach on 11 October. Docker work is
 currently deferred; the earlier passing baseline does not establish current runtime
 health. Production hosting, HTTPS, backup retention/expiry and cloud adapters remain
 outside the completed local scope.
+
+Read [security boundaries and deployment settings](docs/SECURITY-BOUNDARIES.md)
+for verified controls, the narrow dependency exception and remaining deployment checks.
 
 The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
 observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).

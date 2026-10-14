@@ -7,8 +7,10 @@ uses defusedxml and bounded ZIP reads without resolving external relationships.
 parser container. Django/Celery exchanges files through a private spool and validates
 results before publication. See `docs/OPERATIONS.md` for limits and retries.
 `chunking.py` preserves exact block spans while packing tokenizer-bounded sections;
-`embedding.py` runs pinned, offline CPU E5 inference. Ranking and grounding remain
-future milestones. `pnpm models:prepare` explicitly downloads the model and writes
+`embedding.py` runs pinned, offline CPU E5 inference. `ranking.py` supplies ranking
+and query normalization; `grounding.py` validates bounded answers and citations;
+`generation.py` implements the pinned local Qwen adapter and generation timing.
+`pnpm models:prepare` explicitly downloads the model and writes
 a checksum/profile manifest; `pnpm models:check` compares actual inference with
 reference pooling and checks English/Nepali chunk coverage.
 

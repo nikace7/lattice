@@ -2,7 +2,7 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests",
-  testMatch: ["ui.spec.ts", "reader.spec.ts"],
+  testMatch: ["ui.spec.ts", "reader.spec.ts", "security.spec.ts"],
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   reporter: "list",

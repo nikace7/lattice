@@ -15,9 +15,8 @@ from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from config.api import Conflict, Pages
+from config.api import Conflict, Pages, validated
 from modules.workspaces.access import locked_membership, membership_for
-from modules.workspaces.api import validated
 
 from .models import ACTIVE, Conversation
 from .serializers import (

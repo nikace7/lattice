@@ -66,6 +66,14 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SECURE = origin.scheme == "https" or not DEBUG
 CSRF_COOKIE_SECURE = SESSION_COOKIE_SECURE
+SECURE_SSL_REDIRECT = not DEBUG
+SECURE_REDIRECT_EXEMPT = [r"^health/(live|ready)$"]
+SECURE_HSTS_SECONDS = env.int("DJANGO_HSTS_SECONDS", default=0 if DEBUG else 3600)
+if not 0 <= SECURE_HSTS_SECONDS <= 31536000:
+    raise ImproperlyConfigured("DJANGO_HSTS_SECONDS must be between 0 and 31536000.")
+# Enable only behind a proxy that overwrites this header and blocks direct API access.
+if env.bool("DJANGO_TRUST_PROXY", default=False):
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
 LANGUAGE_CODE = "en-us"
@@ -115,6 +123,10 @@ CELERY_TASK_ROUTES = {
 CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BEAT_SCHEDULE = {
+    "cleanup-action-tokens": {
+        "task": "modules.identity.tasks.cleanup_action_tokens",
+        "schedule": 86400.0,
+    },
     "purge-documents": {"task": "modules.documents.lifecycle.purge_documents", "schedule": 300.0},
     "recover-answers": {"task": "modules.conversations.tasks.recover_answers", "schedule": 30.0},
     "recover-indexes": {
@@ -152,5 +164,11 @@ MAX_DAILY_ANSWER_TOKENS = env.int("MAX_DAILY_ANSWER_TOKENS", default=100000)
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env("SMTP_HOST", default="localhost")
 EMAIL_PORT = env.int("SMTP_PORT", default=1026)
+EMAIL_HOST_USER = env("SMTP_USER", default="")
+EMAIL_HOST_PASSWORD = env("SMTP_PASSWORD", default="")
+EMAIL_USE_TLS = env.bool("SMTP_USE_TLS", default=False)
+EMAIL_USE_SSL = env.bool("SMTP_USE_SSL", default=False)
+if EMAIL_USE_TLS and EMAIL_USE_SSL:
+    raise ImproperlyConfigured("Choose SMTP_USE_TLS or SMTP_USE_SSL, not both.")
 EMAIL_TIMEOUT = 5
-DEFAULT_FROM_EMAIL = "Lattice <noreply@lattice.invalid>"
+DEFAULT_FROM_EMAIL = env("SMTP_FROM_EMAIL", default="Lattice <noreply@lattice.invalid>")

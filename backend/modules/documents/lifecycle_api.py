@@ -6,15 +6,16 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from config.api import Conflict, Pages
-from modules.workspaces.access import can_write, locked_membership, require_owner
-from modules.workspaces.api import audit, check_revision, locked_collection, validated
+from config.api import Conflict, Pages, check_revision, validated
+from modules.audit.service import audit
+from modules.workspaces.access import can_write, locked_collection, locked_membership, require_owner
 from modules.workspaces.serializers import RevisionInput
 
-from .api import UploadView, readable_documents
+from .access import readable_documents
 from .lifecycle import cancel_reindex, selected_profile, start_reindex, tombstone
 from .models import IndexVersion, Reindex
 from .serializers import DocumentData, ReplacementInput
+from .upload_api import UploadView
 
 
 class ReplaceView(UploadView):

@@ -14,18 +14,19 @@ from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from kombu.exceptions import OperationalError
 from rest_framework import generics, serializers
-from rest_framework.exceptions import APIException, PermissionDenied, ValidationError
+from rest_framework.exceptions import APIException, PermissionDenied, Throttled, ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
-from config.api import Conflict
+from config.api import Conflict, validated
+from modules.audit.service import audit
 from modules.workspaces.access import locked_membership, membership_for, require_owner
-from modules.workspaces.api import audit, validated
 from modules.workspaces.models import Membership, Workspace
 from modules.workspaces.serializers import WorkspaceData
 
+from .api import SessionData, session_data
 from .models import ActionToken
 from .tasks import send_recovery
 
@@ -82,15 +83,25 @@ def issue_link(*, purpose, email, lifetime, **scope):
         expires_at=timezone.now() + lifetime,
         **scope,
     )
-    route = "reset" if purpose == "RESET" else "invite"
+    if purpose == "RESET":
+        route = "reset"
+        subject = "Reset your Lattice password"
+        body = "Use this one-use link to reset your password. It expires in 30 minutes."
+    elif purpose == "VERIFY":
+        route = "verify"
+        subject = "Verify your Lattice email address"
+        body = (
+            "Sign in to your Lattice account, then use this one-use link to verify your "
+            "email address. It expires in 1 hour."
+        )
+    else:
+        route = "invite"
+        subject = "Join a Lattice workspace"
+        body = (
+            "You have been invited to a workspace on Lattice. Sign in or create an account "
+            "with this email address, then accept the invitation. This link expires in 2 days."
+        )
     link = f"{settings.APP_ORIGIN.rstrip('/')}/account/{route}#token={raw}"
-    subject = "Reset your Lattice password" if purpose == "RESET" else "Join a Lattice workspace"
-    body = (
-        "Use this one-use link to reset your password. It expires in 30 minutes."
-        if purpose == "RESET"
-        else "You have been invited to a workspace on Lattice. Sign in or create an account "
-        "with this email address, then accept the invitation. This link expires in 2 days."
-    )
     # ponytail: SMTP holds the transaction during bounded network calls; use an
     # outbox if invitation volume needs delivery outside the workspace lock.
     try:
@@ -115,6 +126,58 @@ def valid_token(raw, purpose):
     if token is None:
         raise ValidationError(INVALID_LINK)
     return token
+
+
+class VerificationRequestView(APIView):
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "auth"
+
+    @extend_schema(request=None, responses={200: MessageData, 202: MessageData})
+    @transaction.atomic
+    def post(self, request):
+        user = get_user_model().objects.select_for_update().get(pk=request.user.pk)
+        if not user.is_active or not user.email:
+            raise ValidationError("This account has no active email address to verify.")
+        if user.email_verified:
+            return Response({"message": "Your email address is already verified."})
+        now = timezone.now()
+        latest = (
+            ActionToken.objects.filter(
+                user=user, purpose="VERIFY", created_at__gt=now - timedelta(minutes=1)
+            )
+            .order_by("-created_at")
+            .first()
+        )
+        if latest is not None:
+            raise Throttled(wait=60 - (now - latest.created_at).total_seconds())
+        ActionToken.objects.filter(user=user, purpose="VERIFY", consumed_at__isnull=True).update(
+            consumed_at=now
+        )
+        issue_link(
+            purpose="VERIFY", email=user.email.lower(), user=user, lifetime=timedelta(hours=1)
+        )
+        return Response({"message": "A verification link has been sent to your email."}, status=202)
+
+
+class VerifyEmailView(APIView):
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "auth"
+
+    @extend_schema(request=TokenInput, responses=SessionData)
+    @transaction.atomic
+    def post(self, request):
+        data = validated(TokenInput, request)
+        user = get_user_model().objects.select_for_update().get(pk=request.user.pk)
+        token = valid_token(data["token"], "VERIFY")
+        if not user.is_active or token.user_id != user.pk or user.email.lower() != token.email:
+            raise ValidationError(INVALID_LINK)
+        user.email_verified = True
+        user.save(update_fields=["email_verified"])
+        ActionToken.objects.filter(user=user, purpose="VERIFY", consumed_at__isnull=True).update(
+            consumed_at=timezone.now()
+        )
+        request.user.email_verified = True
+        return Response(session_data(request))
 
 
 class RecoveryView(APIView):
