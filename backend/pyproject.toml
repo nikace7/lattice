@@ -25,7 +25,7 @@ dev = [
 ]
 
 [project.optional-dependencies]
-local = ["transformers==5.18.0", "torch==2.14.1"]
+local = ["transformers==5.19.0", "torch==2.14.1"]
 
 [[tool.uv.index]]
 name = "pytorch-cpu"
