@@ -1,5 +1,69 @@
 # Security boundaries
 
+## Current verification — 14 October 2026
+
+Security hardening adds explicit email verification, token cleanup, production
+HTTPS settings, a nonce-based browser CSP, dependency audits and history secret
+scanning. The 10 October full-stack baseline is recorded in [EVAL-RESULTS.md](EVAL-RESULTS.md).
+That baseline does not validate the new identity migration or its database race
+tests. Docker remains deferred; production TLS/SMTP and external penetration tests
+have not been run. Security controls reduce risk; they are not a security certification.
+
+### Dependencies and secrets
+
+Run `pnpm security:audit` for all JavaScript dependencies, including development
+tools. Next.js and its lint config are patched to 16.3.8; Vitest is 4.1.11.
+Production dependency audit reports no known vulnerabilities. The Python scan of
+85 exported lockfile dependencies, including local models, reports none either.
+
+`braces` 3.0.3 has no published upstream fix for
+[GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).
+The committed pnpm patch bounds combined brace/parenthesis parser nesting before
+recursive walkers run. A regression test exercises the installed lint dependency's
+parse/compile/expand/stringify string APIs and ordinary globs. Direct caller-created
+ASTs bypass this parser mitigation; Lattice's lint dependency uses string patterns.
+The audit gate prints the advisory and accepts only that exact advisory, version
+and development dependency path, only after its regression test passes, and only
+until **12 November 2026 UTC**. All other findings, changed paths, incomplete reports
+and expired exceptions fail. Replace the patch with an upstream release when available;
+plain `pnpm audit` deliberately continues to show the upstream advisory.
+
+The Security workflow runs on pushes, PRs and weekly: JavaScript/Python audits,
+mitigation tests and a checksum-pinned Gitleaks scan of full fetched Git history.
+Dependabot covers npm, uv and GitHub Actions. Gitleaks found only five historical
+public tokenizer-revision hashes; `.gitleaksignore` contains their exact fingerprints,
+not a folder/rule-wide exclusion. Reports redact secrets. No credentials were rotated
+or history rewritten because those findings are not credentials.
+
+### Deployment configuration
+
+Local `.env` and Compose remain local development configuration. For a real host:
+
+- Set `DJANGO_DEBUG=false`, `APP_ORIGIN=https://your-host`, explicit
+  `DJANGO_ALLOWED_HOSTS`, and a fresh secret. Non-debug Django redirects HTTP to
+  HTTPS and enables secure cookies and one-hour HSTS. Health probes alone are
+  exempt from the redirect. Increase `DJANGO_HSTS_SECONDS` only after verifying TLS.
+- Terminate TLS at a trusted ingress, redirect HTTP there, and send HSTS on web
+  responses too. Only enable `DJANGO_TRUST_PROXY=true` when that ingress overwrites
+  `X-Forwarded-Proto` and the API cannot be reached directly. The application does
+  not trust forwarded client IPs; configure ingress abuse limits for public traffic.
+- Configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, a verified
+  `SMTP_FROM_EMAIL`, and either `SMTP_USE_TLS=true` or `SMTP_USE_SSL=true`.
+  Never use the local `.invalid` sender or Mailpit for real delivery.
+- Apply migrations, run one beat scheduler, restrict database/runtime credentials,
+  retain private storage/backups, and verify recovery and erasure on the deployed host.
+
+HSTS subdomain coverage/preload remain deliberately disabled: they require ownership
+and working HTTPS for every affected subdomain. Django's W005/W021 warnings remain
+until that deployment decision is made; no warnings are suppressed in code.
+
+The web CSP uses a fresh 256-bit nonce, dynamic rendering and private/no-store HTML.
+Production scripts have neither `unsafe-inline` nor `unsafe-eval`. Stylesheets use
+self/nonce; inline **style attributes only** remain allowed for bounded source
+highlight coordinates and the resizable reader. Documents stay escaped text.
+Development alone permits debugger eval and development stylesheet injection.
+The browser regression checks hydration, fresh nonces and blocking injected HTML scripts.
+
 DRF endpoints require database-session authentication by default. Only session
 bootstrap, login, registration and password recovery/reset allow anonymous access; unsafe requests always
 enforce CSRF, including anonymous credentials. Login rotates sessions, password
@@ -40,7 +104,12 @@ Links use the configured origin and URL fragments so secrets are absent from HTT
 access logs. The browser removes the fragment, retains it in component memory and
 uses a CSRF-protected POST to consume it; opening a link does not mutate access.
 Never log request bodies on these endpoints. New registrations require unique
-email; email verification/change UI and expired-token retention are future work.
+email. Signed-in users can request a one-hour verification link and explicitly
+confirm it; links bind the current account and email, use hashed one-use secrets,
+and have a locked one-minute resend cooldown. Existing accounts are not silently
+marked verified or locked out. Verification is an account status, not an access grant.
+There is no email-change endpoint; any future change must clear verification status.
+Daily cleanup removes tokens expired or consumed more than 30 days ago.
 Invitation SMTP happens inside the workspace transaction, with network timeouts;
 an outbox is the upgrade path if mail latency limits access-management throughput.
 The recovery worker and session invalidation follow Django's guidance on
@@ -97,9 +166,8 @@ Concurrent changes produce a conflict instead of releasing stale results. Direct
 passage inspection checks the original's current access and matching active index.
 Diagnostics require OWNER/CURATOR and use the same readable corpus. Search metadata
 contains no raw questions or source text. Client filters cancel pending responses and
-clear old excerpts; rendered document text remains inert. PostgreSQL race/access tests
-are provided but their execution remains deferred, so these are implementation
-boundaries rather than a claim of completed integration verification.
+clear old excerpts; rendered document text remains inert. PostgreSQL race/access
+tests passed in the 10 October baseline; the current refactor awaits a fresh database run.
 
 R5 conversations are private to their creator, including against other workspace
 owners. The question API requires current membership and a non-viewer role in LOCAL
@@ -127,16 +195,15 @@ In LOCAL mode the private question worker sends authorized passages to that runt
 General logs contain neither prompts nor raw runtime exceptions. Durable reservations,
 usage, attempt fencing and cancellation prevent duplicate publication; ambiguous model
 calls retain estimated usage and are not automatically retried. Closing a connection
-does not guarantee that the runtime stopped computation. R6 retention/purge controls
-are implemented with integration verification deferred. These database boundaries have tests awaiting real PostgreSQL execution;
-live runtime and browser integration remain unverified while Docker is deferred.
+does not guarantee that the runtime stopped computation. Retention/purge controls
+and restore replay passed the 10 October baseline. Current full-stack verification
+remains deferred; see the dated evidence rather than inferring a fresh runtime pass.
 
 Compose is a local development configuration. PostgreSQL, Redis, mail and proxy
 ports bind only to loopback. The backend and web run as non-root users in containers.
-Before deploying, configure HTTPS, production settings/hosts, proxy trust, HSTS,
-CSP, database least privilege, authentication rate policy, upload isolation/limits,
-backups and retention. These controls depend on product and deployment work; the
-starter is not a production-ready multi-tenant RAG service.
+Deployment still requires the environment and ingress configuration above,
+database least privilege, abuse limits, backups and retention. A configured CSP
+or successful unit test does not establish production readiness.
 
 
 R6 replacements are immutable, revision-checked and attributed to their uploader;
@@ -170,8 +237,8 @@ document resolver, so inaccessible collections contribute no counts.
 Source citation reads retain R5/R6 access checks and add server-derived source
 number/older-version metadata. Browser preference storage contains only panel
 width. Frontend Chromium/axe checks use mocked APIs and do not establish live
-authorization, database isolation or model-grounding correctness. The new real
-membership/status tests are collected but remain unexecuted without PostgreSQL.
+authorization, database isolation or model-grounding correctness. Membership/status
+tests passed in the 10 October database baseline; mocks do not replace those tests.
 
 R8 adds a second fixed synthetic report ID. Its suite lock and source checksums,
 exact chunk provenance, fixture-scope checks and recomputed metrics must all match
@@ -179,7 +246,7 @@ before serving data. Invalid artifacts return the existing safe 503, without pat
 or source snippets. Neither evaluation command nor diagnostics seeds or resets application
 data. Fixture `MEMBER` means viewer access and is not a production grant model.
 Offline scope simulation and UI mocks cannot establish real permission isolation;
-those PostgreSQL tests and live revocation/history checks remain pending.
+the 10 October PostgreSQL and revocation/history evidence must be rerun for this branch.
 
 ## Guarded disposable demo
 
@@ -201,6 +268,6 @@ inside marked workspaces/storage is disposable, including their deletion journal
 and database sessions. Normal storage, models and Redis are outside this reset.
 Crash states prevent reseeding until cleanup succeeds; each reseed uses fresh IDs.
 The demo Compose overlay replaces normal storage/parser mounts by container target.
-These guards passed host tests/config checks, but PostgreSQL cascades, recovery
-and live container isolation remain unexecuted. Use the production tombstone/backup
+These guards, PostgreSQL cascades, reset recovery and container checks passed in
+the 10 October baseline. Use the production tombstone/backup
 procedure for real erasure; a demo reset is not evidence of that procedure.

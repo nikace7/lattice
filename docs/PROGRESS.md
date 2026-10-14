@@ -634,3 +634,39 @@ changed documents resolve, and Git whitespace checks pass. This documentation-on
 change did not rerun build, browser, live model or database checks. Docker remains
 deferred, human review remains 0/80, and the recorded quality/latency failures remain
 open. No application code, runtime configuration or frozen evidence changed.
+
+## 14 October 2026 — security and structure hardening
+
+Added authenticated, expiring, single-use email verification with account/email
+binding and resend throttling; existing sessions/accounts remain usable. Added
+30-day expired/consumed token cleanup on the daily beat schedule. Migration 0004
+adds verification status and its token scope; PostgreSQL execution remains deferred.
+
+Production settings now supply HTTPS redirects, secure cookies, bounded HSTS,
+explicit proxy trust and configurable SMTP authentication/TLS/sender. The frontend
+uses fresh nonce CSP and dynamically rendered, private HTML. Inline reader geometry
+styles remain allowed; script eval is development-only. Extracted authentication
+and branding from the library shell, upload handling from document views, and shared
+access/audit/HTTP helpers from workspace views. API contracts were regenerated.
+
+Patched Next.js, source-map-js and Vitest dependencies. Added scheduled/PR/push
+dependency and full-history secret scans plus Dependabot. One upstream-unfixed
+development-only braces advisory has an installed, tested depth-limit patch and
+an exact, visible exception expiring 12 November; no broad advisory suppression.
+Five history scanner matches were public model revision hashes, recorded as exact
+historical false positives. Production JavaScript and 85 Python dependencies had
+no known advisories in the observed scans. See SECURITY-BOUNDARIES.md for scope.
+
+Verification: 115 offline backend tests passed (96 database tests excluded), 37 web
+unit tests and four Node tests passed. Production build, lint, types, formatting
+and migration-drift checks passed; the latter could not check live database history.
+Ten existing mocked browser/accessibility journeys passed. The new production CSP
+browser test initially used trusted script insertion; corrected to inject untrusted
+HTML, it passed and confirms nonce enforcement with working hydration. Independent
+backend/frontend/security-tooling reviews found two issues (SMTP sender and malformed
+audit report handling); both were fixed with failing-then-passing regression tests.
+
+Docker, real SMTP delivery, live migration/concurrency, public ingress/TLS and remote
+CI execution remain unverified. HSTS subdomain/preload warnings are intentionally
+left for the actual domain configuration. Human answer review, model quality and
+cold-start acceptance are still open; no frozen evaluation evidence changed.

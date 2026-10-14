@@ -7,12 +7,13 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from config.api import Conflict
-from modules.audit.models import AuditEvent
+from config.api import Conflict, check_revision, validated
+from modules.audit.service import audit
 from modules.collections.models import Collection, CollectionGrant
 
 from .access import (
     can_write,
+    locked_collection,
     locked_membership,
     membership_for,
     readable_collections,
@@ -32,24 +33,6 @@ from .serializers import (
     WorkspaceData,
     WorkspaceEdit,
 )
-
-
-def validated(serializer, request):
-    data = serializer(data=request.data)
-    data.is_valid(raise_exception=True)
-    return data.validated_data
-
-
-def check_revision(instance, data):
-    if instance.revision != data["expectedRevision"]:
-        raise Conflict()
-
-
-def audit(workspace, user, action, target, access_change=False):
-    if access_change:
-        workspace.access_epoch += 1
-        workspace.save(update_fields=["access_epoch", "updated_at"])
-    AuditEvent.objects.create(workspace=workspace, actor=user, action=action, target_id=target.pk)
 
 
 class WorkspacesView(generics.ListCreateAPIView):
@@ -173,12 +156,6 @@ class CollectionsView(generics.ListCreateAPIView):
         collection = Collection.objects.create(workspace=member.workspace, **data)
         audit(member.workspace, request.user, "collection.created", collection)
         return Response(self.get_serializer(collection).data, status=201)
-
-
-def locked_collection(user, collection_id):
-    workspace_id = get_object_or_404(Collection, pk=collection_id).workspace_id
-    member = locked_membership(user, workspace_id)
-    return member, get_object_or_404(readable_collections(user), pk=collection_id)
 
 
 class CollectionView(APIView):

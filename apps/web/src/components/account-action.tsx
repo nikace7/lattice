@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { api, type Session, type Workspace } from "@/lib/api";
-import { Authentication } from "./library";
+import { Authentication } from "./authentication";
+import { Brand } from "./brand";
 import { ErrorNotice, Loading, useAction, useResource } from "./resource";
 
-export default function AccountAction({ kind }: { kind: "recovery" | "reset" | "invite" }) {
+export default function AccountAction({ kind }: { kind: "recovery" | "reset" | "invite" | "verify" }) {
   const [token, setToken] = useState<string | null>(null);
   const captured = useRef(false);
   const [message, setMessage] = useState("");
@@ -31,6 +32,10 @@ export default function AccountAction({ kind }: { kind: "recovery" | "reset" | "
       if (kind === "invite") {
         const workspace = await api<Workspace>("/auth/invitations/accept", "POST", { token });
         router.replace(`/w/${workspace.id}/documents`);
+      } else if (kind === "verify") {
+        await api<Session>("/auth/verify", "POST", { token });
+        setToken("");
+        setMessage("Your email address is verified.");
       } else {
         const response = await api<{ message: string }>(`/auth/${kind}`, "POST",
           kind === "recovery" ? { email: values.get("email") } : { token, password: values.get("password") });
@@ -38,11 +43,11 @@ export default function AccountAction({ kind }: { kind: "recovery" | "reset" | "
       }
     });
   }
-  if (kind === "invite" && session.data && !session.data.user)
-    return <Authentication onSuccess={session.reload} invitation />;
-  const title = kind === "recovery" ? "Find your way back" : kind === "reset" ? "Choose a new password" : "Join your team’s library";
+  if ((kind === "invite" || kind === "verify") && session.data && !session.data.user)
+    return <Authentication onSuccess={session.reload} invitation={kind === "invite"} verification={kind === "verify"} />;
+  const title = kind === "recovery" ? "Find your way back" : kind === "reset" ? "Choose a new password" : kind === "verify" ? "Confirm your email address" : "Join your team’s library";
   return <div className="lobby">
-    <header className="topbar"><Link className="wordmark" href="/">lattice.</Link></header>
+    <header className="topbar"><Brand /></header>
     <main id="main" tabIndex={-1} className="lobby-main">
       <div className="auth-form">
         <p className="eyebrow">YOUR ACCOUNT</p>
@@ -50,10 +55,10 @@ export default function AccountAction({ kind }: { kind: "recovery" | "reset" | "
         <ErrorNotice error={session.error} retry={session.reload} />
         {token === null || !session.data ? <Loading /> : message ? <>
           <p role="status">{message}</p>
-          <Link href="/">Return to sign in</Link>
+          <Link href="/">{kind === "verify" ? "Return to workspaces" : "Return to sign in"}</Link>
         </> : kind !== "recovery" && !token ? <>
-          <p role="alert">This link is missing its invitation or recovery code. Open the full link from your email again.</p>
-          <Link href="/account/recovery">Request a recovery link</Link>
+          <p role="alert">{kind === "verify" ? "This link is missing its verification code. Open the full link from your email again." : "This link is missing its invitation or recovery code. Open the full link from your email again."}</p>
+          <Link href={kind === "verify" ? "/" : "/account/recovery"}>{kind === "verify" ? "Return to workspaces to request a new link" : "Request a recovery link"}</Link>
         </> : <form onSubmit={submit}>
           {kind === "recovery" ? <>
             <p className="muted">Enter the email you used when you created your account.</p>
@@ -64,12 +69,12 @@ export default function AccountAction({ kind }: { kind: "recovery" | "reset" | "
             <label htmlFor="new-password">New password</label>
             <input id="new-password" name="password" type="password" autoComplete="new-password" minLength={8} maxLength={128} required disabled={action.busy} />
           </> : <>
-            <p className="muted">Signed in as {session.data.user?.username}. Accept to join the workspace with the role your owner selected.</p>
+            <p className="muted">Signed in as {session.data.user?.username}. {kind === "verify" ? "Confirm to verify the email address on this account. If the link belongs to another account, sign in to that account first." : "Accept to join the workspace with the role your owner selected."}</p>
             <button type="button" className="text-button" disabled={action.busy} onClick={() => void action.run(async () => { await api("/auth/logout", "POST"); session.reload(); })}>Use another account</button>
           </>}
           <ErrorNotice error={action.error} />
           <button className="primary-button full-width" disabled={action.busy}>
-            {action.busy ? "Please wait…" : kind === "recovery" ? "Send recovery link" : kind === "reset" ? "Save new password" : "Accept invitation"}
+            {action.busy ? "Please wait…" : kind === "recovery" ? "Send recovery link" : kind === "reset" ? "Save new password" : kind === "verify" ? "Verify email address" : "Accept invitation"}
           </button>
         </form>}
       </div>

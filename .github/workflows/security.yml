@@ -1,0 +1,46 @@
+name: Security
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '17 5 * * 1'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.11'
+          python-version: '3.12'
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: node --test scripts/*.test.mjs
+      - run: pnpm security:audit dependency-audit.json
+      - name: Python lockfile dependencies, including local models
+        run: |
+          uv export --project backend --locked --all-extras --no-hashes --no-emit-project --output-file requirements-audit.txt
+          uvx --python 3.12 pip-audit==2.10.1 --requirement requirements-audit.txt --no-deps --disable-pip
+      - name: Scan Git history for secrets
+        run: |
+          curl --fail --location --output gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          echo '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  gitleaks.tar.gz' | sha256sum --check
+          tar -xzf gitleaks.tar.gz gitleaks
+          ./gitleaks git --redact --log-opts=--all --report-format json --report-path secret-audit.json .
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-audit
+          path: |
+            dependency-audit.json
+            secret-audit.json
+          if-no-files-found: ignore

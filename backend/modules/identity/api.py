@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 class UserData(serializers.Serializer):
     id = serializers.UUIDField()
     username = serializers.CharField()
+    emailVerified = serializers.BooleanField(source="email_verified", required=False)
 
 
 class SessionData(serializers.Serializer):
@@ -37,9 +38,7 @@ class Registration(Credentials):
 
 def session_data(request):
     return {
-        "user": {"id": str(request.user.pk), "username": request.user.username}
-        if request.user.is_authenticated
-        else None,
+        "user": UserData(request.user).data if request.user.is_authenticated else None,
         "csrfToken": get_token(request),
     }
 

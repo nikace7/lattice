@@ -1,0 +1,21 @@
+diff --git a/lib/parse.js b/lib/parse.js
+index 3a6988e629f52aee6609dc5ec290a5e9ff47cecb..bddb0f996ebf951daaa58dd6b691b35d7dd457ba 100644
+--- a/lib/parse.js
++++ b/lib/parse.js
+@@ -145,5 +145,8 @@ const parse = (input, options = {}) => {
+     if (value === CHAR_LEFT_PARENTHESES) {
+       block = push({ type: 'paren', nodes: [] });
++      if (stack.length >= 128) {
++        throw new SyntaxError('Brace pattern nesting exceeds 128 levels');
++      }
+       stack.push(block);
+       push({ type: 'text', value });
+       continue;
+@@ -212,4 +215,7 @@ const parse = (input, options = {}) => {
+       block = push(brace);
++      if (stack.length >= 128) {
++        throw new SyntaxError('Brace pattern nesting exceeds 128 levels');
++      }
+       stack.push(block);
+       push({ type: 'open', value });
+       continue;

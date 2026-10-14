@@ -53,3 +53,9 @@ def can_write(collection, membership):
         collection.access == Collection.Access.WORKSPACE
         or collection.grants.filter(membership=membership, can_read=True, can_write=True).exists()
     )
+
+
+def locked_collection(user, collection_id):
+    workspace_id = get_object_or_404(Collection, pk=collection_id).workspace_id
+    member = locked_membership(user, workspace_id)
+    return member, get_object_or_404(readable_collections(user), pk=collection_id)

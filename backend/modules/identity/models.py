@@ -7,6 +7,7 @@ from django.db.models.functions import Lower
 
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    email_verified = models.BooleanField(default=False)
 
     class Meta(AbstractUser.Meta):
         constraints = [
@@ -20,6 +21,7 @@ class ActionToken(models.Model):
     class Purpose(models.TextChoices):
         RESET = "RESET", "Password reset"
         INVITE = "INVITE", "Workspace invitation"
+        VERIFY = "VERIFY", "Email verification"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     purpose = models.CharField(max_length=6, choices=Purpose.choices)
@@ -40,7 +42,7 @@ class ActionToken(models.Model):
             models.CheckConstraint(
                 condition=(
                     models.Q(
-                        purpose="RESET",
+                        purpose__in=["RESET", "VERIFY"],
                         user__isnull=False,
                         workspace__isnull=True,
                         invited_by__isnull=True,

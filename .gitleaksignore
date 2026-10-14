@@ -1,0 +1,7 @@
+# False positives: public Hugging Face tokenizer revision hashes, not credentials.
+# Exact historical findings only; future findings are still scanned.
+4736ce4c968210ad6eacc9eb97a5aaa117bf1c38:docs/evaluations/acceptance/r8-postgres-development.json:generic-api-key:9
+4736ce4c968210ad6eacc9eb97a5aaa117bf1c38:docs/evaluations/acceptance/r8-postgres-held-out.json:generic-api-key:9
+12a3e4366e9a4879c2932d56bf63aed10951bfa6:docs/evaluations/r8-offline-semantic.json:generic-api-key:9
+2dc8a61aa5e96e5f4722f7aa9022d680e99d80ab:backend/pipeline/generation.py:generic-api-key:17
+719f0774bb3d71a48cce6cf2ca0ba8014f260ddd:docs/evaluations/r4-embedding-development.json:generic-api-key:9

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import "@fontsource/manrope/400.css";
 import "@fontsource/manrope/600.css";
 import "@fontsource/manrope/700.css";
@@ -13,9 +14,11 @@ export const metadata: Metadata = {
     "A shared library for your team's knowledge and the sources behind it.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // Each document must render with its own CSP nonce, never a cached build-time nonce.
+  await connection();
   return (
     <html lang="en">
       <body>

@@ -25,7 +25,6 @@ from modules.documents.api import (
     OriginalView,
     PreviewView,
     RetryView,
-    UploadView,
 )
 from modules.documents.lifecycle_api import (
     DeleteView,
@@ -35,12 +34,15 @@ from modules.documents.lifecycle_api import (
     ReplaceView,
     VersionsView,
 )
+from modules.documents.upload_api import UploadView
 from modules.identity.actions import (
     AcceptInvitationView,
     InvitationsView,
     InvitationView,
     RecoveryView,
     ResetView,
+    VerificationRequestView,
+    VerifyEmailView,
 )
 from modules.identity.api import LoginView, LogoutView, RegisterView, SessionView
 from modules.retrieval.api import SearchView
@@ -106,6 +108,8 @@ urlpatterns = [
     path("api/v1/auth/logout", LogoutView.as_view()),
     path("api/v1/auth/recovery", RecoveryView.as_view()),
     path("api/v1/auth/reset", ResetView.as_view()),
+    path("api/v1/auth/verification", VerificationRequestView.as_view()),
+    path("api/v1/auth/verify", VerifyEmailView.as_view()),
     path("api/v1/auth/invitations/accept", AcceptInvitationView.as_view()),
     path("api/v1/workspaces/<uuid:workspace_id>/invitations", InvitationsView.as_view()),
     path("api/v1/invitations/<uuid:invitation_id>", InvitationView.as_view()),
