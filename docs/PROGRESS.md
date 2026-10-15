@@ -670,3 +670,28 @@ Docker, real SMTP delivery, live migration/concurrency, public ingress/TLS and r
 CI execution remain unverified. HSTS subdomain/preload warnings are intentionally
 left for the actual domain configuration. Human answer review, model quality and
 cold-start acceptance are still open; no frozen evaluation evidence changed.
+
+## 15 October 2026 — native database acceptance
+
+Used a private copy of the already-installed PostgreSQL 15.8 binaries and built
+pgvector 0.8.2 from its upstream release source. The disposable cluster used
+SCRAM authentication and loopback port 55432, with its own database, storage and
+environment under ignored `.data/native-acceptance`. Existing PostgreSQL services,
+application environments, Docker state and frozen evaluation captures were unchanged.
+
+Applied all migrations through identity 0004. A separate upgrade check on synthetic
+0003 data preserved an existing account and reset token, left the account unverified,
+accepted a bound VERIFY token and rejected an unbound token at the database constraint.
+Migration drift and Django system checks passed with a reachable database.
+
+The full backend run passed 210 tests, including 95 database tests, with one failure:
+`test_readiness_checks_live_dependencies_and_storage` correctly returned 503 because
+Redis was unavailable. No skip, mock or assertion change was added to hide the failure.
+The first run exposed an unquoted path in the disposable environment file; that file
+was corrected and the full suite rerun. Application code needed no changes.
+
+This is supplemental native PostgreSQL 15 evidence, not acceptance of the configured
+PostgreSQL 17/Redis/container stack. The native server was stopped after verification.
+The [record](evaluations/acceptance/native-database-2026-10-15.json) keeps the failure
+and migration results explicit. Live browser/workers, model quality and cold latency,
+human annotation, real TLS/SMTP and the temporary braces mitigation remain open.

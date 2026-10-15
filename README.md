@@ -32,13 +32,17 @@ The local application and UI are implemented. Full quality acceptance is still o
 | Human answer review | 0/80 cases annotated; offline review packets are available | A human reviews the frozen answers and sources; score the separate annotation files using [the review workflow](docs/evaluations/ACCEPTANCE.md#human-annotation) |
 | Model quality | False abstentions and inconsistent conflict handling in the recorded run | Improve using development cases, then evaluate a newly frozen held-out suite without replacing the original results |
 | Cold-start performance | One cold answer took 91.281 s, above the 60 s target | Measure loading, retrieval, generation and validation on the working stack; verify any improvement with actual runs |
-| Current full-stack verification | 10 October integration baseline passed; later changes have offline and mocked browser checks | Restore the local runtime, apply identity migration 0004, then rerun database/browser integration and live generation checks |
-| Deployment security acceptance | Account verification, nonce CSP, production settings and security scans implemented; one development-only upstream advisory has a tested temporary mitigation | Verify actual TLS/SMTP, database races and migration; replace the braces mitigation before its 12 November audit exception expires |
+| Current full-stack verification | 10 October integration baseline passed; 15 October native PostgreSQL checks passed 210/211 tests plus migration 0004; Redis readiness failed | Rerun on the configured PostgreSQL 17/Redis stack, including browser/worker integration and live generation |
+| Deployment security acceptance | Account verification, nonce CSP, production settings and security scans implemented; native database checks passed; one development-only upstream advisory has a tested temporary mitigation | Verify actual TLS/SMTP and deployment migrations; replace the braces mitigation before its 12 November audit exception expires |
 
 Docker Desktop's WSL data disk failed to attach on 11 October. Docker work is
 currently deferred; the earlier passing baseline does not establish current runtime
 health. Production hosting, HTTPS, backup retention/expiry and cloud adapters remain
 outside the completed local scope.
+
+An isolated native PostgreSQL 15.8/pgvector 0.8.2 instance allowed database checks
+without Docker on 15 October. This supplements the PostgreSQL 17 baseline; it does
+not validate the complete configured stack. See the [native database record](docs/evaluations/acceptance/native-database-2026-10-15.json).
 
 Read [security boundaries and deployment settings](docs/SECURITY-BOUNDARIES.md)
 for verified controls, the narrow dependency exception and remaining deployment checks.

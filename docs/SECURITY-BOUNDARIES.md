@@ -1,13 +1,20 @@
 # Security boundaries
 
-## Current verification — 14 October 2026
+## Current verification — 15 October 2026
 
 Security hardening adds explicit email verification, token cleanup, production
 HTTPS settings, a nonce-based browser CSP, dependency audits and history secret
 scanning. The 10 October full-stack baseline is recorded in [EVAL-RESULTS.md](EVAL-RESULTS.md).
-That baseline does not validate the new identity migration or its database race
-tests. Docker remains deferred; production TLS/SMTP and external penetration tests
-have not been run. Security controls reduce risk; they are not a security certification.
+On 15 October an isolated native PostgreSQL 15.8/pgvector 0.8.2 instance passed
+210 backend tests, including verification concurrency, access revocation and
+lifecycle checks. All migrations through identity 0004 applied successfully.
+One readiness test failed because Redis
+was unavailable. An explicit 0003-to-0004 upgrade preserved an existing account
+and reset token, left the account unverified, and enforced verification-token scope.
+See the [native database record](evaluations/acceptance/native-database-2026-10-15.json).
+This supplements, rather than replaces, PostgreSQL 17/container acceptance. Docker
+remains deferred; production TLS/SMTP and external penetration tests have not been
+run. Security controls reduce risk; they are not a security certification.
 
 ### Dependencies and secrets
 
@@ -167,7 +174,7 @@ passage inspection checks the original's current access and matching active inde
 Diagnostics require OWNER/CURATOR and use the same readable corpus. Search metadata
 contains no raw questions or source text. Client filters cancel pending responses and
 clear old excerpts; rendered document text remains inert. PostgreSQL race/access
-tests passed in the 10 October baseline; the current refactor awaits a fresh database run.
+tests passed in the 10 October baseline and the 15 October native database run.
 
 R5 conversations are private to their creator, including against other workspace
 owners. The question API requires current membership and a non-viewer role in LOCAL
@@ -223,8 +230,9 @@ answer bodies and citation quotes are removed together. User-authored questions,
 conversation titles, usage totals and minimal audit IDs remain. Independent copies
 of deleted text in user questions or other documents are not automatically detected.
 Current journals must accompany restores; backup retention and real restore testing
-remain operator responsibilities. These boundaries have not yet passed PostgreSQL
-or live browser/worker integration tests.
+remain operator responsibilities. PostgreSQL lifecycle checks passed in the
+15 October native run; the earlier 10 October restore/browser/worker evidence
+does not establish a fresh full-stack pass.
 ## R7 diagnostics boundary
 
 Recorded evaluations require active owner membership and use a fixed artifact ID,
@@ -246,7 +254,8 @@ before serving data. Invalid artifacts return the existing safe 503, without pat
 or source snippets. Neither evaluation command nor diagnostics seeds or resets application
 data. Fixture `MEMBER` means viewer access and is not a production grant model.
 Offline scope simulation and UI mocks cannot establish real permission isolation;
-the 10 October PostgreSQL and revocation/history evidence must be rerun for this branch.
+the 15 October native PostgreSQL run covers current revocation/history checks;
+container and live-worker verification still need the configured stack.
 
 ## Guarded disposable demo
 
