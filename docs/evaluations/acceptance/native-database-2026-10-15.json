@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-15",
+  "source_commit": "20aefb0a327015a1b787678f27dfc18d57533652",
+  "scope": "Supplemental native Windows database checks; not full-stack acceptance",
+  "runtime": {
+    "postgresql": "15.8",
+    "pgvector": "0.8.2",
+    "pgvector_source_commit": "cab9da72c04353f143bb06b42ab70a403daac64a",
+    "python": "3.12.13",
+    "django": "5.2.17"
+  },
+  "isolation": {
+    "database": "lattice_native",
+    "pytest_database": "test_lattice_native",
+    "listen_address": "127.0.0.1",
+    "port": 55432,
+    "authentication": "scram-sha-256",
+    "existing_services_modified": false
+  },
+  "command": "uv run --project backend --env-file .data/native-acceptance/test.env pytest backend --junitxml=.data/native-acceptance/backend-results.xml",
+  "tests": {
+    "total": 211,
+    "passed": 210,
+    "failed": 1,
+    "skipped": 0,
+    "database_passed": 95,
+    "database_failed": 1,
+    "offline_passed": 115,
+    "failure": {
+      "test": "tests.test_foundation.test_readiness_checks_live_dependencies_and_storage",
+      "expected_status": 200,
+      "observed_status": 503,
+      "reason": "Redis unavailable"
+    }
+  },
+  "readiness_probe": {
+    "status": 503,
+    "checks": {
+      "database": true,
+      "redis": false,
+      "storage": true
+    }
+  },
+  "migrations": {
+    "fresh_install": "passed through identity.0004",
+    "upgrade": {
+      "date": "2026-10-15",
+      "postgresql": "15.8",
+      "pgvector": "0.8.2",
+      "migration": "identity.0003 -> 0004",
+      "existing_account_preserved": true,
+      "existing_reset_token_preserved": true,
+      "existing_account_remains_unverified": true,
+      "bound_verification_token_accepted": true,
+      "unbound_verification_token_rejected": true
+    },
+    "drift_check": "passed",
+    "django_system_check": "passed"
+  },
+  "limitations": [
+    "PostgreSQL 15.8 is the pre-existing local test binary; configured stack uses PostgreSQL 17.",
+    "Redis readiness failed; no fresh live browser, worker, parser or model acceptance.",
+    "No production TLS/SMTP verification or penetration testing.",
+    "Human answer annotations, model quality, cold-start performance and the temporary braces mitigation remain open."
+  ]
+}
