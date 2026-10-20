@@ -695,3 +695,22 @@ PostgreSQL 17/Redis/container stack. The native server was stopped after verific
 The [record](evaluations/acceptance/native-database-2026-10-15.json) keeps the failure
 and migration results explicit. Live browser/workers, model quality and cold latency,
 human annotation, real TLS/SMTP and the temporary braces mitigation remain open.
+
+## 20 October 2026 — complete verifier evidence context
+
+Fixed a grounding visibility gap: the verifier now receives all passages admitted
+to the draft context, including uncited evidence, for status/conflict assessment.
+Per-block support remains restricted to its own quoted sources. No extra model call,
+API/schema change, migration or dependency was needed. Existing input and output
+budgets, escaped untrusted text, access checks and withholding behavior remain.
+
+A failing regression test reproduced the missing evidence before the fix.
+Verification passed: 117 offline backend tests, seven native PostgreSQL conversation
+tests, Ruff lint/format and Django checks. Python review found no blockers.
+The private PostgreSQL instance was stopped. The larger verifier input still needs
+live quality/latency measurement; frozen results and human annotations were untouched.
+
+Rechecked the upstream braces advisory and npm release: no fixed release was
+available. The existing mitigation regression and dependency audit passed with the
+same visible exception expiring 12 November 2026; it was not widened or extended.
+Docker/full-stack, live-model and production deployment acceptance remain open.

@@ -201,3 +201,24 @@ assigned; human review remains **0/80**. The packet change passed 111 offline ba
 tests, with 89 database tests deselected. Lint/format, Django checks and two static
 reviews passed. Browser visual verification was not performed because the browser
 tool denies local-file URLs. These are tooling checks, not new acceptance results.
+
+## 20 October 2026 — verifier context correction
+
+The grounding verifier previously received only the draft's selected quotes. It now
+also receives every passage admitted to the bounded draft context, so an uncited
+contradiction is visible when checking answer status and coherence. Block support
+still comes only from that block's exact citations. There is no additional model call;
+the 10,000-token input limit and access checkpoints remain enforced. Larger verifier
+inputs can increase latency or exceed the existing budget and fail the answer safely.
+
+The missing context was reproduced with a failing regression test before the fix.
+All 117 offline backend tests and seven conversation tests on isolated native
+PostgreSQL 15 passed, including revocation of an uncited retrieval dependency.
+Lint, formatting and Django system checks passed; Python review found no blockers.
+The native server was stopped after testing.
+
+These are protocol and integration checks using model doubles, not measured model
+quality or performance improvements. The 10 October captures and metrics remain
+unchanged and describe the previous verifier prompt. False abstentions, conflict
+classification, human review and cold latency remain open. Evaluate the changed
+prompt on development cases before a newly frozen held-out run.
