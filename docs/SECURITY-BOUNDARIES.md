@@ -191,7 +191,12 @@ model role tokens in JSON data, and validates strict bounded output. Quotes must
 match canonically equivalent text and map to complete original Unicode offsets;
 titles, versions and locators come only from server-owned evidence. A second model
 pass must approve every block and overall coherence, otherwise the entire answer
-is withheld. Model verification remains fallible; contract doubles do not establish
+is withheld. The verifier receives the same bounded evidence set admitted to drafting,
+including uncited passages, to assess contradictions and answer status. Each block
+still requires support from its own exact citations; other passages cannot substitute.
+The 20 October contract tests cover this context transfer, escaping and input limits;
+the changed verifier prompt has not been evaluated on the live model.
+Model verification remains fallible; contract doubles do not establish
 resistance to semantic prompt injection or factual accuracy. No raw model drafts or
 hidden reasoning are returned by the protocol.
 
