@@ -19,11 +19,14 @@ run. Security controls reduce risk; they are not a security certification.
 ### Dependencies and secrets
 
 Run `pnpm security:audit` for all JavaScript dependencies, including development
-tools. Next.js and its lint config are patched to 16.3.8; Vitest is 4.1.11.
-Production dependency audit reports no known vulnerabilities. The Python scan of
+tools. On 28 October, Next.js and its lint config were updated to 16.4.3,
+Vitest to 4.1.12, and the existing Vite peer dependency was explicitly pinned to
+7.3.7 in web development dependencies. The installed JavaScript dependency audit
+reports zero advisories, including development tools; the production audit also
+reports none. The earlier Python scan of
 85 exported lockfile dependencies, including local models, reports none either.
 
-`braces` 3.0.3 has no published upstream fix for
+The historical `braces` 3.0.3 mitigation addresses
 [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).
 The committed pnpm patch bounds combined brace/parenthesis parser nesting before
 recursive walkers run. A regression test exercises the installed lint dependency's
@@ -33,7 +36,9 @@ The audit gate prints the advisory and accepts only that exact advisory, version
 and development dependency path, only after its regression test passes, and only
 until **12 November 2026 UTC**. All other findings, changed paths, incomplete reports
 and expired exceptions fail. Replace the patch with an upstream release when available;
-plain `pnpm audit` deliberately continues to show the upstream advisory.
+The 28 October audit did not return this advisory, so no exception was exercised.
+The existing patch, regression test and expiry remain as defense in depth; this
+does not establish that an upstream fix was published.
 
 The Security workflow runs on pushes, PRs and weekly: JavaScript/Python audits,
 mitigation tests and a checksum-pinned Gitleaks scan of full fetched Git history.

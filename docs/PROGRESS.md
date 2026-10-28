@@ -714,3 +714,22 @@ Rechecked the upstream braces advisory and npm release: no fixed release was
 available. The existing mitigation regression and dependency audit passed with the
 same visible exception expiring 12 November 2026; it was not widened or extended.
 Docker/full-stack, live-model and production deployment acceptance remain open.
+
+## 28 October 2026 — dependency security refresh
+
+The current dependency audit failed with ten advisories affecting Next.js, Vite
+and Vitest's mocker. Updated Next.js and its matching lint config to 16.4.3 and
+Vitest to 4.1.12. Explicitly pinned the already-used Vite peer dependency to
+7.3.7 because updating its consumers retained vulnerable 7.3.6 in the lockfile.
+No application behavior, audit suppression or security exception was changed.
+
+After the updates, both all-dependency and production JavaScript audits report
+zero advisories; no local mitigation exception was exercised. The existing braces
+patch and expiry remain. Verification passed: production build, TypeScript,
+lint, 37 web unit tests, four Node tests, 11 browser/accessibility/CSP journeys,
+and 117 offline backend tests (96 database tests deselected).
+
+No Ollama executable was found on PATH or in its usual local install directory,
+and no listener was found on port 11434. Live answer quality and latency therefore
+remain unmeasured after the verifier correction. Docker stays deferred; human
+review remains 0/80. Full-stack, real SMTP/TLS and production acceptance remain open.
