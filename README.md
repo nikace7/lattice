@@ -57,10 +57,7 @@ extraction, keyword indexing and search all worked.
 tests and a production build. GitHub Actions runs it as **Verify**, plus a
 dependency audit as **Security**.
 
-**Current CI status: both workflows fail on `main`.** In the latest run, Verify's browser tests time
-out when uploads hang (`socket hang up` from the API proxy), and Security reports a
-mismatch between the audit summary and its findings. Verify was last green on
-`main` on 1 October 2026 and Security on 20 October; neither is fixed yet.
+**Both workflows pass on `main`** (run on 8 November 2026, commit `add4e71`).
 
 ## Engineering decisions
 
@@ -93,7 +90,6 @@ coming back.
 - **The first answer is slow.** One cold-start answer took 91 seconds, above the
   60-second target.
 - **Local only.** No production deployment, HTTPS or cloud model adapters.
-- CI is red on `main` (see above).
 
 ## Documentation
 
