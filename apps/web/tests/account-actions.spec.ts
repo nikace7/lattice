@@ -36,7 +36,7 @@ test("invite a new teammate through email, then recover their password", async (
   await page.getByLabel("Invitation email").fill(email);
   await page.getByLabel("Invitation role").selectOption("VIEWER");
   await page.getByRole("button", { name: "Send invitation", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("Invitation sent");
+  await expect(page.getByRole("status").filter({ hasText: "Invitation sent" })).toBeVisible();
   const invitation = await mailLink(request, email, "invite");
   const guestContext = await browser.newContext({ baseURL: "http://127.0.0.1:4411" });
   try {
@@ -59,7 +59,7 @@ test("invite a new teammate through email, then recover their password", async (
     await page.getByRole("link", { name: "Forgot your password?" }).click();
     await page.getByLabel("Email address").fill(email);
     await page.getByRole("button", { name: "Send recovery link" }).click();
-    await expect(page.getByRole("status")).toContainText("If an active account");
+    await expect(page.getByRole("status").filter({ hasText: "If an active account" })).toBeVisible();
     const reset = await mailLink(request, email, "reset");
     await page.goto(reset);
     await expect(page.getByLabel("New password")).toBeVisible();
@@ -69,7 +69,7 @@ test("invite a new teammate through email, then recover their password", async (
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.getByLabel("New password").fill("new-reading-room-942!");
     await page.getByRole("button", { name: "Save new password" }).click();
-    await expect(page.getByRole("status")).toContainText("Password changed");
+    await expect(page.getByRole("status").filter({ hasText: "Password changed" })).toBeVisible();
     await guestPage.goto("/");
     await expect(guestPage.getByRole("heading", { name: "Welcome back" })).toBeVisible();
     await page.getByRole("link", { name: "Return to sign in" }).click();

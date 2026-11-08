@@ -6,7 +6,7 @@
 
 ## 1. Start here and product contract
 
-Build **Lattice** in a separate repository at `<projects-root>/portfolio-recreations/rag-knowledge-workspace/`. On the original machine `<projects-root>` is `C:/Users/khatr/OneDrive - Prime College/Desktop/Project`; adapt to the new machine. Inspect the destination/instructions before creating or changing files. Copy this specification to the application's `docs/BLUEPRINT.md` and maintain `docs/PROGRESS.md`. Preserve the portfolio and every other project. This application must run independently of the Document Analysis or Robot Voice recreations.
+Build **Lattice** in a separate repository at `<projects-root>/portfolio-recreations/rag-knowledge-workspace/`. Inspect the destination/instructions before creating or changing files. Copy this specification to the application's `docs/BLUEPRINT.md` and maintain `docs/PROGRESS.md`. Preserve the portfolio and every other project. This application must run independently of the Document Analysis or Robot Voice recreations.
 
 Lattice lets a small team organise documents, search their contents, ask questions and inspect the exact evidence behind an answer. Its signature experience is a readable answer beside a source viewer that opens the cited document version and location. A user should understand what is indexed, what evidence was used, when content changed and when the system lacks an answer.
 
