@@ -60,7 +60,7 @@ jobs:
           chmod 0777 .data/parser
           docker compose up -d --build mailpit parser
       - run: umask 0000 && pnpm test:e2e
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-failures
