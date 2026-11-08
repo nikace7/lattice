@@ -1,58 +1,6 @@
-# Lattice
+# Developing Lattice
 
-A cited knowledge workspace built with Next.js, Django, PostgreSQL/pgvector,
-and Celery. Accounts, workspaces, collection organization and access management
-are implemented, along with private PDF/DOCX/TXT/Markdown uploads and source inspection.
-Low-text PDF pages support English/Nepali OCR with explicit extraction review and page exclusions.
-Accepted sources can now produce resumable keyword-only or real local E5 indexes.
-Scoped keyword, semantic and hybrid search now include source links and curator
-ranking details. R5 adds private conversations, durable answer jobs, validated answer
-delivery, cancellation and a citation reader. Generation requires explicitly prepared
-local Qwen models and `RAG_MODE=LOCAL`; the default remains retrieval-only.
-R6 adds retained source versions, staged workspace reindexing, deletion/purge and
-owner-controlled quotas. R7 adds responsive reader controls, accessible mobile navigation,
-scoped document status and owner diagnostics for recorded synthetic evaluations.
-R8 freezes 24 fictional documents and 80 labelled evaluation cases, records real
-offline E5 exact-span retrieval, and includes an illustrated demo/handoff guide.
-R8 now includes guarded demo tooling, a rollback-only PostgreSQL comparison runner
-and actual-answer capture/human-review commands. The refreshed interface adds clearer
-typography, document filters, upload disclosure and keyboard navigation.
-Docker acceptance now includes real worker/OCR ingestion, 80 live question attempts,
-database/browser tests, backup restore and fresh-checkout setup. Private feedback
-and permission-checked Markdown conversation downloads are implemented. Human
-answer review remains open, and the local model has recorded false abstentions and
-conflict-classification failures; see [current results](docs/EVAL-RESULTS.md).
-
-## Completion status
-
-The local application and UI are implemented. Full quality acceptance is still open:
-
-| Remaining work | Current evidence | Completion condition |
-| --- | --- | --- |
-| Human answer review | 0/80 cases annotated; offline review packets are available | A human reviews the frozen answers and sources; score the separate annotation files using [the review workflow](docs/evaluations/ACCEPTANCE.md#human-annotation) |
-| Model quality | False abstentions and inconsistent conflict handling in the recorded run | Improve using development cases, then evaluate a newly frozen held-out suite without replacing the original results |
-| Cold-start performance | One cold answer took 91.281 s, above the 60 s target | Measure loading, retrieval, generation and validation on the working stack; verify any improvement with actual runs |
-| Current full-stack verification | 10 October integration baseline passed; 15 October native PostgreSQL checks passed 210/211 tests plus migration 0004; Redis readiness failed | Rerun on the configured PostgreSQL 17/Redis stack, including browser/worker integration and live generation |
-| Deployment security acceptance | Account verification, nonce CSP, production settings and security scans implemented; native database checks passed; one development-only upstream advisory has a tested temporary mitigation | Verify actual TLS/SMTP and deployment migrations; replace the braces mitigation before its 12 November audit exception expires |
-
-Docker Desktop's WSL data disk failed to attach on 11 October. Docker work is
-currently deferred; the earlier passing baseline does not establish current runtime
-health. Production hosting, HTTPS, backup retention/expiry and cloud adapters remain
-outside the completed local scope.
-
-An isolated native PostgreSQL 15.8/pgvector 0.8.2 instance allowed database checks
-without Docker on 15 October. This supplements the PostgreSQL 17 baseline; it does
-not validate the complete configured stack. See the [native database record](docs/evaluations/acceptance/native-database-2026-10-15.json).
-
-Read [security boundaries and deployment settings](docs/SECURITY-BOUNDARIES.md)
-for verified controls, the narrow dependency exception and remaining deployment checks.
-
-The complete product specification is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md);
-observed progress is in [docs/PROGRESS.md](docs/PROGRESS.md).
-Read [R8 evidence](docs/evaluations/R8.md) for measured counts and open acceptance
-gates, and [the demo guide](docs/DEMO.md) for screenshots and the live walkthrough.
-See [interface design](docs/UI.md) and [the acceptance workflow](docs/evaluations/ACCEPTANCE.md)
-for the implemented tools and deferred validation.
+Setup, commands and boundaries for working on the code. The [README](../README.md) has the overview and current status.
 
 ## First run
 
@@ -68,7 +16,7 @@ pnpm dev
 Open **http://localhost:4400**. Setup installs locked dependencies, creates a
 gitignored `.env` with random local credentials, and creates private host data
 directories. It preserves an existing `.env`. Compose applies migrations before
-starting the API and workers. No cloud key or model download is needed.
+starting the API and workers. No cloud key is needed. Building any index (keyword or semantic) first needs the pinned E5 tokenizer and model; see the Compose `prepare_models` command below.
 
 `pnpm dev` runs the full development stack in the foreground. Source edits in
 `apps/web/src`, `backend/config`, and `backend/modules` reload automatically.
@@ -137,7 +85,7 @@ Open **Search** to search ready indexes. Keyword works with NONE and local index
 semantic/hybrid require the exact local profile throughout the selected scope.
 The API image now includes the local extra for query embeddings. Host semantic
 search also needs that extra and prepared model files.
-See [operations](docs/OPERATIONS.md) for deployment, retries and current limits.
+See [operations](OPERATIONS.md) for deployment, retries and current limits.
 
 On Linux CI, use `playwright install --with-deps chromium` to install system libraries.
 The E2E runner starts its own production web server on port 4411 and API on 4412,
@@ -198,5 +146,5 @@ docs/           Blueprint, progress, design and operating notes
 - Checked-in sources/results are original synthetic artifacts. Offline recall does
   not establish answer quality, production isolation or full-stack acceptance.
 
-See [operations](docs/OPERATIONS.md) for development limits and
-[security boundaries](docs/SECURITY-BOUNDARIES.md) before adding product endpoints.
+See [operations](OPERATIONS.md) for development limits and
+[security boundaries](SECURITY-BOUNDARIES.md) before adding product endpoints.
