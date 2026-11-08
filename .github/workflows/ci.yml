@@ -50,7 +50,16 @@ jobs:
       - run: pnpm contracts:generate
       - run: git diff --exit-code -- contracts/openapi.yaml apps/web/src/lib/api.generated.ts
       - run: pnpm --filter @lattice/web exec playwright install --with-deps chromium
-      - run: pnpm test:e2e
+      # Browser tests send mail through Mailpit and parse uploads in the sandboxed parser
+      # container (uid 10001). The test API runs as the runner user, so the shared spool
+      # and every request folder it creates must be writable by both.
+      - name: Start Mailpit and the parser
+        run: |
+          umask 0000
+          mkdir -p .data/parser
+          chmod 0777 .data/parser
+          docker compose up -d --build mailpit parser
+      - run: umask 0000 && pnpm test:e2e
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
