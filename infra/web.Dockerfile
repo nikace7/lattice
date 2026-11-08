@@ -6,6 +6,7 @@ RUN chown node:node /app
 USER node
 COPY --chown=node:node package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY --chown=node:node apps/web/package.json ./apps/web/
+COPY --chown=node:node patches ./patches
 RUN pnpm install --frozen-lockfile
 COPY --chown=node:node apps/web ./apps/web
 EXPOSE 3000
