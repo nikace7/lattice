@@ -1,12 +1,10 @@
 # Lattice — Cited Knowledge Workspace
 
-> Project 9 of 9: a new independent retrieval-augmented generation system.
-> Portfolio mapping: new RAG system; independent addition.
 > Version 1.0 — 8 September 2026. Standalone implementation blueprint; no application or evaluation results exist yet.
 
 ## 1. Start here and product contract
 
-Build **Lattice** in a separate repository at `<projects-root>/portfolio-recreations/rag-knowledge-workspace/`. On the original machine `<projects-root>` is `C:/Users/khatr/OneDrive - Prime College/Desktop/Project`; adapt to the new machine. Inspect the destination/instructions before creating or changing files. Copy this specification to the application's `docs/BLUEPRINT.md` and maintain `docs/PROGRESS.md`. Preserve the portfolio and every other project. This application must run independently of the Document Analysis or Robot Voice recreations.
+Lattice lives in its own repository and runs independently of any other project. This specification is kept in `docs/BLUEPRINT.md`; `docs/PROGRESS.md` records verified milestones.
 
 Lattice lets a small team organise documents, search their contents, ask questions and inspect the exact evidence behind an answer. Its signature experience is a readable answer beside a source viewer that opens the cited document version and location. A user should understand what is indexed, what evidence was used, when content changed and when the system lacks an answer.
 
@@ -324,7 +322,3 @@ Logs/metrics: request/job/turn IDs, queue wait, extraction warnings, chunk count
 Final artifacts: `README.md`, `docs/BLUEPRINT.md`, `docs/PROGRESS.md`, `docs/DESIGN-SYSTEM.md`, `docs/RETRIEVAL-PROTOCOL.md`, `docs/EVAL-RESULTS.md`, `docs/SECURITY-BOUNDARIES.md`, `docs/OPERATIONS.md`, `docs/CASE-STUDY.md`, corpus/eval manifests and screenshots from the running application. Capture answer with exact source highlight, document replacement processing, scoped search, insufficient evidence, evaluation failure inspection and mobile source navigation. A 2-minute walkthrough shows actual ingestion, a cited answer and a source change or access restriction. Return portfolio-ready evidence without editing the existing portfolio.
 
 Primary references: [pgvector](https://github.com/pgvector/pgvector), [PostgreSQL text search](https://www.postgresql.org/docs/17/textsearch-controls.html), [E5 model card](https://huggingface.co/intfloat/multilingual-e5-small/raw/main/README.md), [Ollama structured outputs](https://docs.ollama.com/capabilities/structured-outputs), [Qwen3 local model](https://ollama.com/library/qwen3:4b), [OpenAI embeddings](https://developers.openai.com/api/docs/guides/embeddings), [OpenAI GPT-5.4 mini](https://developers.openai.com/api/docs/models/gpt-5.4-mini), [OpenAI structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs), [OpenAI streaming](https://developers.openai.com/api/docs/guides/streaming-responses). Follow installed-version APIs; ranking/citation/access policies in this document are this project's design decisions.
-
-## 10. Copy-ready prompt for a new task
-
-> Build Lattice, the independent RAG knowledge workspace specified in this document, in a new or resumed `<projects-root>/portfolio-recreations/rag-knowledge-workspace/`. Inspect destination instructions, preserve the portfolio and all original projects, copy this blueprint to `docs/BLUEPRINT.md` and maintain verified progress. Implement R1–R8 sequentially with real ingestion, permission-filtered hybrid retrieval, local embedding/generation, exact source citations, version/deletion handling, durable jobs, conversation history and the quiet reading-room design system. Keep cloud providers optional and fixture responses visibly separate. Run the prescribed retrieval/grounding/access evaluations and lifecycle race tests; record real outcomes and limitations. Return a runnable local application, reproducible evaluation evidence, screenshots and operating instructions. Do not build an ungrounded generic chat UI, rely on another recreation at runtime, invent accuracy claims or edit the portfolio automatically.
