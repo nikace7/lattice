@@ -34,7 +34,7 @@ remain ignored, with no credentials committed.
 All 24 current originals passed actual HTTP → Redis worker → offline parser → E5
 indexing. Native normalized blocks matched their frozen references. The scanned
 drill produced three exact reference lines; its actual page preview was inspected
-and explicitly accepted. This was an operator review by Codex, not human answer
+and explicitly accepted. This was an automated operator review, not human answer
 annotation or a general OCR accuracy measurement.
 
 ## SQL retrieval on canonical fixtures

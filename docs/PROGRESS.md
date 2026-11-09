@@ -504,7 +504,7 @@ guarded demo seed/reset and live recording still need implementation/verificatio
 
 ## 8 October 2026 — R8 guarded demo tooling
 
-Implemented on `codex/r8-demo-tools` after the offline evidence merge:
+Implemented on `r8-demo-tools` after the offline evidence merge:
 
 - Added host `seed_demo` and `reset_demo`, exposed by `pnpm demo:seed` and
   `pnpm demo:reset --confirm lattice_demo` using ignored `.env.demo`.
@@ -552,7 +552,7 @@ quality or production isolation. The authored short corpus is not a blind benchm
 
 ## 9 October 2026 — R8 evaluation tooling and interface refresh
 
-Implemented on `codex/r8-completion-ui`, keeping Docker deferred at the user's request:
+Implemented on `r8-completion-ui`, keeping Docker deferred at the user's request:
 
 - `run_evaluations --database` compares PostgreSQL keyword/semantic/hybrid ranking
   through production collection scope and candidates. Temporary canonical records
