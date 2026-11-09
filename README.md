@@ -101,4 +101,4 @@ coming back.
 
 ## License
 
-No license has been chosen yet, so all rights are reserved.
+MIT. See [LICENSE](LICENSE).
