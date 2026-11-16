@@ -1,3 +1,4 @@
+import re
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -103,6 +104,7 @@ def test_document_status_query_compiles_with_current_source_and_scope():
     assert response.status_code == 200
     assert response.data == {"total": 2, "ready": 1, "processing": 1}
     sql, params = statements[0]
-    assert 'ORDER BY U0."number" DESC LIMIT 1' in sql
+    # Django 6.1 quotes the subquery alias ("U0"), earlier versions did not.
+    assert re.search(r'ORDER BY "?U0"?\."number" DESC LIMIT 1', sql)
     assert '"deleted_at" IS NULL' in sql and '"active"' in sql
     assert str(user.pk) in {str(value) for value in params}
