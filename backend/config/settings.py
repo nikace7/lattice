@@ -161,14 +161,22 @@ if RAG_MODE not in {"LOCAL", "CLOUD", "RETRIEVAL_ONLY", "FIXTURE"}:
 DEMO_MODE = env.bool("DEMO_MODE", default=False)
 MAX_WORKSPACE_STORAGE_BYTES = env.int("MAX_WORKSPACE_STORAGE_BYTES", default=2147483648)
 MAX_DAILY_ANSWER_TOKENS = env.int("MAX_DAILY_ANSWER_TOKENS", default=100000)
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = env("SMTP_HOST", default="localhost")
-EMAIL_PORT = env.int("SMTP_PORT", default=1026)
-EMAIL_HOST_USER = env("SMTP_USER", default="")
-EMAIL_HOST_PASSWORD = env("SMTP_PASSWORD", default="")
-EMAIL_USE_TLS = env.bool("SMTP_USE_TLS", default=False)
-EMAIL_USE_SSL = env.bool("SMTP_USE_SSL", default=False)
-if EMAIL_USE_TLS and EMAIL_USE_SSL:
+SMTP_USE_TLS = env.bool("SMTP_USE_TLS", default=False)
+SMTP_USE_SSL = env.bool("SMTP_USE_SSL", default=False)
+if SMTP_USE_TLS and SMTP_USE_SSL:
     raise ImproperlyConfigured("Choose SMTP_USE_TLS or SMTP_USE_SSL, not both.")
-EMAIL_TIMEOUT = 5
+MAILERS = {
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": env("SMTP_HOST", default="localhost"),
+            "port": env.int("SMTP_PORT", default=1026),
+            "username": env("SMTP_USER", default=""),
+            "password": env("SMTP_PASSWORD", default=""),
+            "use_tls": SMTP_USE_TLS,
+            "use_ssl": SMTP_USE_SSL,
+            "timeout": 5,
+        },
+    }
+}
 DEFAULT_FROM_EMAIL = env("SMTP_FROM_EMAIL", default="Lattice <noreply@lattice.invalid>")
