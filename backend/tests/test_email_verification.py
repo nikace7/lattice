@@ -18,8 +18,7 @@ from modules.identity.api import UserData
 from modules.identity.models import ActionToken
 
 
-def test_verification_mail_uses_a_distinct_fragment_link_and_only_stores_digest(settings):
-    settings.EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+def test_verification_mail_uses_a_distinct_fragment_link_and_only_stores_digest():
     with patch("modules.identity.actions.ActionToken.objects.create") as create:
         issue_link(purpose="VERIFY", email="reader@example.test", lifetime=timedelta(hours=1))
     body = mail.outbox[-1].body
@@ -39,7 +38,6 @@ def test_session_exposes_verification_without_exposing_email():
 @pytest.fixture
 def account(db, settings):
     cache.clear()
-    settings.EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
     user = get_user_model().objects.create_user(
         "reader", email="reader@example.test", password="reading-room-739!"
     )

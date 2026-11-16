@@ -23,7 +23,6 @@ PASSWORD = "reading-room-739!"
 @pytest.fixture(autouse=True)
 def email_delivery(settings):
     cache.clear()
-    settings.EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
     settings.CELERY_TASK_ALWAYS_EAGER = True
     settings.CELERY_TASK_EAGER_PROPAGATES = True
 
